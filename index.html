@@ -571,7 +571,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
         <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div>
-    
   </div>
 </main>
 
@@ -697,98 +696,83 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 // ═══════════════════════════════════
 // DATA
 // ═══════════════════════════════════
-// ─── LOOKUP TABLES (indexed 0–9, cycled via id % 10) ───────────────────────
-const DESCRIPTIONS = [
-  "text",
-  "text",
-  "text",
-  "text",
-  "text",
-  "text",
-  "text",
-  "text",
-  "text",
-  "text"
-   
-];
-const RATINGS = ["10","10","10","10","10","10","10","10","10","10"];
-const GENRES  = ["Crime · Drama","Action · Drama","Epic · Action","Thriller · Drama","Action · Adventure","Crime · Action","Crime · Drama","Drama","Action · Crime","Sci-Fi · Thriller"];
-const YEARS   = ["2020","2023","2022","2019","2020","2021","2019","2023","2008","2010"];
+function enrich(item){
+  const imgUrl = item.imgUrl || `./posters/${item.id}.jpg`;
+  return { ...item, imgUrl, rating: "10.0", desc: item.desc || "" };
+}
 
 // ─── SECTION DATA (IDs are globally unique & sequential) ────────────────────
 
 // Most Liked  → ids 1–10
 const mostLiked = [
-  { id: 1,  title: "text", sub: "text" },
-  { id: 2,  title: "text", sub: "text" },
-  { id: 3,  title: "text", sub: "text" },
-  { id: 4,  title: "text", sub: "text" },
-  { id: 5,  title: "text", sub: "text" },
-  { id: 6,  title: "text", sub: "text" },
-  { id: 7,  title: "text", sub: "text" },
-  { id: 8,  title: "text", sub: "text" },
-  { id: 9,  title: "text", sub: "text" },
-  { id: 10, title: "text", sub: "text" },
+  { id: 1,  title: "text", sub: "text", year: "2020", desc: "text" },
+  { id: 2,  title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 3,  title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 4,  title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 5,  title: "text", sub: "text", year: "2019", desc: "text" },
+  { id: 6,  title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 7,  title: "text", sub: "text", year: "2020", desc: "text" },
+  { id: 8,  title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 9,  title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 10, title: "text", sub: "text", year: "2023", desc: "text" },
 ];
+
+// Section 1  → ids 11–20
 const section1 = [
-  { id: 11, title: "text", sub: "text" },
-  { id: 12, title: "text", sub: "text" },
-  { id: 13, title: "text", sub: "text" },
-  { id: 14, title: "text", sub: "text" },
-  { id: 15, title: "text", sub: "text" },
-  { id: 16, title: "text", sub: "text" },
-  { id: 17, title: "text", sub: "text" },
-  { id: 18, title: "text", sub: "text" },
-  { id: 19, title: "text", sub: "text" },
-  { id: 20, title: "text", sub: "text" },
+  { id: 11, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 12, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 13, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 14, title: "text", sub: "text", year: "2019", desc: "text" },
+  { id: 15, title: "text", sub: "text", year: "2020", desc: "text" },
+  { id: 16, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 17, title: "text", sub: "text", year: "2019", desc: "text" },
+  { id: 18, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 19, title: "text", sub: "text", year: "2008", desc: "text" },
+  { id: 20, title: "text", sub: "text", year: "2010", desc: "text" },
 ];
 
+// Section 2  → ids 21–30
 const section2 = [
-  { id: 21, title: "text", sub: "text" },
-  { id: 22, title: "text", sub: "text" },
-  { id: 23, title: "text", sub: "text" },
-  { id: 24, title: "text", sub: "text" },
-  { id: 25, title: "text", sub: "text" },
-  { id: 26, title: "text", sub: "text" },
-  { id: 27, title: "text", sub: "text" },
-  { id: 28, title: "text", sub: "text" },
-  { id: 29, title: "text", sub: "text" },
-  { id: 30, title: "text", sub: "text" },
+  { id: 21, title: "text", sub: "text", year: "2020", desc: "text" },
+  { id: 22, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 23, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 24, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 25, title: "text", sub: "text", year: "2019", desc: "text" },
+  { id: 26, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 27, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 28, title: "text", sub: "text", year: "2020", desc: "text" },
+  { id: 29, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 30, title: "text", sub: "text", year: "2024", desc: "text" },
 ];
 
+// Section 3  → ids 31–40
 const section3 = [
-  { id: 31, title: "text", sub: "text" },
-  { id: 32, title: "text", sub: "text" },
-  { id: 33, title: "text", sub: "text" },
-  { id: 34, title: "text", sub: "text" },
-  { id: 35, title: "text", sub: "text" },
-  { id: 36, title: "text", sub: "text" },
-  { id: 37, title: "text", sub: "text" },
-  { id: 38, title: "text", sub: "text" },
-  { id: 39, title: "text", sub: "text" },
-  { id: 40, title: "text", sub: "text" },
+  { id: 31, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 32, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 33, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 34, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 35, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 36, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 37, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 38, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 39, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 40, title: "text", sub: "text", year: "2024", desc: "text" },
 ];
 
+// Section 4  → ids 41–50
 const section4 = [
-  { id: 41, title: "text", sub: "text" },
-  { id: 42, title: "text", sub: "text" },
-  { id: 43, title: "text", sub: "text" },
-  { id: 44, title: "text", sub: "text" },
-  { id: 45, title: "text", sub: "text" },
-  { id: 46, title: "text", sub: "text" },
-  { id: 47, title: "text", sub: "text" },
-  { id: 48, title: "text", sub: "text" },
-  { id: 49, title: "text", sub: "text" },
-  { id: 50, title: "text", sub: "text" },
+  { id: 41, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 42, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 43, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 44, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 45, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 46, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 47, title: "text", sub: "text", year: "2021", desc: "text" },
+  { id: 48, title: "text", sub: "text", year: "2022", desc: "text" },
+  { id: 49, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 50, title: "text", sub: "text", year: "2024", desc: "text" },
 ];
 
-
-
-function enrich(item){
-  const i = item.id % DESCRIPTIONS.length;
-  const imgUrl = item.imgUrl || `./posters/${item.id}.jpg`;
-  return { ...item, imgUrl, desc: DESCRIPTIONS[i], rating: RATINGS[i], genre: GENRES[i], year: YEARS[i] };
-}
 
 // ─── CARD FACTORY ───────────────────────────────────────────────────────────
 const heartSVG = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
@@ -896,9 +880,9 @@ function closeSidebar(){
 function openModal(item){
   document.getElementById('modalImg').src=item.imgUrl;
   document.getElementById('modalTitle').textContent=item.title;
-  document.getElementById('modalRating').textContent=(item.rating||'8.0')+'/10';
-  document.getElementById('modalYear').textContent=item.year||'2023';
-  document.getElementById('modalDesc').textContent=item.desc||DESCRIPTIONS[0];
+  document.getElementById('modalRating').textContent=(item.rating||'10.0')+'/10.0';
+  document.getElementById('modalYear').textContent=item.year||'';
+  document.getElementById('modalDesc').textContent=item.desc||'';
   // sync like state
   const mLike=document.getElementById('modalLikeBtn');
   const mLikeTxt=document.getElementById('modalLikeText');
