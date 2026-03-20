@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XI Show</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#E50914;--red-hover:#f40612;--dark:#141414;
+  --card-bg:#1a1a1a;--text:#e5e5e5;--muted:#999;
+  --imdb:#F5C518;--sidebar-w:80px;
+}
+html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;height:100%;overflow-x:hidden}
+
+/* ── HAMBURGER ── */
+.hamburger.is-open{background:rgba(229,9,20,.15);border-color:rgba(229,9,20,.3);opacity:0;pointer-events:none;transform:scale(0.6);transition:opacity .25s ease,transform .25s ease,background .2s}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:300;width:44px;height:44px;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;background:rgba(0,0,0,.82);border-radius:12px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);overflow:visible;opacity:1;transform:scale(1);transition:opacity .25s ease,transform .25s ease,background .2s}
+.hamburger span{display:block;width:20px;height:2px;background:#fff;border-radius:2px}
+/* whisper open: bars pulse then morph */
+.hamburger.opening span:nth-child(1){animation:whisperTop .4s cubic-bezier(.4,0,.2,1) forwards}
+.hamburger.opening span:nth-child(2){animation:whisperMid .3s ease forwards}
+.hamburger.opening span:nth-child(3){animation:whisperBot .4s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes whisperTop{0%{transform:translateY(0) rotate(0);width:20px}25%{transform:translateY(3px) rotate(0);width:12px}60%{transform:translateY(7px) rotate(20deg);width:18px}100%{transform:translateY(7px) rotate(45deg);width:20px}}
+@keyframes whisperMid{0%{opacity:1;transform:scaleX(1) translateX(0)}35%{opacity:.5;transform:scaleX(.6) translateX(3px)}100%{opacity:0;transform:scaleX(0)}}
+@keyframes whisperBot{0%{transform:translateY(0) rotate(0);width:20px}25%{transform:translateY(-3px) rotate(0);width:12px}60%{transform:translateY(-7px) rotate(-20deg);width:18px}100%{transform:translateY(-7px) rotate(-45deg);width:20px}}
+/* close: reverse */
+.hamburger.closing span:nth-child(1){animation:closeTop .35s cubic-bezier(.4,0,.2,1) forwards}
+.hamburger.closing span:nth-child(2){animation:closeMid .28s ease .06s forwards}
+.hamburger.closing span:nth-child(3){animation:closeBot .35s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes closeTop{0%{transform:translateY(7px) rotate(45deg);width:20px}50%{transform:translateY(4px) rotate(10deg);width:14px}100%{transform:translateY(0) rotate(0);width:20px}}
+@keyframes closeMid{0%{opacity:0;transform:scaleX(0)}100%{opacity:1;transform:scaleX(1)}}
+@keyframes closeBot{0%{transform:translateY(-7px) rotate(-45deg);width:20px}50%{transform:translateY(-4px) rotate(-10deg);width:14px}100%{transform:translateY(0) rotate(0);width:20px}}
+/* ripple ring on open */
+.hamburger::after{content:'';position:absolute;inset:-2px;border-radius:14px;border:2px solid rgba(229,9,20,0);pointer-events:none}
+.hamburger.ripple::after{animation:hbRipple .55s ease-out forwards}
+@keyframes hbRipple{0%{inset:-2px;border-color:rgba(229,9,20,.9);opacity:1}100%{inset:-16px;border-color:rgba(229,9,20,0);opacity:0}}
+
+.sidebar-close-btn{display:none;position:absolute;top:16px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:background .15s}
+.sidebar-close-btn:hover{background:rgba(229,9,20,.6)}
+.sidebar-close-btn svg{width:15px;height:15px}
+@media(max-width:768px){.sidebar-close-btn{display:flex}}
+.sidebar-overlay.show{display:block}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,#0a0a0a,#111);display:flex;flex-direction:column;align-items:center;padding:28px 0;gap:10px;z-index:150;border-right:1px solid rgba(255,255,255,.04);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.sidebar .logo{color:var(--red);font-size:26px;font-weight:900;font-family:'Bebas Neue',sans-serif;margin-bottom:28px;cursor:pointer;letter-spacing:-.5px}
+.nav-item{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:14px;cursor:pointer;transition:background .2s,transform .15s;color:var(--muted);position:relative}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;transform:scale(1.08)}
+.nav-item.active{background:rgba(229,9,20,.18);color:var(--red)}
+.nav-item svg{width:22px;height:22px}
+.nav-item .tooltip{position:absolute;left:68px;background:rgba(20,20,20,.96);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;backdrop-filter:blur(8px)}
+.nav-item:hover .tooltip{opacity:1}
+.nav-bottom{margin-top:auto}
+.nav-divider{width:36px;height:1px;background:rgba(255,255,255,.07)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);min-height:100vh;overflow-y:auto;overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{position:relative;width:100%;height:500px;overflow:hidden;background:#000}
+.hero-bg{position:absolute;inset:0;background:url('./posters/hero.jpg') center/cover no-repeat;filter:brightness(.55) saturate(.8);transform:scale(1.03);transition:background-image .6s ease,transform 8s ease}
+.hero:hover .hero-bg{transform:scale(1)}
+.hero-gradient{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.3) 55%,transparent 100%),linear-gradient(180deg,transparent 50%,var(--dark) 100%)}
+.top-bar{position:absolute;top:0;left:0;right:0;padding:18px 28px;z-index:50;display:flex;justify-content:flex-end}
+.hero-content{position:absolute;bottom:70px;left:48px;max-width:440px;animation:heroFadeIn .9s ease forwards}
+@keyframes heroFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hero-badge .n-logo{color:var(--red);font-size:15px;font-weight:900;letter-spacing:1px;font-family:'Bebas Neue'}
+.hero-badge span{font-size:11px;letter-spacing:3px;color:#ccc;text-transform:uppercase;font-weight:500}
+.hero-title{font-size:64px;font-weight:800;line-height:.95;letter-spacing:-1px;margin-bottom:6px}
+.hero-title .red{background:var(--red);color:#fff;padding:2px 10px;border-radius:4px;display:inline-block}
+.hero-part{font-size:14px;letter-spacing:4px;color:#ccc;margin-bottom:18px}
+.hero-meta{display:flex;align-items:center;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.imdb-badge{background:var(--imdb);color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px}
+.rating{font-size:15px;font-weight:700}
+.streams{font-size:14px;color:var(--red);font-weight:600}
+.streams span{color:#fff}
+.hero-buttons{display:flex;gap:12px;flex-wrap:wrap}
+.btn-countdown{background:var(--red);color:#fff;border:none;border-radius:30px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .2s,transform .15s,box-shadow .2s;font-family:'Barlow',sans-serif}
+.btn-countdown:hover{background:var(--red-hover);transform:scale(1.04);box-shadow:0 6px 24px rgba(229,9,20,.45)}
+.btn-countdown svg{width:17px;height:17px;flex-shrink:0}
+.btn-trailer{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);transition:background .2s,transform .15s;font-family:'Barlow',sans-serif}
+.btn-trailer:hover{background:rgba(255,255,255,.22);transform:scale(1.04)}
+
+/* ── SECTIONS ── */
+.sections{padding:0 48px 60px}
+.section{margin-bottom:40px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.section-title{font-size:20px;font-weight:700;color:#fff}
+.see-all{font-size:13px;color:var(--red);font-weight:600;cursor:pointer}
+.genre-chips{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-bottom:22px;padding-bottom:4px;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+.genre-chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 18px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s;user-select:none}
+.chip:hover,.chip.active{background:var(--red);border-color:var(--red);color:#fff}
+.card-row-wrapper{position:relative}
+.card-row{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+.card-row::-webkit-scrollbar{display:none}
+.arrow-btn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(20,20,20,.9);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;color:#fff;transition:background .2s,transform .15s;backdrop-filter:blur(6px)}
+.arrow-btn:hover{background:rgba(40,40,40,.98);transform:translateY(-50%) scale(1.1)}
+.arrow-btn.left{left:-18px}
+.arrow-btn.right{right:-18px}
+.arrow-btn svg{width:16px;height:16px}
+
+/* ── CARDS ── */
+.card{flex:0 0 auto;width:175px;border-radius:8px;overflow:hidden;background:var(--card-bg);cursor:pointer;transition:transform .25s cubic-bezier(.25,.8,.25,1),box-shadow .25s;position:relative}
+.card:hover{transform:scale(1.09) translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.7);z-index:5}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:filter .25s}
+.card:hover img{filter:brightness(.7)}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.92) 100%);opacity:0;transition:opacity .25s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
+.card:hover .card-overlay{opacity:1}
+.card-title{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.card-sub{font-size:10px;color:#bbb;margin-top:2px}
+
+/* ── LIKE BUTTON ── */
+.like-btn{
+  position:absolute;top:8px;right:8px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:6;
+  transition:background .2s,border-color .2s,transform .2s;
+  backdrop-filter:blur(4px);
+}
+.like-btn:hover{background:rgba(229,9,20,.2);border-color:rgba(229,9,20,.5)}
+.like-btn svg{width:15px;height:15px;transition:fill .25s,stroke .25s;fill:none;stroke:rgba(255,255,255,.8);stroke-width:2}
+.like-btn.liked{background:rgba(229,9,20,.28);border-color:rgba(229,9,20,.75)}
+.like-btn.liked svg{fill:var(--red);stroke:var(--red)}
+.like-btn.pop{animation:likePop .4s cubic-bezier(.36,1.8,.6,1) forwards}
+@keyframes likePop{
+  0%{transform:scale(1)}
+  40%{transform:scale(1.55)}
+  70%{transform:scale(0.9)}
+  100%{transform:scale(1)}
+}
+/* modal like */
+.modal-like-btn{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);color:#fff;
+  border:1.5px solid rgba(255,255,255,.18);border-radius:30px;
+  padding:12px 22px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'Barlow',sans-serif;
+  transition:background .2s,border-color .2s,transform .15s;
+  position:relative;overflow:visible;
+}
+.modal-like-btn:hover{background:rgba(229,9,20,.12);border-color:rgba(229,9,20,.4);transform:scale(1.02)}
+.modal-like-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;transition:fill .25s,stroke .25s,transform .3s}
+.modal-like-btn.liked{background:rgba(229,9,20,.18);border-color:rgba(229,9,20,.6);color:#ff6b6b}
+.modal-like-btn.liked svg{fill:#ff6b6b;stroke:#ff6b6b}
+.modal-like-btn.pop{animation:likePop .45s cubic-bezier(.34,1.8,.64,1) forwards}
+.netflix-ribbon{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:4px;padding:2px 6px;font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;border:1px solid rgba(229,9,20,.3);backdrop-filter:blur(4px)}
+.card-top10{width:200px}
+.top10-num{position:absolute;bottom:-8px;left:-4px;font-size:90px;font-weight:900;font-family:'Bebas Neue',sans-serif;color:transparent;-webkit-text-stroke:3px rgba(255,255,255,.15);line-height:1;pointer-events:none;z-index:1;transition:-webkit-text-stroke .25s}
+.card-top10:hover .top10-num{-webkit-text-stroke-color:rgba(229,9,20,.35)}
+.card-wide{width:240px}
+.main::-webkit-scrollbar{width:5px}
+.main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+
+/* ════════════════════════════
+   MOVIE MODAL
+════════════════════════════ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.modal-overlay.show{display:flex}
+.modal{background:#181818;border-radius:14px;overflow:hidden;max-width:700px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
+@keyframes modalPop{from{opacity:0;transform:scale(.88) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-img-wrap{position:relative;flex-shrink:0;height:280px;overflow:hidden}
+.modal-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(.65)}
+.modal-img-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,#181818 100%),linear-gradient(90deg,rgba(0,0,0,.5) 0%,transparent 60%)}
+.modal-img-title{position:absolute;bottom:18px;left:22px;font-size:34px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1;text-shadow:0 2px 16px rgba(0,0,0,.9)}
+.modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:10;transition:background .15s}
+.modal-close:hover{background:var(--red)}
+.modal-close svg{width:16px;height:16px}
+.modal-body{padding:18px 22px 26px;overflow-y:auto}
+.modal-meta{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.modal-badge{background:var(--imdb);color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px}
+.modal-rating{font-size:14px;font-weight:700}
+.modal-genre{background:rgba(255,255,255,.1);border-radius:12px;padding:3px 10px;font-size:11px;color:#ccc}
+.modal-year{font-size:13px;color:#777}
+.modal-desc{font-size:14px;color:#bbb;line-height:1.75;margin-bottom:22px}
+.modal-actions{display:flex;gap:12px;flex-wrap:wrap}
+.modal-countdown-btn{background:var(--red);color:#fff;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;transition:background .2s,transform .15s,box-shadow .2s}
+.modal-countdown-btn:hover{background:var(--red-hover);transform:scale(1.04);box-shadow:0 6px 24px rgba(229,9,20,.4)}
+.modal-countdown-btn svg{width:15px;height:15px}
+.modal-wishlist-btn{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s}
+.modal-wishlist-btn:hover{background:rgba(255,255,255,.2)}
+
+/* ════════════════════════════════════════
+   COUNTDOWN SCREEN — DATE-BASED
+════════════════════════════════════════ */
+/* Countdown screen entry/exit */
+.countdown-screen{display:none;position:fixed;inset:0;z-index:600;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;gap:0;opacity:0;transform:scale(1.06)}
+.countdown-screen.show{display:flex;animation:cdEnter .55s cubic-bezier(.22,1,.36,1) forwards}
+.countdown-screen.hiding{animation:cdExit .35s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes cdEnter{
+  0%{opacity:0;transform:scale(1.08)}
+  60%{opacity:1;transform:scale(.99)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes cdExit{
+  0%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(.94)}
+}
+/* stagger children in */
+.countdown-screen.show .cd-premiere-label{animation:cdChildIn .4s ease .12s both}
+.countdown-screen.show .cd-show-title{animation:cdChildIn .4s ease .2s both}
+.countdown-screen.show .cd-show-sub{animation:cdChildIn .4s ease .26s both}
+.countdown-screen.show .cd-target-date{animation:cdChildIn .4s ease .32s both}
+.countdown-screen.show .cd-blocks{animation:cdChildIn .5s cubic-bezier(.34,1.56,.64,1) .38s both}
+@keyframes cdChildIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* logo slides in from left */
+.countdown-screen.show .cd-logo{animation:cdLogoIn .5s cubic-bezier(.34,1.56,.64,1) .05s both}
+@keyframes cdLogoIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+.cd-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.18) blur(12px) saturate(.4);transform:scale(1.12)}
+.cd-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 0%,rgba(0,0,0,.7) 100%)}
+.cd-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none;z-index:1}
+
+.cd-logo{position:absolute;top:26px;left:30px;color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:-.5px;z-index:3}
+.cd-close{position:absolute;top:24px;right:24px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:3;transition:background .15s}
+.cd-close:hover{background:rgba(229,9,20,.8)}
+.cd-close svg{width:16px;height:16px}
+
+/* Premiere label */
+.cd-premiere-label{position:relative;z-index:2;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:18px;font-weight:500}
+
+/* Movie title above countdown */
+.cd-show-title{position:relative;z-index:2;font-size:38px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px;text-align:center;text-shadow:0 2px 30px rgba(0,0,0,.8)}
+.cd-show-sub{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.4);margin-bottom:32px;letter-spacing:.5px;text-align:center}
+
+/* Date target display */
+.cd-target-date{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:10px}
+.cd-target-date::before,.cd-target-date::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+
+/* The four time blocks */
+.cd-blocks{position:relative;z-index:2;display:flex;gap:20px;align-items:flex-start;justify-content:center}
+.cd-block{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cd-block-num{
+  position:relative;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:80px;line-height:1;color:#fff;
+  width:110px;height:96px;
+  display:flex;align-items:center;justify-content:center;
+  /* Card-flip container */
+}
+/* Flip card inner */
+.cd-flip{position:relative;width:110px;height:96px;perspective:600px}
+.cd-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+
+/* Static card face */
+.cd-card{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(40,40,40,.9),rgba(18,18,18,.95));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:78px;line-height:1;color:#fff;
+  letter-spacing:-.5px;
+  box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.cd-card::after{
+  content:'';position:absolute;left:0;right:0;top:50%;height:1px;
+  background:rgba(0,0,0,.35);
+}
+.cd-card-glow{
+  position:absolute;inset:0;border-radius:12px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(229,9,20,.12),transparent 70%);
+  pointer-events:none;
+}
+
+/* Flip animation halves */
+.cd-top,.cd-bottom{
+  position:absolute;left:0;right:0;height:50%;overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:78px;color:#fff;
+  background:linear-gradient(160deg,rgba(40,40,40,.9),rgba(18,18,18,.95));
+  border:1px solid rgba(255,255,255,.08);
+  backface-visibility:hidden;
+}
+.cd-top{top:0;border-radius:12px 12px 0 0;align-items:flex-end;padding-bottom:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.cd-bottom{top:50%;border-radius:0 0 12px 12px;align-items:flex-start;padding-top:2px;clip-path:inset(0 0 0 0)}
+
+.cd-block-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35);font-weight:500}
+
+.cd-sep{font-family:'Bebas Neue',sans-serif;font-size:64px;color:rgba(255,255,255,.2);line-height:1;margin-top:16px;animation:sepBlink 1s step-end infinite}
+@keyframes sepBlink{0%,100%{opacity:.8}50%{opacity:.15}}
+
+/* Flip animation */
+@keyframes flipDown{
+  0%{transform:rotateX(0deg)}
+  100%{transform:rotateX(-90deg)}
+}
+@keyframes flipUp{
+  0%{transform:rotateX(90deg)}
+  100%{transform:rotateX(0deg)}
+}
+.flip-top{animation:flipDown .25s ease-in forwards}
+.flip-bottom{animation:flipUp .25s ease-out .25s forwards}
+
+/* ─ Countdown blur overlay ─ */
+.cd-blur-overlay{
+  display:none;position:fixed;inset:0;z-index:599;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  transition:opacity .35s ease;
+  opacity:0;
+}
+.cd-blur-overlay.show{display:block;opacity:1}
+
+/* ─ Celebrate button inside countdown ─ */
+.cd-celebrate-btn{
+  position:relative;z-index:3;
+  margin-top:32px;
+  background:linear-gradient(135deg,rgba(229,9,20,.18),rgba(229,9,20,.08));
+  border:1.5px solid rgba(229,9,20,.45);
+  color:#fff;border-radius:30px;
+  padding:12px 30px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Barlow',sans-serif;
+  display:flex;align-items:center;gap:10px;
+  transition:background .2s,border-color .2s,transform .15s,box-shadow .2s;
+  backdrop-filter:blur(6px);
+  letter-spacing:.3px;
+}
+.cd-celebrate-btn:hover{
+  background:linear-gradient(135deg,rgba(229,9,20,.35),rgba(229,9,20,.18));
+  border-color:rgba(229,9,20,.8);
+  transform:scale(1.05);
+  box-shadow:0 6px 24px rgba(229,9,20,.35);
+}
+.cd-celebrate-btn span{font-size:18px}
+.cd-progress-wrap{position:absolute;bottom:0;left:0;right:0;z-index:3}
+.cd-progress-bar{height:3px;background:rgba(255,255,255,.07)}
+.cd-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .9s linear;box-shadow:0 0 10px rgba(229,9,20,.7)}
+
+/* ════════════════════════════════════════
+   CELEBRATION / FIREWORKS LAYER
+════════════════════════════════════════ */
+.celebrate-screen{
+  display:none;position:fixed;inset:0;z-index:700;
+  flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.celebrate-screen.show{display:flex}
+
+#celebCanvas{position:absolute;inset:0;width:100%;height:100%}
+
+.celebrate-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,#1a0005 0%,#0a0000 100%);
+}
+
+.celebrate-content{
+  position:relative;z-index:2;
+  text-align:center;
+  animation:celebFadeIn .8s ease .3s both;
+}
+@keyframes celebFadeIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.celebrate-n{
+  color:var(--red);font-family:'Bebas Neue',sans-serif;
+  font-size:40px;letter-spacing:-1px;margin-bottom:16px;
+  text-shadow:0 0 40px rgba(229,9,20,.8);
+}
+
+.celebrate-now{
+  font-size:13px;letter-spacing:5px;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:10px;
+}
+
+.celebrate-title{
+  font-size:56px;font-weight:800;color:#fff;
+  letter-spacing:-1px;line-height:1;
+  margin-bottom:8px;
+  text-shadow:0 0 60px rgba(229,9,20,.5),0 4px 30px rgba(0,0,0,.8);
+}
+.celebrate-title .red-hi{background:var(--red);padding:0 10px;border-radius:6px}
+
+.celebrate-sub{font-size:15px;color:rgba(255,255,255,.55);margin-bottom:36px;letter-spacing:.5px}
+
+.celebrate-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--red);color:#fff;border:none;
+  border-radius:50px;padding:14px 36px;
+  font-size:16px;font-weight:700;cursor:pointer;
+  font-family:'Barlow',sans-serif;
+  box-shadow:0 8px 32px rgba(229,9,20,.5);
+  transition:transform .15s,box-shadow .15s;
+  animation:celebBtn 1s ease 1s both;
+}
+@keyframes celebBtn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.celebrate-btn:hover{transform:scale(1.06);box-shadow:0 12px 40px rgba(229,9,20,.65)}
+.celebrate-btn svg{width:18px;height:18px}
+
+/* Stamp badge */
+.celebrate-stamp{
+  position:absolute;top:-40px;right:-40px;
+  width:90px;height:90px;
+  background:var(--imdb);border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:13px;color:#000;line-height:1.1;
+  transform:rotate(18deg);
+  box-shadow:0 4px 20px rgba(245,197,24,.4);
+  animation:stampPop .5s cubic-bezier(.34,1.56,.64,1) 1.2s both;
+}
+@keyframes stampPop{from{opacity:0;transform:rotate(18deg) scale(0)}to{opacity:1;transform:rotate(18deg) scale(1)}}
+.celebrate-stamp span{font-size:22px}
+
+/* Close celebrate */
+.celebrate-close{
+  position:absolute;top:24px;right:24px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;z-index:3;transition:background .15s;
+}
+.celebrate-close:hover{background:rgba(229,9,20,.8)}
+.celebrate-close svg{width:16px;height:16px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  :root{--sidebar-w:0px}
+  .hamburger{display:flex}
+  .sidebar{transform:translateX(-100%);width:210px;align-items:flex-start;padding:24px 14px;gap:6px}
+  .sidebar.open{transform:translateX(0);box-shadow:6px 0 40px rgba(0,0,0,.6)}
+  .nav-item{width:100%;border-radius:12px;justify-content:flex-start;gap:14px;padding:0 14px;height:48px}
+  .nav-item .tooltip{display:none}
+  .nav-item::after{content:attr(data-label);font-size:14px;font-weight:500;color:inherit}
+  .sidebar .logo{margin-left:8px;margin-bottom:16px}
+  .nav-divider{width:100%;margin:4px 0}
+  .main{margin-left:0}
+  .hero{height:380px}
+  .hero-content{left:20px;bottom:44px;max-width:calc(100% - 90px)}
+  .hero-title{font-size:38px}
+  .sections{padding:0 14px 60px}
+  .top-bar{padding-left:70px}
+  .arrow-btn{display:none}
+  .card{width:138px}.card-wide{width:188px}.card-top10{width:155px}
+  .modal-img-wrap{height:210px}
+  .modal-img-title{font-size:24px;bottom:14px;left:16px}
+  .modal-body{padding:14px 16px 22px}
+  .cd-blocks{gap:10px}
+  .cd-flip,.cd-flip-inner,.cd-top,.cd-bottom{width:76px}
+  .cd-card,.cd-top,.cd-bottom{font-size:52px}
+  .cd-block-num{width:76px;height:66px}
+  .cd-flip{height:66px}
+  .cd-card{font-size:52px}
+  .cd-sep{font-size:44px}
+  .celebrate-title{font-size:36px}
+  .celebrate-stamp{width:70px;height:70px;top:-28px;right:-28px}
+}
+</style>
+</head>
+<body>
+
+<div class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="logo">XI SHOW</div>
+  <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="nav-item active" data-label="Home" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <div class="tooltip">Home</div>
+  </div>
+  <div class="nav-item" data-label="Search" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <div class="tooltip">Search</div>
+  </div>
+  <div class="nav-item" data-label="Movies" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+    <div class="tooltip">Movies</div>
+  </div>
+  <div class="nav-item" data-label="TV Shows" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+    <div class="tooltip">TV Shows</div>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-item" data-label="Trending" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    <div class="tooltip">Trending</div>
+  </div>
+  <div class="nav-item" data-label="My List" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div class="tooltip">My List</div>
+  </div>
+  <div class="nav-item nav-bottom" data-label="Shuffle" onclick="closeSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+    <div class="tooltip">Shuffle</div>
+  </div>
+</nav>
+
+<main class="main">
+  <section class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-gradient"></div>
+    <div class="top-bar"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="n-logo">XI</span><span>PRESENTS</span></div>
+      <div class="hero-title" id="heroTitle">FAREWELL <span class="red">2026</span></div>
+      <div class="hero-part"> </div>
+      <div class="hero-meta">
+        <span class="imdb-badge">IMDb</span>
+        <span class="rating">10.0/10.0</span>
+        <span class="streams">2B+ <span>Streams</span></span>
+      </div>
+      <div class="hero-buttons">
+        <button class="btn-countdown" id="heroCdBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Premiere Countdown
+        </button>
+        <button class="btn-trailer">Watch Trailer</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="sections">
+    <div class="genre-chips">
+      <div class="chip active" onclick="setGenre(this)">Most Liked</div>
+      <div class="chip" onclick="setGenre(this)">Section 1</div>
+      <div class="chip" onclick="setGenre(this)">Section 2</div>
+      <div class="chip" onclick="setGenre(this)">Section 3</div>
+      <div class="chip" onclick="setGenre(this)">Section 4</div>
+    </div>
+
+    <div class="section" id="sec-most-liked">
+      <div class="section-header"><div class="section-title">Most Liked</div><div class="see-all">See all ›</div></div>
+      <div class="card-row-wrapper">
+        <button class="arrow-btn left" onclick="scrollRow(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="card-row" id="mostLikedRow"></div>
+        <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="section" id="sec-section-1">
+      <div class="section-header"><div class="section-title">Section 1</div><div class="see-all">See all ›</div></div>
+      <div class="card-row-wrapper">
+        <button class="arrow-btn left" onclick="scrollRow(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="card-row" id="section1Row"></div>
+        <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+    <div class="section" id="sec-section-2">
+      <div class="section-header"><div class="section-title">Section 2</div><div class="see-all">See all ›</div></div>
+      <div class="card-row-wrapper">
+        <button class="arrow-btn left" onclick="scrollRow(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="card-row" id="section2Row"></div>
+        <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+    <div class="section" id="sec-section-3">
+      <div class="section-header"><div class="section-title">Section 3</div><div class="see-all">See all ›</div></div>
+      <div class="card-row-wrapper">
+        <button class="arrow-btn left" onclick="scrollRow(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="card-row" id="section3Row"></div>
+        <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+    <div class="section" id="sec-section-4">
+      <div class="section-header"><div class="section-title">Section 4</div><div class="see-all">See all ›</div></div>
+      <div class="card-row-wrapper">
+        <button class="arrow-btn left" onclick="scrollRow(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="card-row" id="section4Row"></div>
+        <button class="arrow-btn right" onclick="scrollRow(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+    
+  </div>
+</main>
+
+<!-- MOVIE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-img-wrap">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-img-gradient"></div>
+      <div class="modal-img-title" id="modalTitle"></div>
+      <div class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="modal-badge">IMDb</span>
+        <span class="modal-rating" id="modalRating"></span>
+        <span class="modal-year" id="modalYear"></span>
+      </div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-actions">
+        <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike()">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span id="modalLikeText">Like</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COUNTDOWN BLUR OVERLAY ═══ -->
+<div class="cd-blur-overlay" id="cdBlurOverlay" onclick="closeCountdown()"></div>
+
+<!-- ═══ DATE COUNTDOWN SCREEN ═══ -->
+<div class="countdown-screen" id="countdownScreen">
+  <div class="cd-bg" id="cdBg"></div>
+  <div class="cd-vignette"></div>
+  <div class="cd-scanlines"></div>
+
+  <div class="cd-logo">XI SHOW</div>
+  <div class="cd-close" onclick="closeCountdown()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </div>
+
+  <div class="cd-premiere-label">Premiere Countdown</div>
+  <div class="cd-show-title" id="cdShowTitle">Money Heist</div>
+  <div class="cd-show-sub" id="cdShowSub">Part 4 · Series</div>
+  <div class="cd-target-date" id="cdTargetDate">April 1 · 2:00 PM</div>
+
+  <div class="cd-blocks">
+    <!-- DAYS -->
+    <div class="cd-block">
+      <div class="cd-flip" id="flipDays">
+        <div class="cd-card" id="cardDays">00</div>
+        <div class="cd-card-glow"></div>
+      </div>
+      <div class="cd-block-label">Days</div>
+    </div>
+
+    <div class="cd-sep">:</div>
+
+    <!-- HOURS -->
+    <div class="cd-block">
+      <div class="cd-flip" id="flipHours">
+        <div class="cd-card" id="cardHours">00</div>
+        <div class="cd-card-glow"></div>
+      </div>
+      <div class="cd-block-label">Hours</div>
+    </div>
+
+    <div class="cd-sep">:</div>
+
+    <!-- MINUTES -->
+    <div class="cd-block">
+      <div class="cd-flip" id="flipMins">
+        <div class="cd-card" id="cardMins">00</div>
+        <div class="cd-card-glow"></div>
+      </div>
+      <div class="cd-block-label">Mins</div>
+    </div>
+
+    <div class="cd-sep">:</div>
+
+    <!-- SECONDS -->
+    <div class="cd-block">
+      <div class="cd-flip" id="flipSecs">
+        <div class="cd-card" id="cardSecs">00</div>
+        <div class="cd-card-glow"></div>
+      </div>
+      <div class="cd-block-label">Secs</div>
+    </div>
+  </div>
+
+  <div class="cd-progress-wrap">
+    <div class="cd-progress-bar">
+      <div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div>
+    </div>
+  </div>
+
+  <button class="cd-celebrate-btn" onclick="triggerCelebrate()">
+    <span>🎉</span> Celebrate Premiere
+  </button>
+</div>
+
+<!-- ═══ CELEBRATION SCREEN ═══ -->
+<div class="celebrate-screen" id="celebrateScreen">
+  <div class="celebrate-bg"></div>
+  <canvas id="celebCanvas"></canvas>
+
+  <div class="celebrate-close" onclick="closeCelebrate()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </div>
+
+  <div class="celebrate-content">
+    <div class="celebrate-n">XI SHOW</div>
+    <div class="celebrate-now">Now Streaming</div>
+    <div class="celebrate-title" id="celebTitle">Money <span class="red-hi">Heist</span></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// DATA
+// ═══════════════════════════════════
+// ─── LOOKUP TABLES (indexed 0–9, cycled via id % 10) ───────────────────────
+const DESCRIPTIONS = [
+  "A mysterious Professor recruits eight robbers to pull off the most ambitious heist ever: taking over the Royal Mint of Spain and printing billions of euros while holding hostages inside.",
+  "A determined woman fights back against the forces that tore her family apart in this gripping action thriller.",
+  "Two revolutionary heroes of 1920s India join forces to fight the British colonial empire in this breathtaking epic.",
+  "A cellist's life is upended when she enters into a strange relationship with a legendary musician, leading to events darker than she could have imagined.",
+  "An ex-mercenary must wade through the criminal underworld of Dhaka, Bangladesh, to rescue the kidnapped son of an imprisoned crime lord.",
+  "A gangster who lives by his own rules is forced to choose sides between two warring factions in this stylish South Indian crime drama.",
+  "Over five decades, mob hitman Frank Sheeran looks back at the relationships that define his time with the Bufalino crime family.",
+  "A moving ensemble drama exploring love, loss, memory, and the unexpected bonds that help us endure life's most difficult chapters.",
+  "A vigilante dressed as a bat strikes fear into Gotham's criminals while unraveling a conspiracy that strikes close to home.",
+  "A thief who steals corporate secrets via dream-sharing technology is given the inverse task of planting an idea into a CEO's mind.",
+];
+const RATINGS = ["10","10","10","10","10","10","10","10","10","10"];
+const GENRES  = ["Crime · Drama","Action · Drama","Epic · Action","Thriller · Drama","Action · Adventure","Crime · Action","Crime · Drama","Drama","Action · Crime","Sci-Fi · Thriller"];
+const YEARS   = ["2020","2023","2022","2019","2020","2021","2019","2023","2008","2010"];
+
+// ─── SECTION DATA (IDs are globally unique & sequential) ────────────────────
+
+// Most Liked  → ids 1–10
+const mostLiked = [
+  { id: 1,  title: "text", sub: "text" },
+  { id: 2,  title: "text", sub: "text" },
+  { id: 3,  title: "text", sub: "text" },
+  { id: 4,  title: "text", sub: "text" },
+  { id: 5,  title: "text", sub: "text" },
+  { id: 6,  title: "text", sub: "text" },
+  { id: 7,  title: "text", sub: "text" },
+  { id: 8,  title: "text", sub: "text" },
+  { id: 9,  title: "text", sub: "text" },
+  { id: 10, title: "text", sub: "text" },
+];
+const section1 = [
+  { id: 11, title: "text", sub: "text" },
+  { id: 12, title: "text", sub: "text" },
+  { id: 13, title: "text", sub: "text" },
+  { id: 14, title: "text", sub: "text" },
+  { id: 15, title: "text", sub: "text" },
+  { id: 16, title: "text", sub: "text" },
+  { id: 17, title: "text", sub: "text" },
+  { id: 18, title: "text", sub: "text" },
+  { id: 19, title: "text", sub: "text" },
+  { id: 20, title: "text", sub: "text" },
+];
+
+const section2 = [
+  { id: 21, title: "text", sub: "text" },
+  { id: 22, title: "text", sub: "text" },
+  { id: 23, title: "text", sub: "text" },
+  { id: 24, title: "text", sub: "text" },
+  { id: 25, title: "text", sub: "text" },
+  { id: 26, title: "text", sub: "text" },
+  { id: 27, title: "text", sub: "text" },
+  { id: 28, title: "text", sub: "text" },
+  { id: 29, title: "text", sub: "text" },
+  { id: 30, title: "text", sub: "text" },
+];
+
+const section3 = [
+  { id: 31, title: "text", sub: "text" },
+  { id: 32, title: "text", sub: "text" },
+  { id: 33, title: "text", sub: "text" },
+  { id: 34, title: "text", sub: "text" },
+  { id: 35, title: "text", sub: "text" },
+  { id: 36, title: "text", sub: "text" },
+  { id: 37, title: "text", sub: "text" },
+  { id: 38, title: "text", sub: "text" },
+  { id: 39, title: "text", sub: "text" },
+  { id: 40, title: "text", sub: "text" },
+];
+
+const section4 = [
+  { id: 41, title: "text", sub: "text" },
+  { id: 42, title: "text", sub: "text" },
+  { id: 43, title: "text", sub: "text" },
+  { id: 44, title: "text", sub: "text" },
+  { id: 45, title: "text", sub: "text" },
+  { id: 46, title: "text", sub: "text" },
+  { id: 47, title: "text", sub: "text" },
+  { id: 48, title: "text", sub: "text" },
+  { id: 49, title: "text", sub: "text" },
+  { id: 50, title: "text", sub: "text" },
+];
+
+
+
+function enrich(item){
+  const i = item.id % DESCRIPTIONS.length;
+  const imgUrl = item.imgUrl || `./posters/${item.id}.jpg`;
+  return { ...item, imgUrl, desc: DESCRIPTIONS[i], rating: RATINGS[i], genre: GENRES[i], year: YEARS[i] };
+}
+
+// ─── CARD FACTORY ───────────────────────────────────────────────────────────
+const heartSVG = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+const likedSet = new Set();
+
+function makeLikeBtn(itemId){
+  const btn=document.createElement('button');
+  btn.className='like-btn'+(likedSet.has(itemId)?' liked':'');
+  btn.innerHTML=heartSVG;
+  btn.title='Like';
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    likedSet.has(itemId)?likedSet.delete(itemId):likedSet.add(itemId);
+    btn.classList.toggle('liked',likedSet.has(itemId));
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+    btn.addEventListener('animationend',()=>btn.classList.remove('pop'),{once:true});
+  });
+  return btn;
+}
+
+function makeCard(raw,variant='normal'){
+  const item=enrich(raw);
+  const card=document.createElement('div');
+  card.className='card'+(variant==='wide'?' card-wide':'')+(variant==='top10'?' card-top10':'');
+  const titleHtml=`<div class="card-title">${item.title}</div>`;
+  const subHtml=`<div class="card-sub">${item.sub}</div>`;
+  const progressHtml=`<div class="progress-bar"><div class="progress-fill" style="width:${raw.progress||0}%"></div></div>`;
+
+  if(variant==='top10'){
+    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${subHtml}</div><div class="top10-num">${raw.rank}</div>`;
+  }else if(variant==='wide'){
+    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${progressHtml}</div>`;
+  }else{
+    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${subHtml}</div>`;
+  }
+  card.appendChild(makeLikeBtn(item.id));
+  card.addEventListener('click',()=>openModal(item));
+  return card;
+}
+
+function populateRow(id,data,variant='normal'){
+  const row=document.getElementById(id);
+  data.forEach((item,i)=>{
+    if(variant==='top10')item.rank=i+1;
+    row.appendChild(makeCard(item,variant));
+  });
+}
+// ─── POPULATE ALL ROWS ──────────────────────────────────────────────────────
+populateRow('mostLikedRow', mostLiked, 'top10');
+populateRow('section1Row',  section1);
+populateRow('section2Row',  section2);
+populateRow('section3Row',  section3);
+populateRow('section4Row',  section4);
+
+// Hero
+let heroItem=enrich({id:999,title:"FAREWELL 2026",sub:"",imgUrl:'./posters/hero.jpg'});
+document.getElementById('heroCdBtn').onclick=()=>openCountdown(heroItem);
+
+function scrollRow(btn,dir){btn.parentElement.querySelector('.card-row').scrollBy({left:dir*520,behavior:'smooth'});}
+function setGenre(el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const label=el.textContent.trim().toLowerCase().replace(/\s+/g,'-');
+  const target=document.getElementById('sec-'+label);
+  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const hb=document.getElementById('hamburger');
+  const ov=document.getElementById('sidebarOverlay');
+  const isOpen=sb.classList.contains('open');
+  if(isOpen){
+    // closing
+    hb.classList.remove('opening','is-open');
+    hb.classList.add('closing');
+    hb.addEventListener('animationend',()=>hb.classList.remove('closing'),{once:true});
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  }else{
+    // opening
+    hb.classList.remove('closing');
+    hb.classList.add('opening','ripple','is-open');
+    hb.addEventListener('animationend',()=>{hb.classList.remove('opening');},{ once:true });
+    setTimeout(()=>hb.classList.remove('ripple'),600);
+    sb.classList.add('open');
+    ov.classList.add('show');
+  }
+}
+function closeSidebar(){
+  const sb=document.getElementById('sidebar');
+  const hb=document.getElementById('hamburger');
+  if(!sb.classList.contains('open'))return;
+  hb.classList.remove('opening','is-open');
+  hb.classList.add('closing');
+  hb.addEventListener('animationend',()=>hb.classList.remove('closing'),{once:true});
+  sb.classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════
+// MODAL
+// ═══════════════════════════════════
+function openModal(item){
+  document.getElementById('modalImg').src=item.imgUrl;
+  document.getElementById('modalTitle').textContent=item.title;
+  document.getElementById('modalRating').textContent=(item.rating||'8.0')+'/10';
+  document.getElementById('modalYear').textContent=item.year||'2023';
+  document.getElementById('modalDesc').textContent=item.desc||DESCRIPTIONS[0];
+  // sync like state
+  const mLike=document.getElementById('modalLikeBtn');
+  const mLikeTxt=document.getElementById('modalLikeText');
+  mLike.dataset.itemId=item.id;
+  const liked=likedSet.has(item.id);
+  mLike.classList.toggle('liked',liked);
+  mLikeTxt.textContent=liked?'Liked':'Like';
+  document.getElementById('modalOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function toggleModalLike(){
+  const mLike=document.getElementById('modalLikeBtn');
+  const mLikeTxt=document.getElementById('modalLikeText');
+  const id=Number(mLike.dataset.itemId);
+  const nowLiked=likedSet.has(id);
+  nowLiked?likedSet.delete(id):likedSet.add(id);
+  mLike.classList.toggle('liked',!nowLiked);
+  mLikeTxt.textContent=nowLiked?'Like':'Liked';
+  mLike.classList.remove('pop');void mLike.offsetWidth;mLike.classList.add('pop');
+  mLike.addEventListener('animationend',()=>mLike.classList.remove('pop'),{once:true});
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');document.body.style.overflow='';}
+function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+
+// ═══════════════════════════════════════════════════
+// DATE-BASED COUNTDOWN  — Target: April 1, 2:00 PM
+// ═══════════════════════════════════════════════════
+// Set premiere year dynamically (if date passed, next year)
+function getTarget(){
+  const now=new Date();
+  let year=now.getFullYear();
+  const t=new Date(year,3,1,14,0,0,0); // month 3 = April
+  if(t<=now)t.setFullYear(year+1);
+  return t;
+}
+
+let cdInterval=null;
+let cdCurrentItem=null;
+const TARGET=getTarget();
+
+// Flip state
+const prevVals={days:-1,hours:-1,mins:-1,secs:-1};
+
+function pad(n){return String(n).padStart(2,'0');}
+
+function animateFlip(cardEl,newVal){
+  const old=cardEl.textContent;
+  if(old===String(newVal))return;
+  // Simple scale flash
+  cardEl.style.transform='scaleY(0.85)';
+  cardEl.style.transition='transform 0.1s ease';
+  setTimeout(()=>{
+    cardEl.textContent=newVal;
+    cardEl.style.transform='scaleY(1)';
+  },100);
+}
+
+function updateCountdown(){
+  const now=new Date();
+  const diff=TARGET-now;
+
+  if(diff<=0){
+    // Time's up → celebrate!
+    clearInterval(cdInterval);
+    closeCountdown();
+    setTimeout(()=>launchCelebration(cdCurrentItem),200);
+    return;
+  }
+
+  const totalSecs=Math.floor(diff/1000);
+  const days=Math.floor(totalSecs/86400);
+  const hours=Math.floor((totalSecs%86400)/3600);
+  const mins=Math.floor((totalSecs%3600)/60);
+  const secs=totalSecs%60;
+
+  if(days!==prevVals.days){animateFlip(document.getElementById('cardDays'),pad(days));prevVals.days=days;}
+  if(hours!==prevVals.hours){animateFlip(document.getElementById('cardHours'),pad(hours));prevVals.hours=hours;}
+  if(mins!==prevVals.mins){animateFlip(document.getElementById('cardMins'),pad(mins));prevVals.mins=mins;}
+  if(secs!==prevVals.secs){animateFlip(document.getElementById('cardSecs'),pad(secs));prevVals.secs=secs;}
+
+  // Progress bar: fraction of 30 days total countdown window
+  const totalWindow=30*24*3600*1000;
+  const elapsed=totalWindow-diff;
+  const pct=Math.max(0,Math.min(100,(elapsed/totalWindow)*100));
+  document.getElementById('cdProgressFill').style.width=(100-pct)+'%';
+}
+
+function openCountdown(item){
+  closeModal();
+  cdCurrentItem=item;
+
+  document.getElementById('cdShowTitle').textContent=item.title||'FAREWELL 2026';
+  document.getElementById('cdShowSub').textContent=item.sub||'';
+  document.getElementById('cdBg').style.backgroundImage=`url('${item.imgUrl}')`;
+
+  const opts={month:'long',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true};
+  document.getElementById('cdTargetDate').textContent=TARGET.toLocaleString('en-IN',opts);
+
+  const screen=document.getElementById('countdownScreen');
+  screen.classList.remove('hiding');
+  screen.style.display='flex';
+  void screen.offsetWidth;
+  screen.classList.add('show');
+  document.getElementById('cdBlurOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+
+  updateCountdown();
+  clearInterval(cdInterval);
+  cdInterval=setInterval(updateCountdown,1000);
+}
+
+function closeCountdown(){
+  clearInterval(cdInterval);
+  const screen=document.getElementById('countdownScreen');
+  if(!screen.classList.contains('show'))return;
+  document.getElementById('cdBlurOverlay').classList.remove('show');
+  screen.classList.add('hiding');
+  screen.addEventListener('animationend',()=>{
+    screen.classList.remove('show','hiding');
+    screen.style.display='';
+    document.body.style.overflow='';
+  },{once:true});
+}
+
+function triggerCelebrate(){
+  const screen = document.getElementById('countdownScreen');
+  clearInterval(cdInterval);
+  document.getElementById('cdBlurOverlay').classList.remove('show');
+
+  // Morph the countdown screen directly into the celebration
+  screen.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
+  screen.style.transform = 'scale(1.12)';
+  screen.style.opacity = '0';
+
+  setTimeout(() => {
+    screen.classList.remove('show','hiding');
+    screen.style.display = '';
+    screen.style.transform = '';
+    screen.style.opacity = '';
+    screen.style.transition = '';
+    document.body.style.overflow = '';
+    launchCelebration(cdCurrentItem || {title:'FAREWELL 2026', sub:''});
+  }, 420);
+}
+
+// ═══════════════════════════════════════════════════
+// CELEBRATION — Fireworks + Confetti on Canvas
+// ═══════════════════════════════════════════════════
+const celebCanvas=document.getElementById('celebCanvas');
+const ctx=celebCanvas.getContext('2d');
+let particles=[];
+let fireworks=[];
+let animFrame=null;
+
+function resizeCanvas(){
+  celebCanvas.width=window.innerWidth;
+  celebCanvas.height=window.innerHeight;
+}
+
+// Confetti piece
+class Confetti{
+  constructor(){this.reset(true);}
+  reset(initial=false){
+    this.x=Math.random()*window.innerWidth;
+    this.y=initial?Math.random()*-window.innerHeight*2:-20;
+    this.w=Math.random()*10+4;
+    this.h=Math.random()*6+3;
+    this.rot=Math.random()*Math.PI*2;
+    this.rotSpeed=(Math.random()-.5)*.2;
+    this.vy=Math.random()*3+2;
+    this.vx=(Math.random()-.5)*2;
+    this.color=CONF_COLORS[Math.floor(Math.random()*CONF_COLORS.length)];
+    this.opacity=1;
+  }
+  update(){
+    this.x+=this.vx;
+    this.y+=this.vy;
+    this.rot+=this.rotSpeed;
+    if(this.y>window.innerHeight+20)this.reset();
+  }
+  draw(){
+    ctx.save();
+    ctx.translate(this.x,this.y);
+    ctx.rotate(this.rot);
+    ctx.globalAlpha=this.opacity;
+    ctx.fillStyle=this.color;
+    ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+    ctx.restore();
+  }
+}
+
+// Firework shell → burst
+class Firework{
+  constructor(){this.reset();}
+  reset(){
+    this.x=Math.random()*window.innerWidth;
+    this.y=window.innerHeight;
+    this.tx=Math.random()*window.innerWidth*.8+window.innerWidth*.1;
+    this.ty=Math.random()*window.innerHeight*.5+50;
+    this.color=FW_COLORS[Math.floor(Math.random()*FW_COLORS.length)];
+    this.speed=Math.random()*4+6;
+    const angle=Math.atan2(this.ty-this.y,this.tx-this.x);
+    this.vx=Math.cos(angle)*this.speed;
+    this.vy=Math.sin(angle)*this.speed;
+    this.trail=[];
+    this.done=false;
+    this.exploded=false;
+  }
+  update(){
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>12)this.trail.shift();
+    this.x+=this.vx;
+    this.y+=this.vy;
+    const dx=this.tx-this.x,dy=this.ty-this.y;
+    if(Math.sqrt(dx*dx+dy*dy)<this.speed*2){
+      this.explode();
+      this.done=true;
+    }
+  }
+  explode(){
+    const count=80+Math.floor(Math.random()*40);
+    for(let i=0;i<count;i++){
+      const angle=(i/count)*Math.PI*2;
+      const speed=Math.random()*5+1;
+      particles.push(new Spark(this.x,this.y,Math.cos(angle)*speed,Math.sin(angle)*speed,this.color));
+    }
+    // Ring burst
+    const ring=30;
+    for(let i=0;i<ring;i++){
+      const angle=(i/ring)*Math.PI*2;
+      const speed=6+Math.random()*3;
+      particles.push(new Spark(this.x,this.y,Math.cos(angle)*speed,Math.sin(angle)*speed,'#fff'));
+    }
+  }
+  draw(){
+    // Trail
+    for(let i=0;i<this.trail.length;i++){
+      const a=i/this.trail.length;
+      ctx.beginPath();
+      ctx.arc(this.trail[i].x,this.trail[i].y,2*a,0,Math.PI*2);
+      ctx.fillStyle=this.color;
+      ctx.globalAlpha=a*.6;
+      ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    // Head
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,3,0,Math.PI*2);
+    ctx.fillStyle='#fff';
+    ctx.fill();
+  }
+}
+
+class Spark{
+  constructor(x,y,vx,vy,color){
+    this.x=x;this.y=y;this.vx=vx;this.vy=vy;
+    this.color=color;
+    this.life=1;
+    this.decay=Math.random()*.015+.008;
+    this.r=Math.random()*2.5+1;
+    this.gravity=.08;
+  }
+  update(){
+    this.vx*=.97;
+    this.vy=this.vy*.97+this.gravity;
+    this.x+=this.vx;
+    this.y+=this.vy;
+    this.life-=this.decay;
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,Math.max(0,this.r*this.life),0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.globalAlpha=this.life;
+    // Glow
+    ctx.shadowBlur=6;
+    ctx.shadowColor=this.color;
+    ctx.fill();
+    ctx.shadowBlur=0;
+  }
+  get dead(){return this.life<=0;}
+}
+
+const CONF_COLORS=['#E50914','#f5c518','#ff6b6b','#ffd700','#ff4757','#ff6348','#fff','#e84393','#2ed573','#1e90ff'];
+const FW_COLORS=['#E50914','#f5c518','#ff6b6b','#ff4757','#ffa502','#ff6348','#a29bfe','#fd79a8','#00cec9','#55efc4'];
+
+let fwSpawnTimer=0;
+let confettiPieces=[];
+
+function celebLoop(){
+  ctx.fillStyle='rgba(0,0,0,0.18)';
+  ctx.fillRect(0,0,celebCanvas.width,celebCanvas.height);
+
+  // Spawn fireworks
+  fwSpawnTimer++;
+  if(fwSpawnTimer%28===0){
+    fireworks.push(new Firework());
+  }
+
+  // Spawn confetti bursts occasionally
+  if(fwSpawnTimer%8===0&&confettiPieces.length<220){
+    confettiPieces.push(new Confetti());
+  }
+
+  // Update & draw fireworks
+  fireworks=fireworks.filter(fw=>{
+    fw.update();
+    if(!fw.done)fw.draw();
+    return !fw.done;
+  });
+
+  // Update & draw sparks
+  particles=particles.filter(p=>{
+    p.update();
+    p.draw();
+    ctx.globalAlpha=1;
+    return !p.dead;
+  });
+
+  // Confetti
+  confettiPieces.forEach(c=>{c.update();c.draw();});
+  ctx.globalAlpha=1;
+
+  animFrame=requestAnimationFrame(celebLoop);
+}
+
+function launchCelebration(item){
+  resizeCanvas();
+  particles=[];
+  fireworks=[];
+  confettiPieces=[];
+  fwSpawnTimer=0;
+
+  // Set content
+  document.getElementById('celebTitle').innerHTML=(item.title||'FAREWELL 2026').replace(/ /,' <span class="red-hi">').replace(/(\w+)$/,'$1</span>');
+
+  document.getElementById('celebrateScreen').classList.add('show');
+  document.body.style.overflow='hidden';
+
+  // Initial big burst
+  for(let i=0;i<5;i++){
+    setTimeout(()=>{
+      const fw=new Firework();
+      fw.tx=window.innerWidth/2+(Math.random()-.5)*300;
+      fw.ty=window.innerHeight*.3+(Math.random()-.5)*120;
+      const angle=Math.atan2(fw.ty-fw.y,fw.tx-fw.x);
+      fw.vx=Math.cos(angle)*10;
+      fw.vy=Math.sin(angle)*10;
+      fireworks.push(fw);
+    },i*120);
+  }
+
+  cancelAnimationFrame(animFrame);
+  celebLoop();
+}
+
+function closeCelebrate(){
+  cancelAnimationFrame(animFrame);
+  document.getElementById('celebrateScreen').classList.remove('show');
+  document.body.style.overflow='';
+  ctx.clearRect(0,0,celebCanvas.width,celebCanvas.height);
+}
+
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+
+// ═══════════════════════
+// PARALLAX
+// ═══════════════════════
+const mainEl=document.querySelector('.main');
+mainEl.addEventListener('scroll',()=>{
+  document.getElementById('heroBg').style.transform=`scale(1.03) translateY(${mainEl.scrollTop*.22}px)`;
+},{passive:true});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeCountdown();closeSidebar();closeCelebrate();}
+});
+</script>
+</body>
+</html>
