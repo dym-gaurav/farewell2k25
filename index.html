@@ -10,24 +10,12 @@
 :root{
   --red:#E50914;--red-hover:#f40612;--dark:#141414;
   --card-bg:#1a1a1a;--text:#e5e5e5;--muted:#999;
-  --imdb:#F5C518;--sidebar-w:80px;
+  --imdb:#F5C518;
 }
 html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;height:100%;overflow-x:hidden}
 
-/* ── SIDEBAR ── */
-.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,#0a0a0a,#111);display:flex;flex-direction:column;align-items:center;padding:28px 0;gap:10px;z-index:150;border-right:1px solid rgba(255,255,255,.04)}
-.sidebar .logo{color:var(--red);font-size:26px;font-weight:900;font-family:'Bebas Neue',sans-serif;margin-bottom:28px;cursor:pointer;letter-spacing:-.5px}
-.nav-item{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:14px;cursor:pointer;transition:background .2s,transform .15s;color:var(--muted);position:relative}
-.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;transform:scale(1.08)}
-.nav-item.active{background:rgba(229,9,20,.18);color:var(--red)}
-.nav-item svg{width:22px;height:22px}
-.nav-item .tooltip{position:absolute;left:68px;background:rgba(20,20,20,.96);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;backdrop-filter:blur(8px)}
-.nav-item:hover .tooltip{opacity:1}
-.nav-bottom{margin-top:auto}
-.nav-divider{width:36px;height:1px;background:rgba(255,255,255,.07)}
-
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);min-height:100vh;overflow-y:auto;overflow-x:hidden}
+.main{min-height:100vh;overflow-y:auto;overflow-x:hidden}
 
 /* ── HERO ── */
 .hero{position:relative;width:100%;height:500px;overflow:hidden;background:#000}
@@ -60,94 +48,43 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .section-title{font-size:20px;font-weight:700;color:#fff}
 .see-all{font-size:13px;color:var(--red);font-weight:600;cursor:pointer}
-.genre-chips{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-bottom:22px;padding-bottom:4px;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
-.genre-chips::-webkit-scrollbar{display:none}
-.chip{flex-shrink:0;padding:7px 18px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s;user-select:none}
-.chip:hover,.chip.active{background:var(--red);border-color:var(--red);color:#fff}
 
 /* ── AUTO-SCROLL ROW ── */
-.card-row-wrapper{
-  position:relative;
-  overflow:hidden;
-}
-/* Fade edges */
+.card-row-wrapper{position:relative;overflow:hidden;}
 .card-row-wrapper::before,
-.card-row-wrapper::after{
-  content:'';
-  position:absolute;
-  top:0;bottom:0;
-  width:60px;
-  z-index:10;
-  pointer-events:none;
-}
-.card-row-wrapper::before{
-  left:0;
-  background:linear-gradient(90deg,var(--dark),transparent);
-}
-.card-row-wrapper::after{
-  right:0;
-  background:linear-gradient(270deg,var(--dark),transparent);
-}
-
-.card-track{
-  display:flex;
-  gap:10px;
-  padding-bottom:10px;
-  /* Width set via JS; no overflow needed since track is wider than wrapper */
-  width:max-content;
-  /* Pause on hover */
-  will-change:transform;
-}
-.card-track:hover{
-  animation-play-state:paused !important;
-}
+.card-row-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:10;pointer-events:none;}
+.card-row-wrapper::before{left:0;background:linear-gradient(90deg,var(--dark),transparent);}
+.card-row-wrapper::after{right:0;background:linear-gradient(270deg,var(--dark),transparent);}
+.card-track{display:flex;gap:10px;padding-bottom:10px;width:max-content;will-change:transform;}
+.card-track:hover{animation-play-state:paused !important;}
 
 /* ── CARDS ── */
 .card{flex:0 0 auto;width:175px;border-radius:8px;overflow:hidden;background:var(--card-bg);cursor:pointer;transition:transform .25s cubic-bezier(.25,.8,.25,1),box-shadow .25s;position:relative}
 .card:hover{transform:scale(1.09) translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.7);z-index:5}
 .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:filter .25s}
 .card:hover img{filter:brightness(.7)}
-.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.92) 100%);opacity:0;transition:opacity .25s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
+
+/* Card overlay — no text, just subtle gradient on hover */
+.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.6) 100%);opacity:0;transition:opacity .25s;}
 .card:hover .card-overlay{opacity:1}
-.card-title{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
-.card-sub{font-size:10px;color:#bbb;margin-top:2px}
 
 /* ── LIKE BUTTON ── */
-.like-btn{
-  position:absolute;top:8px;right:8px;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.18);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:6;
-  transition:background .2s,border-color .2s,transform .2s;
-  backdrop-filter:blur(4px);
-}
+.like-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6;transition:background .2s,border-color .2s,transform .2s;backdrop-filter:blur(4px);}
 .like-btn:hover{background:rgba(229,9,20,.2);border-color:rgba(229,9,20,.5)}
 .like-btn svg{width:15px;height:15px;transition:fill .25s,stroke .25s;fill:none;stroke:rgba(255,255,255,.8);stroke-width:2}
 .like-btn.liked{background:rgba(229,9,20,.28);border-color:rgba(229,9,20,.75)}
 .like-btn.liked svg{fill:var(--red);stroke:var(--red)}
 .like-btn.pop{animation:likePop .4s cubic-bezier(.36,1.8,.6,1) forwards}
-@keyframes likePop{
-  0%{transform:scale(1)}
-  40%{transform:scale(1.55)}
-  70%{transform:scale(0.9)}
-  100%{transform:scale(1)}
-}
+@keyframes likePop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+
 /* modal like */
-.modal-like-btn{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.08);color:#fff;
-  border:1.5px solid rgba(255,255,255,.18);border-radius:30px;
-  padding:12px 22px;font-size:14px;font-weight:600;
-  cursor:pointer;font-family:'Barlow',sans-serif;
-  transition:background .2s,border-color .2s,transform .15s;
-  position:relative;overflow:visible;
-}
+.modal-like-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.18);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s,border-color .2s,transform .15s;position:relative;overflow:visible;}
 .modal-like-btn:hover{background:rgba(229,9,20,.12);border-color:rgba(229,9,20,.4);transform:scale(1.02)}
 .modal-like-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;transition:fill .25s,stroke .25s,transform .3s}
 .modal-like-btn.liked{background:rgba(229,9,20,.18);border-color:rgba(229,9,20,.6);color:#ff6b6b}
 .modal-like-btn.liked svg{fill:#ff6b6b;stroke:#ff6b6b}
 .modal-like-btn.pop{animation:likePop .45s cubic-bezier(.34,1.8,.64,1) forwards}
+
 .netflix-ribbon{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:4px;padding:2px 6px;font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;border:1px solid rgba(229,9,20,.3);backdrop-filter:blur(4px)}
 .card-top10{width:200px}
 .top10-num{position:absolute;bottom:-8px;left:-4px;font-size:90px;font-weight:900;font-family:'Bebas Neue',sans-serif;color:transparent;-webkit-text-stroke:3px rgba(255,255,255,.15);line-height:1;pointer-events:none;z-index:1;transition:-webkit-text-stroke .25s}
@@ -159,12 +96,12 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 /* ════════════════════════════
    MOVIE MODAL
 ════════════════════════════ */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:20px 12px;backdrop-filter:blur(10px)}
 .modal-overlay.show{display:flex}
-.modal{background:#181818;border-radius:14px;overflow:hidden;max-width:700px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
+.modal{background:#181818;border-radius:14px;overflow:hidden;max-width:min(700px, calc(100vw - 24px));width:auto;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
 @keyframes modalPop{from{opacity:0;transform:scale(.88) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-img-wrap{position:relative;flex-shrink:0;height:280px;overflow:hidden}
-.modal-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(.65)}
+.modal-img-wrap{position:relative;flex-shrink:0;overflow:hidden}
+.modal-img-wrap img{width:100%;height:auto;max-height:65vh;max-width:700px;object-fit:cover;display:block;filter:brightness(.65)}
 .modal-img-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,#181818 100%),linear-gradient(90deg,rgba(0,0,0,.5) 0%,transparent 60%)}
 .modal-img-title{position:absolute;bottom:18px;left:22px;font-size:34px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1;text-shadow:0 2px 16px rgba(0,0,0,.9)}
 .modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:10;transition:background .15s}
@@ -174,9 +111,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .modal-meta{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .modal-badge{background:var(--imdb);color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px}
 .modal-rating{font-size:14px;font-weight:700}
-.modal-genre{background:rgba(255,255,255,.1);border-radius:12px;padding:3px 10px;font-size:11px;color:#ccc}
 .modal-year{font-size:13px;color:#777}
-.modal-desc{font-size:14px;color:#bbb;line-height:1.75;margin-bottom:22px}
 .modal-actions{display:flex;gap:12px;flex-wrap:wrap}
 .modal-countdown-btn{background:var(--red);color:#fff;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;transition:background .2s,transform .15s,box-shadow .2s}
 .modal-countdown-btn:hover{background:var(--red-hover);transform:scale(1.04);box-shadow:0 6px 24px rgba(229,9,20,.4)}
@@ -185,20 +120,13 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .modal-wishlist-btn:hover{background:rgba(255,255,255,.2)}
 
 /* ════════════════════════════════════════
-   COUNTDOWN SCREEN — DATE-BASED
+   COUNTDOWN SCREEN
 ════════════════════════════════════════ */
 .countdown-screen{display:none;position:fixed;inset:0;z-index:600;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;gap:0;opacity:0;transform:scale(1.06)}
 .countdown-screen.show{display:flex;animation:cdEnter .55s cubic-bezier(.22,1,.36,1) forwards}
 .countdown-screen.hiding{animation:cdExit .35s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes cdEnter{
-  0%{opacity:0;transform:scale(1.08)}
-  60%{opacity:1;transform:scale(.99)}
-  100%{opacity:1;transform:scale(1)}
-}
-@keyframes cdExit{
-  0%{opacity:1;transform:scale(1)}
-  100%{opacity:0;transform:scale(.94)}
-}
+@keyframes cdEnter{0%{opacity:0;transform:scale(1.08)}60%{opacity:1;transform:scale(.99)}100%{opacity:1;transform:scale(1)}}
+@keyframes cdExit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.94)}}
 .countdown-screen.show .cd-premiere-label{animation:cdChildIn .4s ease .12s both}
 .countdown-screen.show .cd-show-title{animation:cdChildIn .4s ease .2s both}
 .countdown-screen.show .cd-show-sub{animation:cdChildIn .4s ease .26s both}
@@ -207,51 +135,31 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 @keyframes cdChildIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .countdown-screen.show .cd-logo{animation:cdLogoIn .5s cubic-bezier(.34,1.56,.64,1) .05s both}
 @keyframes cdLogoIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-
 .cd-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.18) blur(12px) saturate(.4);transform:scale(1.12)}
 .cd-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 0%,rgba(0,0,0,.7) 100%)}
 .cd-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none;z-index:1}
-
 .cd-logo{position:absolute;top:26px;left:30px;color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:-.5px;z-index:3}
 .cd-close{position:absolute;top:24px;right:24px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:3;transition:background .15s}
 .cd-close:hover{background:rgba(229,9,20,.8)}
 .cd-close svg{width:16px;height:16px}
-
 .cd-premiere-label{position:relative;z-index:2;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:18px;font-weight:500}
 .cd-show-title{position:relative;z-index:2;font-size:38px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px;text-align:center;text-shadow:0 2px 30px rgba(0,0,0,.8)}
 .cd-show-sub{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.4);margin-bottom:32px;letter-spacing:.5px;text-align:center}
 .cd-target-date{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:10px}
 .cd-target-date::before,.cd-target-date::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
-
 .cd-blocks{position:relative;z-index:2;display:flex;gap:20px;align-items:flex-start;justify-content:center}
 .cd-block{display:flex;flex-direction:column;align-items:center;gap:8px}
 .cd-block-num{position:relative;font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:#fff;width:110px;height:96px;display:flex;align-items:center;justify-content:center}
 .cd-flip{position:relative;width:110px;height:96px;perspective:600px}
 .cd-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
-
-.cd-card{
-  position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(40,40,40,.9),rgba(18,18,18,.95));
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:78px;line-height:1;color:#fff;
-  letter-spacing:-.5px;
-  box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
-  overflow:hidden;
-}
+.cd-card{position:absolute;inset:0;background:linear-gradient(160deg,rgba(40,40,40,.9),rgba(18,18,18,.95));border:1px solid rgba(255,255,255,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:78px;line-height:1;color:#fff;letter-spacing:-.5px;box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden;}
 .cd-card::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.35);}
 .cd-card-glow{position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse at 50% 0%,rgba(229,9,20,.12),transparent 70%);pointer-events:none;}
-
 .cd-block-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35);font-weight:500}
-
 .cd-sep{font-family:'Bebas Neue',sans-serif;font-size:64px;color:rgba(255,255,255,.2);line-height:1;margin-top:16px;animation:sepBlink 1s step-end infinite}
 @keyframes sepBlink{0%,100%{opacity:.8}50%{opacity:.15}}
-
 .cd-blur-overlay{display:none;position:fixed;inset:0;z-index:599;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .35s ease;opacity:0;}
 .cd-blur-overlay.show{display:block;opacity:1}
-
 .cd-celebrate-btn{position:relative;z-index:3;margin-top:32px;background:linear-gradient(135deg,rgba(229,9,20,.18),rgba(229,9,20,.08));border:1.5px solid rgba(229,9,20,.45);color:#fff;border-radius:30px;padding:12px 30px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:10px;transition:background .2s,border-color .2s,transform .15s,box-shadow .2s;backdrop-filter:blur(6px);letter-spacing:.3px;}
 .cd-celebrate-btn:hover{background:linear-gradient(135deg,rgba(229,9,20,.35),rgba(229,9,20,.18));border-color:rgba(229,9,20,.8);transform:scale(1.05);box-shadow:0 6px 24px rgba(229,9,20,.35);}
 .cd-celebrate-btn span{font-size:18px}
@@ -260,7 +168,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .cd-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .9s linear;box-shadow:0 0 10px rgba(229,9,20,.7)}
 
 /* ════════════════════════════════════════
-   CELEBRATION / FIREWORKS LAYER
+   CELEBRATION
 ════════════════════════════════════════ */
 .celebrate-screen{display:none;position:fixed;inset:0;z-index:700;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
 .celebrate-screen.show{display:flex}
@@ -285,23 +193,8 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .celebrate-close svg{width:16px;height:16px}
 
 /* ── PAGE LOAD ANIMATIONS ── */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(28px)}
-  to{opacity:1;transform:translateY(0)}
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards}
-
-.sidebar .logo{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .15s forwards}
-.sidebar .nav-item:nth-child(3){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .22s forwards}
-.sidebar .nav-item:nth-child(4){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .28s forwards}
-.sidebar .nav-item:nth-child(5){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .34s forwards}
-.sidebar .nav-item:nth-child(6){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .40s forwards}
-.sidebar .nav-divider{opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .44s forwards}
-.sidebar .nav-item:nth-child(8){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .48s forwards}
-.sidebar .nav-item:nth-child(9){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .52s forwards}
-.sidebar .nav-item:nth-child(10){opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .56s forwards}
-
-.genre-chips{opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .5s forwards}
 .section:nth-child(1){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .55s forwards}
 .section:nth-child(2){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .65s forwards}
 .section:nth-child(3){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .75s forwards}
@@ -309,23 +202,19 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .section:nth-child(5){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .95s forwards}
 
 @media(max-width:768px){
-  :root{--sidebar-w:60px}
-  .nav-item .tooltip{display:none}
   .hero{height:380px}
-  .hero-content{left:20px;bottom:44px;max-width:calc(100% - 80px)}
+  .hero-content{left:20px;bottom:44px;max-width:calc(100% - 40px)}
   .hero-title{font-size:38px}
   .sections{padding:0 14px 60px}
-  .top-bar{padding-left:70px}
   .card{width:138px}.card-wide{width:188px}.card-top10{width:155px}
   .modal-img-wrap{height:210px}
   .modal-img-title{font-size:24px;bottom:14px;left:16px}
   .modal-body{padding:14px 16px 22px}
   .cd-blocks{gap:10px}
-  .cd-flip,.cd-flip-inner,.cd-top,.cd-bottom{width:76px}
-  .cd-card,.cd-top,.cd-bottom{font-size:52px}
+  .cd-flip,.cd-flip-inner{width:76px}
+  .cd-card{font-size:52px}
   .cd-block-num{width:76px;height:66px}
   .cd-flip{height:66px}
-  .cd-card{font-size:52px}
   .cd-sep{font-size:44px}
   .celebrate-title{font-size:36px}
   .celebrate-stamp{width:70px;height:70px;top:-28px;right:-28px}
@@ -333,39 +222,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 </style>
 </head>
 <body>
-
-<nav class="sidebar" id="sidebar">
-  <div class="logo">Netflix</div>
-  <div class="nav-item active" data-label="Home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <div class="tooltip">Home</div>
-  </div>
-  <div class="nav-item" data-label="Search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <div class="tooltip">Search</div>
-  </div>
-  <div class="nav-item" data-label="Movies">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
-    <div class="tooltip">Movies</div>
-  </div>
-  <div class="nav-item" data-label="TV Shows">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-    <div class="tooltip">TV Shows</div>
-  </div>
-  <div class="nav-divider"></div>
-  <div class="nav-item" data-label="Trending">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-    <div class="tooltip">Trending</div>
-  </div>
-  <div class="nav-item" data-label="My List">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    <div class="tooltip">My List</div>
-  </div>
-  <div class="nav-item nav-bottom" data-label="Shuffle">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-    <div class="tooltip">Shuffle</div>
-  </div>
-</nav>
 
 <main class="main">
   <section class="hero">
@@ -391,28 +247,23 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
     </div>
   </section>
 
-  
-
+  <div style="padding:0 48px 60px">
     <div class="section" id="sec-most-liked">
       <div class="section-header"><div class="section-title">Most Liked</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="mostLikedRow"></div></div>
     </div>
-
     <div class="section" id="sec-section-1">
       <div class="section-header"><div class="section-title">Section 1</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section1Row"></div></div>
     </div>
-
     <div class="section" id="sec-section-2">
       <div class="section-header"><div class="section-title">Section 2</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section2Row"></div></div>
     </div>
-
     <div class="section" id="sec-section-3">
       <div class="section-header"><div class="section-title">Section 3</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section3Row"></div></div>
     </div>
-
     <div class="section" id="sec-section-4">
       <div class="section-header"><div class="section-title">Section 4</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section4Row"></div></div>
@@ -426,7 +277,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
     <div class="modal-img-wrap">
       <img id="modalImg" src="" alt="">
       <div class="modal-img-gradient"></div>
-      <div class="modal-img-title" id="modalTitle"></div>
       <div class="modal-close" onclick="closeModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </div>
@@ -437,7 +287,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
         <span class="modal-rating" id="modalRating"></span>
         <span class="modal-year" id="modalYear"></span>
       </div>
-      <p class="modal-desc" id="modalDesc"></p>
       <div class="modal-actions">
         <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike()">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -448,10 +297,10 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   </div>
 </div>
 
-<!-- ═══ COUNTDOWN BLUR OVERLAY ═══ -->
+<!-- COUNTDOWN BLUR OVERLAY -->
 <div class="cd-blur-overlay" id="cdBlurOverlay" onclick="closeCountdown()"></div>
 
-<!-- ═══ DATE COUNTDOWN SCREEN ═══ -->
+<!-- DATE COUNTDOWN SCREEN -->
 <div class="countdown-screen" id="countdownScreen">
   <div class="cd-bg" id="cdBg"></div>
   <div class="cd-vignette"></div>
@@ -461,8 +310,8 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </div>
   <div class="cd-premiere-label">Premiere Countdown</div>
-  <div class="cd-show-title" id="cdShowTitle">Money Heist</div>
-  <div class="cd-show-sub" id="cdShowSub">Part 4 · Series</div>
+  <div class="cd-show-title" id="cdShowTitle">REMINISCE 2026</div>
+  <div class="cd-show-sub" id="cdShowSub"></div>
   <div class="cd-target-date" id="cdTargetDate">April 1 · 2:00 PM</div>
   <div class="cd-blocks">
     <div class="cd-block">
@@ -493,7 +342,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   </button>
 </div>
 
-<!-- ═══ CELEBRATION SCREEN ═══ -->
+<!-- CELEBRATION SCREEN -->
 <div class="celebrate-screen" id="celebrateScreen">
   <div class="celebrate-bg"></div>
   <canvas id="celebCanvas"></canvas>
@@ -503,7 +352,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   <div class="celebrate-content">
     <div class="celebrate-n">Netflix</div>
     <div class="celebrate-now">Now Streaming</div>
-    <div class="celebrate-title" id="celebTitle">Money <span class="red-hi">Heist</span></div>
+    <div class="celebrate-title" id="celebTitle">REMINISCE <span class="red-hi">2026</span></div>
   </div>
 </div>
 
@@ -513,68 +362,68 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 // ═══════════════════════════════════
 function enrich(item){
   const imgUrl = item.imgUrl || `./posters/${item.id}.jpg`;
-  return { ...item, imgUrl, rating: "10.0", desc: item.desc || "" };
+  return { ...item, imgUrl, rating: "10.0" };
 }
 
 const mostLiked = [
-  { id: 1,  title: "text", sub: "text", year: "2020", desc: "text" },
-  { id: 2,  title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 3,  title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 4,  title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 5,  title: "text", sub: "text", year: "2019", desc: "text" },
-  { id: 6,  title: "text", sub: "text", year: "2024", desc: "text" },
-  { id: 7,  title: "text", sub: "text", year: "2020", desc: "text" },
-  { id: 8,  title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 9,  title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 10, title: "text", sub: "text", year: "2023", desc: "text" },
+  { id: 1,  title: "text", sub: "text", year: "2020" },
+  { id: 2,  title: "text", sub: "text", year: "2021" },
+  { id: 3,  title: "text", sub: "text", year: "2022" },
+  { id: 4,  title: "text", sub: "text", year: "2023" },
+  { id: 5,  title: "text", sub: "text", year: "2019" },
+  { id: 6,  title: "text", sub: "text", year: "2024" },
+  { id: 7,  title: "text", sub: "text", year: "2020" },
+  { id: 8,  title: "text", sub: "text", year: "2022" },
+  { id: 9,  title: "text", sub: "text", year: "2021" },
+  { id: 10, title: "text", sub: "text", year: "2023" },
 ];
 const section1 = [
-  { id: 11, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 12, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 13, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 14, title: "text", sub: "text", year: "2019", desc: "text" },
-  { id: 15, title: "text", sub: "text", year: "2020", desc: "text" },
-  { id: 16, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 17, title: "text", sub: "text", year: "2019", desc: "text" },
-  { id: 18, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 19, title: "text", sub: "text", year: "2008", desc: "text" },
-  { id: 20, title: "text", sub: "text", year: "2010", desc: "text" },
+  { id: 11, title: "text", sub: "text", year: "2023" },
+  { id: 12, title: "text", sub: "text", year: "2022" },
+  { id: 13, title: "text", sub: "text", year: "2022" },
+  { id: 14, title: "text", sub: "text", year: "2019" },
+  { id: 15, title: "text", sub: "text", year: "2020" },
+  { id: 16, title: "text", sub: "text", year: "2021" },
+  { id: 17, title: "text", sub: "text", year: "2019" },
+  { id: 18, title: "text", sub: "text", year: "2023" },
+  { id: 19, title: "text", sub: "text", year: "2008" },
+  { id: 20, title: "text", sub: "text", year: "2010" },
 ];
 const section2 = [
-  { id: 21, title: "text", sub: "text", year: "2020", desc: "text" },
-  { id: 22, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 23, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 24, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 25, title: "text", sub: "text", year: "2019", desc: "text" },
-  { id: 26, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 27, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 28, title: "text", sub: "text", year: "2020", desc: "text" },
-  { id: 29, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 30, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 21, title: "text", sub: "text", year: "2020" },
+  { id: 22, title: "text", sub: "text", year: "2023" },
+  { id: 23, title: "text", sub: "text", year: "2022" },
+  { id: 24, title: "text", sub: "text", year: "2021" },
+  { id: 25, title: "text", sub: "text", year: "2019" },
+  { id: 26, title: "text", sub: "text", year: "2023" },
+  { id: 27, title: "text", sub: "text", year: "2022" },
+  { id: 28, title: "text", sub: "text", year: "2020" },
+  { id: 29, title: "text", sub: "text", year: "2021" },
+  { id: 30, title: "text", sub: "text", year: "2024" },
 ];
 const section3 = [
-  { id: 31, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 32, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 33, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 34, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 35, title: "text", sub: "text", year: "2024", desc: "text" },
-  { id: 36, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 37, title: "text", sub: "text", year: "2024", desc: "text" },
-  { id: 38, title: "text", sub: "text", year: "2024", desc: "text" },
-  { id: 39, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 40, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 31, title: "text", sub: "text", year: "2023" },
+  { id: 32, title: "text", sub: "text", year: "2023" },
+  { id: 33, title: "text", sub: "text", year: "2023" },
+  { id: 34, title: "text", sub: "text", year: "2023" },
+  { id: 35, title: "text", sub: "text", year: "2024" },
+  { id: 36, title: "text", sub: "text", year: "2023" },
+  { id: 37, title: "text", sub: "text", year: "2024" },
+  { id: 38, title: "text", sub: "text", year: "2024" },
+  { id: 39, title: "text", sub: "text", year: "2023" },
+  { id: 40, title: "text", sub: "text", year: "2024" },
 ];
 const section4 = [
-  { id: 41, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 42, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 43, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 44, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 45, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 46, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 47, title: "text", sub: "text", year: "2021", desc: "text" },
-  { id: 48, title: "text", sub: "text", year: "2022", desc: "text" },
-  { id: 49, title: "text", sub: "text", year: "2023", desc: "text" },
-  { id: 50, title: "text", sub: "text", year: "2024", desc: "text" },
+  { id: 41, title: "text", sub: "text", year: "2023" },
+  { id: 42, title: "text", sub: "text", year: "2022" },
+  { id: 43, title: "text", sub: "text", year: "2022" },
+  { id: 44, title: "text", sub: "text", year: "2021" },
+  { id: 45, title: "text", sub: "text", year: "2021" },
+  { id: 46, title: "text", sub: "text", year: "2022" },
+  { id: 47, title: "text", sub: "text", year: "2021" },
+  { id: 48, title: "text", sub: "text", year: "2022" },
+  { id: 49, title: "text", sub: "text", year: "2023" },
+  { id: 50, title: "text", sub: "text", year: "2024" },
 ];
 
 // ─── CARD FACTORY ───────────────────────────────────────────────────────────
@@ -598,44 +447,34 @@ function makeLikeBtn(itemId){
   return btn;
 }
 
-function makeCard(raw,variant='normal'){
-  const item=enrich(raw);
-  const card=document.createElement('div');
-  card.className='card'+(variant==='wide'?' card-wide':'')+(variant==='top10'?' card-top10':'');
-  const titleHtml=`<div class="card-title">${item.title}</div>`;
-  const subHtml=`<div class="card-sub">${item.sub}</div>`;
-  const progressHtml=`<div class="progress-bar"><div class="progress-fill" style="width:${raw.progress||0}%"></div></div>`;
+function makeCard(raw, variant='normal'){
+  const item = enrich(raw);
+  const card = document.createElement('div');
+  card.className = 'card' + (variant==='wide' ? ' card-wide' : '') + (variant==='top10' ? ' card-top10' : '');
 
-  if(variant==='top10'){
-    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${subHtml}</div><div class="top10-num">${raw.rank}</div>`;
-  }else if(variant==='wide'){
-    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${progressHtml}</div>`;
-  }else{
-    card.innerHTML=`<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay">${titleHtml}${subHtml}</div>`;
+  // Only overlay (no text inside), plus top10 rank number
+  if(variant === 'top10'){
+    card.innerHTML = `<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay"></div><div class="top10-num">${raw.rank}</div>`;
+  } else {
+    card.innerHTML = `<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay"></div>`;
   }
+
   card.appendChild(makeLikeBtn(item.id));
-  card.addEventListener('click',()=>openModal(item));
+  card.addEventListener('click', () => openModal(item));
   return card;
 }
 
 // ═══════════════════════════════════════════
-// AUTO-SCROLL CAROUSEL  — alternating directions
-// Row 0 (mostLiked): scrolls LEFT  (→)
-// Row 1 (section1):  scrolls RIGHT (←)
-// Row 2 (section2):  scrolls LEFT  (→)
-// … and so on
+// AUTO-SCROLL CAROUSEL — alternating directions
 // ═══════════════════════════════════════════
-const SCROLL_SPEED = 0.55; // px per frame
-
+const SCROLL_SPEED = 0.55;
 const rowStates = {};
-let rowIndex = 0; // increments per populateRow call to alternate direction
+let rowIndex = 0;
 
 function populateRow(rowId, data, variant='normal'){
   const track = document.getElementById(rowId);
   if(!track) return;
 
-  // direction: even index → scroll left (pos increases, translate negative)
-  //            odd  index → scroll right (pos decreases from singleWidth)
   const goesLeft = (rowIndex % 2 === 0);
   rowIndex++;
 
@@ -644,11 +483,9 @@ function populateRow(rowId, data, variant='normal'){
     track.appendChild(makeCard(item, variant));
   });
 
-  // Clone all cards for seamless infinite loop
   const origCards = Array.from(track.children);
   origCards.forEach(card => {
     const clone = card.cloneNode(true);
-    // Re-wire like button on clone to proxy to original
     const cloneLike = clone.querySelector('.like-btn');
     const origCard = card;
     if(cloneLike){
@@ -657,38 +494,27 @@ function populateRow(rowId, data, variant='normal'){
         origCard.querySelector('.like-btn')?.click();
       });
     }
-    // Re-wire card click
     const origData = data[origCards.indexOf(card)];
     if(origData) clone.addEventListener('click', () => openModal(enrich(origData)));
     track.appendChild(clone);
   });
 
-  // Measure single-set width (will refine on load)
   const singleWidth = origCards.reduce((sum, c) => sum + c.offsetWidth + 10, 0);
-
-  // Right-scrolling rows start at singleWidth so they drift toward 0
   const startPos = goesLeft ? 0 : singleWidth;
 
-  rowStates[rowId] = {
-    pos: startPos,
-    goesLeft,
-    singleWidth,
-    paused: false,
-  };
+  rowStates[rowId] = { pos: startPos, goesLeft, singleWidth, paused: false };
 
-  // Pause on hover
   const wrapper = track.closest('.card-row-wrapper');
   wrapper.addEventListener('mouseenter', () => { rowStates[rowId].paused = true; });
   wrapper.addEventListener('mouseleave', () => { rowStates[rowId].paused = false; });
 }
 
-populateRow('mostLikedRow', mostLiked, 'top10'); // index 0 → LEFT
-populateRow('section1Row',  section1);            // index 1 → RIGHT
-populateRow('section2Row',  section2);            // index 2 → LEFT
-populateRow('section3Row',  section3);            // index 3 → RIGHT
-populateRow('section4Row',  section4);            // index 4 → LEFT
+populateRow('mostLikedRow', mostLiked, 'top10');
+populateRow('section1Row',  section1);
+populateRow('section2Row',  section2);
+populateRow('section3Row',  section3);
+populateRow('section4Row',  section4);
 
-// Recalculate widths after images load
 window.addEventListener('load', () => {
   Object.keys(rowStates).forEach(rowId => {
     const track = document.getElementById(rowId);
@@ -697,25 +523,20 @@ window.addEventListener('load', () => {
     let w = 0;
     for(let i = 0; i < half; i++) w += track.children[i].offsetWidth + 10;
     rowStates[rowId].singleWidth = w;
-    // Reset start position for right-scrollers after real width is known
     if(!rowStates[rowId].goesLeft) rowStates[rowId].pos = w;
   });
 });
 
-// Main RAF loop — infinite seamless scroll, alternating per row
 function autoScrollLoop(){
   Object.entries(rowStates).forEach(([rowId, state]) => {
     if(state.paused || state.singleWidth === 0) return;
     const track = document.getElementById(rowId);
     if(!track) return;
-
     if(state.goesLeft){
-      // Scroll left: pos grows, translate goes negative, wrap at singleWidth
       state.pos += SCROLL_SPEED;
       if(state.pos >= state.singleWidth) state.pos -= state.singleWidth;
       track.style.transform = `translateX(-${state.pos}px)`;
     } else {
-      // Scroll right: pos shrinks, wrap back to singleWidth
       state.pos -= SCROLL_SPEED;
       if(state.pos <= 0) state.pos += state.singleWidth;
       track.style.transform = `translateX(-${state.pos}px)`;
@@ -729,255 +550,257 @@ requestAnimationFrame(autoScrollLoop);
 let heroItem = enrich({id:999, title:"FAREWELL 2026", sub:"", imgUrl:'./posters/hero.jpg'});
 document.getElementById('heroCdBtn').onclick = () => openCountdown(heroItem);
 
-function setGenre(el){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  const label=el.textContent.trim().toLowerCase().replace(/\s+/g,'-');
-  const target=document.getElementById('sec-'+label);
-  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
 // ═══════════════════════════════════
-// MODAL
+// MODAL — no description text
 // ═══════════════════════════════════
 function openModal(item){
-  document.getElementById('modalImg').src=item.imgUrl;
-  document.getElementById('modalTitle').textContent=item.title;
-  document.getElementById('modalRating').textContent=(item.rating||'10.0')+'/10.0';
-  document.getElementById('modalYear').textContent=item.year||'';
-  document.getElementById('modalDesc').textContent=item.desc||'';
-  const mLike=document.getElementById('modalLikeBtn');
-  const mLikeTxt=document.getElementById('modalLikeText');
-  mLike.dataset.itemId=item.id;
-  const liked=likedSet.has(item.id);
-  mLike.classList.toggle('liked',liked);
-  mLikeTxt.textContent=liked?'Liked':'Like';
+  const img = document.getElementById('modalImg');
+  const modal = document.querySelector('.modal');
+  img.src = item.imgUrl;
+  // Reset width first
+  modal.style.width = '';
+  img.onload = () => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const sidePad = vw < 600 ? 20 : 40; // overlay padding on each side
+    const maxW = vw - sidePad * 2;
+    const maxH = vh * 0.65;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    // scale to fit inside maxW x maxH, preserving ratio
+    let w = maxH * ratio;
+    if (w > maxW) w = maxW;
+    w = Math.max(220, w);
+    modal.style.width = w + 'px';
+  };
+  document.getElementById('modalRating').textContent = (item.rating||'10.0') + '/10.0';
+  document.getElementById('modalYear').textContent = item.year || '';
+  const mLike = document.getElementById('modalLikeBtn');
+  const mLikeTxt = document.getElementById('modalLikeText');
+  mLike.dataset.itemId = item.id;
+  const liked = likedSet.has(item.id);
+  mLike.classList.toggle('liked', liked);
+  mLikeTxt.textContent = liked ? 'Liked' : 'Like';
   document.getElementById('modalOverlay').classList.add('show');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
 function toggleModalLike(){
-  const mLike=document.getElementById('modalLikeBtn');
-  const mLikeTxt=document.getElementById('modalLikeText');
-  const id=Number(mLike.dataset.itemId);
-  const nowLiked=likedSet.has(id);
-  nowLiked?likedSet.delete(id):likedSet.add(id);
-  mLike.classList.toggle('liked',!nowLiked);
-  mLikeTxt.textContent=nowLiked?'Like':'Liked';
-  mLike.classList.remove('pop');void mLike.offsetWidth;mLike.classList.add('pop');
-  mLike.addEventListener('animationend',()=>mLike.classList.remove('pop'),{once:true});
+  const mLike = document.getElementById('modalLikeBtn');
+  const mLikeTxt = document.getElementById('modalLikeText');
+  const id = Number(mLike.dataset.itemId);
+  const nowLiked = likedSet.has(id);
+  nowLiked ? likedSet.delete(id) : likedSet.add(id);
+  mLike.classList.toggle('liked', !nowLiked);
+  mLikeTxt.textContent = nowLiked ? 'Like' : 'Liked';
+  mLike.classList.remove('pop'); void mLike.offsetWidth; mLike.classList.add('pop');
+  mLike.addEventListener('animationend', () => mLike.classList.remove('pop'), {once:true});
 }
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show');document.body.style.overflow='';}
-function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); document.body.style.overflow = ''; }
+function closeModalOutside(e){ if(e.target === document.getElementById('modalOverlay')) closeModal(); }
 
 // ═══════════════════════════════════════════════════
 // DATE-BASED COUNTDOWN
 // ═══════════════════════════════════════════════════
 function getTarget(){
-  const now=new Date();
-  let year=now.getFullYear();
-  const t=new Date(year,3,1,14,0,0,0);
-  if(t<=now)t.setFullYear(year+1);
+  const now = new Date();
+  let year = now.getFullYear();
+  const t = new Date(year, 3, 1, 14, 0, 0, 0);
+  if(t <= now) t.setFullYear(year + 1);
   return t;
 }
 
-let cdInterval=null;
-let cdCurrentItem=null;
-const TARGET=getTarget();
-const prevVals={days:-1,hours:-1,mins:-1,secs:-1};
+let cdInterval = null;
+let cdCurrentItem = null;
+const TARGET = getTarget();
+const prevVals = {days:-1, hours:-1, mins:-1, secs:-1};
 
-function pad(n){return String(n).padStart(2,'0');}
+function pad(n){ return String(n).padStart(2, '0'); }
 
-function animateFlip(cardEl,newVal){
-  const old=cardEl.textContent;
-  if(old===String(newVal))return;
-  cardEl.style.transform='scaleY(0.85)';
-  cardEl.style.transition='transform 0.1s ease';
-  setTimeout(()=>{
-    cardEl.textContent=newVal;
-    cardEl.style.transform='scaleY(1)';
-  },100);
+function animateFlip(cardEl, newVal){
+  const old = cardEl.textContent;
+  if(old === String(newVal)) return;
+  cardEl.style.transform = 'scaleY(0.85)';
+  cardEl.style.transition = 'transform 0.1s ease';
+  setTimeout(() => { cardEl.textContent = newVal; cardEl.style.transform = 'scaleY(1)'; }, 100);
 }
 
 function updateCountdown(){
-  const now=new Date();
-  const diff=TARGET-now;
-  if(diff<=0){
+  const now = new Date();
+  const diff = TARGET - now;
+  if(diff <= 0){
     clearInterval(cdInterval);
     closeCountdown();
-    setTimeout(()=>launchCelebration(cdCurrentItem),200);
+    setTimeout(() => launchCelebration(cdCurrentItem), 200);
     return;
   }
-  const totalSecs=Math.floor(diff/1000);
-  const days=Math.floor(totalSecs/86400);
-  const hours=Math.floor((totalSecs%86400)/3600);
-  const mins=Math.floor((totalSecs%3600)/60);
-  const secs=totalSecs%60;
-  if(days!==prevVals.days){animateFlip(document.getElementById('cardDays'),pad(days));prevVals.days=days;}
-  if(hours!==prevVals.hours){animateFlip(document.getElementById('cardHours'),pad(hours));prevVals.hours=hours;}
-  if(mins!==prevVals.mins){animateFlip(document.getElementById('cardMins'),pad(mins));prevVals.mins=mins;}
-  if(secs!==prevVals.secs){animateFlip(document.getElementById('cardSecs'),pad(secs));prevVals.secs=secs;}
-  const totalWindow=30*24*3600*1000;
-  const elapsed=totalWindow-diff;
-  const pct=Math.max(0,Math.min(100,(elapsed/totalWindow)*100));
-  document.getElementById('cdProgressFill').style.width=(100-pct)+'%';
+  const totalSecs = Math.floor(diff / 1000);
+  const days  = Math.floor(totalSecs / 86400);
+  const hours = Math.floor((totalSecs % 86400) / 3600);
+  const mins  = Math.floor((totalSecs % 3600) / 60);
+  const secs  = totalSecs % 60;
+  if(days  !== prevVals.days)  { animateFlip(document.getElementById('cardDays'),  pad(days));  prevVals.days  = days; }
+  if(hours !== prevVals.hours) { animateFlip(document.getElementById('cardHours'), pad(hours)); prevVals.hours = hours; }
+  if(mins  !== prevVals.mins)  { animateFlip(document.getElementById('cardMins'),  pad(mins));  prevVals.mins  = mins; }
+  if(secs  !== prevVals.secs)  { animateFlip(document.getElementById('cardSecs'),  pad(secs));  prevVals.secs  = secs; }
+  const totalWindow = 30 * 24 * 3600 * 1000;
+  const elapsed = totalWindow - diff;
+  const pct = Math.max(0, Math.min(100, (elapsed / totalWindow) * 100));
+  document.getElementById('cdProgressFill').style.width = (100 - pct) + '%';
 }
 
 function openCountdown(item){
   closeModal();
-  cdCurrentItem=item;
-  document.getElementById('cdShowTitle').textContent=item.title||'FAREWELL 2026';
-  document.getElementById('cdShowSub').textContent=item.sub||'';
-  document.getElementById('cdBg').style.backgroundImage=`url('${item.imgUrl}')`;
-  const opts={month:'long',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true};
-  document.getElementById('cdTargetDate').textContent=TARGET.toLocaleString('en-IN',opts);
-  const screen=document.getElementById('countdownScreen');
+  cdCurrentItem = item;
+  document.getElementById('cdShowTitle').textContent = item.title || 'FAREWELL 2026';
+  document.getElementById('cdShowSub').textContent = item.sub || '';
+  document.getElementById('cdBg').style.backgroundImage = `url('${item.imgUrl}')`;
+  const opts = {month:'long', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true};
+  document.getElementById('cdTargetDate').textContent = TARGET.toLocaleString('en-IN', opts);
+  const screen = document.getElementById('countdownScreen');
   screen.classList.remove('hiding');
-  screen.style.display='flex';
+  screen.style.display = 'flex';
   void screen.offsetWidth;
   screen.classList.add('show');
   document.getElementById('cdBlurOverlay').classList.add('show');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
   updateCountdown();
   clearInterval(cdInterval);
-  cdInterval=setInterval(updateCountdown,1000);
+  cdInterval = setInterval(updateCountdown, 1000);
 }
 
 function closeCountdown(){
   clearInterval(cdInterval);
-  const screen=document.getElementById('countdownScreen');
-  if(!screen.classList.contains('show'))return;
+  const screen = document.getElementById('countdownScreen');
+  if(!screen.classList.contains('show')) return;
   document.getElementById('cdBlurOverlay').classList.remove('show');
   screen.classList.add('hiding');
-  screen.addEventListener('animationend',()=>{
-    screen.classList.remove('show','hiding');
-    screen.style.display='';
-    document.body.style.overflow='';
-  },{once:true});
+  screen.addEventListener('animationend', () => {
+    screen.classList.remove('show', 'hiding');
+    screen.style.display = '';
+    document.body.style.overflow = '';
+  }, {once:true});
 }
 
 function triggerCelebrate(){
-  const screen=document.getElementById('countdownScreen');
+  const screen = document.getElementById('countdownScreen');
   clearInterval(cdInterval);
   document.getElementById('cdBlurOverlay').classList.remove('show');
-  screen.style.transition='transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
-  screen.style.transform='scale(1.12)';
-  screen.style.opacity='0';
-  setTimeout(()=>{
-    screen.classList.remove('show','hiding');
-    screen.style.display='';
-    screen.style.transform='';
-    screen.style.opacity='';
-    screen.style.transition='';
-    document.body.style.overflow='';
-    launchCelebration(cdCurrentItem||{title:'FAREWELL 2026',sub:''});
-  },420);
+  screen.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
+  screen.style.transform = 'scale(1.12)';
+  screen.style.opacity = '0';
+  setTimeout(() => {
+    screen.classList.remove('show', 'hiding');
+    screen.style.display = '';
+    screen.style.transform = '';
+    screen.style.opacity = '';
+    screen.style.transition = '';
+    document.body.style.overflow = '';
+    launchCelebration(cdCurrentItem || {title:'FAREWELL 2026', sub:''});
+  }, 420);
 }
 
 // ═══════════════════════════════════════════════════
-// CELEBRATION — Fireworks + Confetti on Canvas
+// CELEBRATION — Fireworks + Confetti
 // ═══════════════════════════════════════════════════
-const celebCanvas=document.getElementById('celebCanvas');
-const ctx=celebCanvas.getContext('2d');
-let particles=[];
-let fireworks=[];
-let animFrame=null;
+const celebCanvas = document.getElementById('celebCanvas');
+const ctx = celebCanvas.getContext('2d');
+let particles = [], fireworks = [], animFrame = null;
 
-function resizeCanvas(){celebCanvas.width=window.innerWidth;celebCanvas.height=window.innerHeight;}
+function resizeCanvas(){ celebCanvas.width = window.innerWidth; celebCanvas.height = window.innerHeight; }
 
 class Confetti{
-  constructor(){this.reset(true);}
+  constructor(){ this.reset(true); }
   reset(initial=false){
-    this.x=Math.random()*window.innerWidth;
-    this.y=initial?Math.random()*-window.innerHeight*2:-20;
-    this.w=Math.random()*10+4;this.h=Math.random()*6+3;
-    this.rot=Math.random()*Math.PI*2;this.rotSpeed=(Math.random()-.5)*.2;
-    this.vy=Math.random()*3+2;this.vx=(Math.random()-.5)*2;
-    this.color=CONF_COLORS[Math.floor(Math.random()*CONF_COLORS.length)];
-    this.opacity=1;
+    this.x = Math.random() * window.innerWidth;
+    this.y = initial ? Math.random() * -window.innerHeight * 2 : -20;
+    this.w = Math.random() * 10 + 4; this.h = Math.random() * 6 + 3;
+    this.rot = Math.random() * Math.PI * 2; this.rotSpeed = (Math.random() - .5) * .2;
+    this.vy = Math.random() * 3 + 2; this.vx = (Math.random() - .5) * 2;
+    this.color = CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)];
+    this.opacity = 1;
   }
-  update(){this.x+=this.vx;this.y+=this.vy;this.rot+=this.rotSpeed;if(this.y>window.innerHeight+20)this.reset();}
-  draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.globalAlpha=this.opacity;ctx.fillStyle=this.color;ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);ctx.restore();}
+  update(){ this.x += this.vx; this.y += this.vy; this.rot += this.rotSpeed; if(this.y > window.innerHeight + 20) this.reset(); }
+  draw(){ ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color; ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h); ctx.restore(); }
 }
 
 class Firework{
-  constructor(){this.reset();}
+  constructor(){ this.reset(); }
   reset(){
-    this.x=Math.random()*window.innerWidth;this.y=window.innerHeight;
-    this.tx=Math.random()*window.innerWidth*.8+window.innerWidth*.1;
-    this.ty=Math.random()*window.innerHeight*.5+50;
-    this.color=FW_COLORS[Math.floor(Math.random()*FW_COLORS.length)];
-    this.speed=Math.random()*4+6;
-    const angle=Math.atan2(this.ty-this.y,this.tx-this.x);
-    this.vx=Math.cos(angle)*this.speed;this.vy=Math.sin(angle)*this.speed;
-    this.trail=[];this.done=false;
+    this.x = Math.random() * window.innerWidth; this.y = window.innerHeight;
+    this.tx = Math.random() * window.innerWidth * .8 + window.innerWidth * .1;
+    this.ty = Math.random() * window.innerHeight * .5 + 50;
+    this.color = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
+    this.speed = Math.random() * 4 + 6;
+    const angle = Math.atan2(this.ty - this.y, this.tx - this.x);
+    this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed;
+    this.trail = []; this.done = false;
   }
   update(){
-    this.trail.push({x:this.x,y:this.y});
-    if(this.trail.length>12)this.trail.shift();
-    this.x+=this.vx;this.y+=this.vy;
-    const dx=this.tx-this.x,dy=this.ty-this.y;
-    if(Math.sqrt(dx*dx+dy*dy)<this.speed*2){this.explode();this.done=true;}
+    this.trail.push({x:this.x, y:this.y});
+    if(this.trail.length > 12) this.trail.shift();
+    this.x += this.vx; this.y += this.vy;
+    const dx = this.tx - this.x, dy = this.ty - this.y;
+    if(Math.sqrt(dx*dx + dy*dy) < this.speed * 2){ this.explode(); this.done = true; }
   }
   explode(){
-    const count=80+Math.floor(Math.random()*40);
-    for(let i=0;i<count;i++){const angle=(i/count)*Math.PI*2;const speed=Math.random()*5+1;particles.push(new Spark(this.x,this.y,Math.cos(angle)*speed,Math.sin(angle)*speed,this.color));}
-    const ring=30;
-    for(let i=0;i<ring;i++){const angle=(i/ring)*Math.PI*2;const speed=6+Math.random()*3;particles.push(new Spark(this.x,this.y,Math.cos(angle)*speed,Math.sin(angle)*speed,'#fff'));}
+    const count = 80 + Math.floor(Math.random() * 40);
+    for(let i = 0; i < count; i++){ const angle = (i/count)*Math.PI*2; const speed = Math.random()*5+1; particles.push(new Spark(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, this.color)); }
+    const ring = 30;
+    for(let i = 0; i < ring; i++){ const angle = (i/ring)*Math.PI*2; const speed = 6 + Math.random()*3; particles.push(new Spark(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, '#fff')); }
   }
   draw(){
-    for(let i=0;i<this.trail.length;i++){const a=i/this.trail.length;ctx.beginPath();ctx.arc(this.trail[i].x,this.trail[i].y,2*a,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=a*.6;ctx.fill();}
-    ctx.globalAlpha=1;ctx.beginPath();ctx.arc(this.x,this.y,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+    for(let i = 0; i < this.trail.length; i++){ const a = i/this.trail.length; ctx.beginPath(); ctx.arc(this.trail[i].x, this.trail[i].y, 2*a, 0, Math.PI*2); ctx.fillStyle = this.color; ctx.globalAlpha = a*.6; ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
   }
 }
 
 class Spark{
-  constructor(x,y,vx,vy,color){this.x=x;this.y=y;this.vx=vx;this.vy=vy;this.color=color;this.life=1;this.decay=Math.random()*.015+.008;this.r=Math.random()*2.5+1;this.gravity=.08;}
-  update(){this.vx*=.97;this.vy=this.vy*.97+this.gravity;this.x+=this.vx;this.y+=this.vy;this.life-=this.decay;}
-  draw(){ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0,this.r*this.life),0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=this.life;ctx.shadowBlur=6;ctx.shadowColor=this.color;ctx.fill();ctx.shadowBlur=0;}
-  get dead(){return this.life<=0;}
+  constructor(x,y,vx,vy,color){ this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.color=color; this.life=1; this.decay=Math.random()*.015+.008; this.r=Math.random()*2.5+1; this.gravity=.08; }
+  update(){ this.vx*=.97; this.vy=this.vy*.97+this.gravity; this.x+=this.vx; this.y+=this.vy; this.life-=this.decay; }
+  draw(){ ctx.beginPath(); ctx.arc(this.x, this.y, Math.max(0, this.r*this.life), 0, Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.life; ctx.shadowBlur=6; ctx.shadowColor=this.color; ctx.fill(); ctx.shadowBlur=0; }
+  get dead(){ return this.life <= 0; }
 }
 
 const CONF_COLORS=['#E50914','#f5c518','#ff6b6b','#ffd700','#ff4757','#ff6348','#fff','#e84393','#2ed573','#1e90ff'];
 const FW_COLORS=['#E50914','#f5c518','#ff6b6b','#ff4757','#ffa502','#ff6348','#a29bfe','#fd79a8','#00cec9','#55efc4'];
-let fwSpawnTimer=0;let confettiPieces=[];
+let fwSpawnTimer=0, confettiPieces=[];
 
 function celebLoop(){
-  ctx.fillStyle='rgba(0,0,0,0.18)';ctx.fillRect(0,0,celebCanvas.width,celebCanvas.height);
+  ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(0,0,celebCanvas.width,celebCanvas.height);
   fwSpawnTimer++;
-  if(fwSpawnTimer%28===0)fireworks.push(new Firework());
-  if(fwSpawnTimer%8===0&&confettiPieces.length<220)confettiPieces.push(new Confetti());
-  fireworks=fireworks.filter(fw=>{fw.update();if(!fw.done)fw.draw();return !fw.done;});
-  particles=particles.filter(p=>{p.update();p.draw();ctx.globalAlpha=1;return !p.dead;});
-  confettiPieces.forEach(c=>{c.update();c.draw();});ctx.globalAlpha=1;
-  animFrame=requestAnimationFrame(celebLoop);
+  if(fwSpawnTimer % 28 === 0) fireworks.push(new Firework());
+  if(fwSpawnTimer % 8 === 0 && confettiPieces.length < 220) confettiPieces.push(new Confetti());
+  fireworks = fireworks.filter(fw => { fw.update(); if(!fw.done) fw.draw(); return !fw.done; });
+  particles = particles.filter(p => { p.update(); p.draw(); ctx.globalAlpha=1; return !p.dead; });
+  confettiPieces.forEach(c => { c.update(); c.draw(); }); ctx.globalAlpha=1;
+  animFrame = requestAnimationFrame(celebLoop);
 }
 
 function launchCelebration(item){
-  resizeCanvas();particles=[];fireworks=[];confettiPieces=[];fwSpawnTimer=0;
-  document.getElementById('celebTitle').innerHTML=(item.title||'FAREWELL 2026').replace(/ /,' <span class="red-hi">').replace(/(\w+)$/,'$1</span>');
+  resizeCanvas(); particles=[]; fireworks=[]; confettiPieces=[]; fwSpawnTimer=0;
+  document.getElementById('celebTitle').innerHTML = (item.title||'FAREWELL 2026').replace(/ /,' <span class="red-hi">').replace(/(\w+)$/, '$1</span>');
   document.getElementById('celebrateScreen').classList.add('show');
-  document.body.style.overflow='hidden';
-  for(let i=0;i<5;i++){setTimeout(()=>{const fw=new Firework();fw.tx=window.innerWidth/2+(Math.random()-.5)*300;fw.ty=window.innerHeight*.3+(Math.random()-.5)*120;const angle=Math.atan2(fw.ty-fw.y,fw.tx-fw.x);fw.vx=Math.cos(angle)*10;fw.vy=Math.sin(angle)*10;fireworks.push(fw);},i*120);}
-  cancelAnimationFrame(animFrame);celebLoop();
+  document.body.style.overflow = 'hidden';
+  for(let i=0;i<5;i++){ setTimeout(()=>{ const fw=new Firework(); fw.tx=window.innerWidth/2+(Math.random()-.5)*300; fw.ty=window.innerHeight*.3+(Math.random()-.5)*120; const angle=Math.atan2(fw.ty-fw.y,fw.tx-fw.x); fw.vx=Math.cos(angle)*10; fw.vy=Math.sin(angle)*10; fireworks.push(fw); }, i*120); }
+  cancelAnimationFrame(animFrame); celebLoop();
 }
 
 function closeCelebrate(){
   cancelAnimationFrame(animFrame);
   document.getElementById('celebrateScreen').classList.remove('show');
-  document.body.style.overflow='';
-  ctx.clearRect(0,0,celebCanvas.width,celebCanvas.height);
+  document.body.style.overflow = '';
+  ctx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
 }
 
-window.addEventListener('resize',resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-const mainEl=document.querySelector('.main');
-mainEl.addEventListener('scroll',()=>{
-  document.getElementById('heroBg').style.transform=`scale(1.03) translateY(${mainEl.scrollTop*.22}px)`;
-},{passive:true});
+const mainEl = document.querySelector('.main');
+mainEl.addEventListener('scroll', () => {
+  document.getElementById('heroBg').style.transform = `scale(1.03) translateY(${mainEl.scrollTop * .22}px)`;
+}, {passive: true});
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeModal();closeCountdown();closeCelebrate();}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){ closeModal(); closeCountdown(); closeCelebrate(); }
 });
 </script>
 </body>
