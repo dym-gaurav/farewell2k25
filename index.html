@@ -14,10 +14,8 @@
 }
 html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;height:100%;overflow-x:hidden}
 
-/* ── MAIN ── */
 .main{min-height:100vh;overflow-y:auto;overflow-x:hidden}
 
-/* ── HERO ── */
 .hero{position:relative;width:100%;height:500px;overflow:hidden;background:#000}
 .hero-bg{position:absolute;inset:0;background:url('./posters/hero.jpg') center/cover no-repeat;filter:brightness(.55) saturate(.8);transform:scale(1.03);transition:background-image .6s ease,transform 8s ease;opacity:0;animation:fadeUp .8s cubic-bezier(.22,1,.36,1) 0s forwards}
 .hero:hover .hero-bg{transform:scale(1)}
@@ -42,33 +40,23 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .btn-trailer{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);transition:background .2s,transform .15s;font-family:'Barlow',sans-serif}
 .btn-trailer:hover{background:rgba(255,255,255,.22);transform:scale(1.04)}
 
-/* ── SECTIONS ── */
-.sections{padding:0 48px 60px}
 .section{margin-bottom:40px}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .section-title{font-size:20px;font-weight:700;color:#fff}
 .see-all{font-size:13px;color:var(--red);font-weight:600;cursor:pointer}
 
-/* ── AUTO-SCROLL ROW ── */
 .card-row-wrapper{position:relative;overflow:hidden;}
-.card-row-wrapper::before,
-.card-row-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:10;pointer-events:none;}
+.card-row-wrapper::before,.card-row-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:10;pointer-events:none;}
 .card-row-wrapper::before{left:0;background:linear-gradient(90deg,var(--dark),transparent);}
 .card-row-wrapper::after{right:0;background:linear-gradient(270deg,var(--dark),transparent);}
 .card-track{display:flex;gap:10px;padding-bottom:10px;width:max-content;will-change:transform;}
-.card-track:hover{animation-play-state:paused !important;}
 
-/* ── CARDS ── */
 .card{flex:0 0 auto;width:175px;border-radius:8px;overflow:hidden;background:var(--card-bg);cursor:pointer;transition:transform .25s cubic-bezier(.25,.8,.25,1),box-shadow .25s;position:relative}
 .card:hover{transform:scale(1.09) translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.7);z-index:5}
-.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:filter .25s}
-.card:hover img{filter:brightness(.7)}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;}
+/* no hover tint on cards */
+.card-overlay{display:none;}
 
-/* Card overlay — no text, just subtle gradient on hover */
-.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.6) 100%);opacity:0;transition:opacity .25s;}
-.card:hover .card-overlay{opacity:1}
-
-/* ── LIKE BUTTON ── */
 .like-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6;transition:background .2s,border-color .2s,transform .2s;backdrop-filter:blur(4px);}
 .like-btn:hover{background:rgba(229,9,20,.2);border-color:rgba(229,9,20,.5)}
 .like-btn svg{width:15px;height:15px;transition:fill .25s,stroke .25s;fill:none;stroke:rgba(255,255,255,.8);stroke-width:2}
@@ -77,15 +65,13 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .like-btn.pop{animation:likePop .4s cubic-bezier(.36,1.8,.6,1) forwards}
 @keyframes likePop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
 
-/* modal like */
-.modal-like-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.18);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s,border-color .2s,transform .15s;position:relative;overflow:visible;}
+.modal-like-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.18);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s,border-color .2s,transform .15s;}
 .modal-like-btn:hover{background:rgba(229,9,20,.12);border-color:rgba(229,9,20,.4);transform:scale(1.02)}
-.modal-like-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;transition:fill .25s,stroke .25s,transform .3s}
+.modal-like-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;transition:fill .25s,stroke .25s}
 .modal-like-btn.liked{background:rgba(229,9,20,.18);border-color:rgba(229,9,20,.6);color:#ff6b6b}
 .modal-like-btn.liked svg{fill:#ff6b6b;stroke:#ff6b6b}
 .modal-like-btn.pop{animation:likePop .45s cubic-bezier(.34,1.8,.64,1) forwards}
 
-.netflix-ribbon{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:4px;padding:2px 6px;font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;border:1px solid rgba(229,9,20,.3);backdrop-filter:blur(4px)}
 .card-top10{width:200px}
 .top10-num{position:absolute;bottom:-8px;left:-4px;font-size:90px;font-weight:900;font-family:'Bebas Neue',sans-serif;color:transparent;-webkit-text-stroke:3px rgba(255,255,255,.15);line-height:1;pointer-events:none;z-index:1;transition:-webkit-text-stroke .25s}
 .card-top10:hover .top10-num{-webkit-text-stroke-color:rgba(229,9,20,.35)}
@@ -93,35 +79,21 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .main::-webkit-scrollbar{width:5px}
 .main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
 
-/* ════════════════════════════
-   MOVIE MODAL
-════════════════════════════ */
+/* MODAL — no tint, no gradient, no meta text */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:20px 12px;backdrop-filter:blur(10px)}
 .modal-overlay.show{display:flex}
-.modal{background:#181818;border-radius:14px;overflow:hidden;max-width:min(700px, calc(100vw - 24px));width:auto;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
+.modal{background:#181818;border-radius:14px;overflow:hidden;max-width:min(700px,calc(100vw - 24px));width:auto;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
 @keyframes modalPop{from{opacity:0;transform:scale(.88) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-img-wrap{position:relative;flex-shrink:0;overflow:hidden}
-.modal-img-wrap img{width:100%;height:auto;max-height:65vh;max-width:700px;object-fit:cover;display:block;filter:brightness(.65)}
-.modal-img-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,#181818 100%),linear-gradient(90deg,rgba(0,0,0,.5) 0%,transparent 60%)}
-.modal-img-title{position:absolute;bottom:18px;left:22px;font-size:34px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1;text-shadow:0 2px 16px rgba(0,0,0,.9)}
+/* FIX 1: full brightness — no dark tint */
+.modal-img-wrap img{width:100%;height:auto;max-height:80vh;max-width:700px;object-fit:cover;display:block;}
 .modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:10;transition:background .15s}
 .modal-close:hover{background:var(--red)}
 .modal-close svg{width:16px;height:16px}
-.modal-body{padding:18px 22px 26px;overflow-y:auto}
-.modal-meta{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.modal-badge{background:var(--imdb);color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px}
-.modal-rating{font-size:14px;font-weight:700}
-.modal-year{font-size:13px;color:#777}
-.modal-actions{display:flex;gap:12px;flex-wrap:wrap}
-.modal-countdown-btn{background:var(--red);color:#fff;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;transition:background .2s,transform .15s,box-shadow .2s}
-.modal-countdown-btn:hover{background:var(--red-hover);transform:scale(1.04);box-shadow:0 6px 24px rgba(229,9,20,.4)}
-.modal-countdown-btn svg{width:15px;height:15px}
-.modal-wishlist-btn{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s}
-.modal-wishlist-btn:hover{background:rgba(255,255,255,.2)}
+/* FIX 2: compact body, no title/sub/year/rating shown */
+.modal-body{padding:14px 18px 18px;}
+.modal-actions{display:flex;gap:12px;}
 
-/* ════════════════════════════════════════
-   COUNTDOWN SCREEN
-════════════════════════════════════════ */
 .countdown-screen{display:none;position:fixed;inset:0;z-index:600;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;gap:0;opacity:0;transform:scale(1.06)}
 .countdown-screen.show{display:flex;animation:cdEnter .55s cubic-bezier(.22,1,.36,1) forwards}
 .countdown-screen.hiding{animation:cdExit .35s cubic-bezier(.4,0,.2,1) forwards}
@@ -149,9 +121,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .cd-target-date::before,.cd-target-date::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
 .cd-blocks{position:relative;z-index:2;display:flex;gap:20px;align-items:flex-start;justify-content:center}
 .cd-block{display:flex;flex-direction:column;align-items:center;gap:8px}
-.cd-block-num{position:relative;font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:#fff;width:110px;height:96px;display:flex;align-items:center;justify-content:center}
 .cd-flip{position:relative;width:110px;height:96px;perspective:600px}
-.cd-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
 .cd-card{position:absolute;inset:0;background:linear-gradient(160deg,rgba(40,40,40,.9),rgba(18,18,18,.95));border:1px solid rgba(255,255,255,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:78px;line-height:1;color:#fff;letter-spacing:-.5px;box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden;}
 .cd-card::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.35);}
 .cd-card-glow{position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse at 50% 0%,rgba(229,9,20,.12),transparent 70%);pointer-events:none;}
@@ -167,9 +137,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .cd-progress-bar{height:3px;background:rgba(255,255,255,.07)}
 .cd-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .9s linear;box-shadow:0 0 10px rgba(229,9,20,.7)}
 
-/* ════════════════════════════════════════
-   CELEBRATION
-════════════════════════════════════════ */
 .celebrate-screen{display:none;position:fixed;inset:0;z-index:700;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
 .celebrate-screen.show{display:flex}
 #celebCanvas{position:absolute;inset:0;width:100%;height:100%}
@@ -180,44 +147,26 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .celebrate-now{font-size:13px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;}
 .celebrate-title{font-size:56px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1;margin-bottom:8px;text-shadow:0 0 60px rgba(229,9,20,.5),0 4px 30px rgba(0,0,0,.8);}
 .celebrate-title .red-hi{background:var(--red);padding:0 10px;border-radius:6px}
-.celebrate-sub{font-size:15px;color:rgba(255,255,255,.55);margin-bottom:36px;letter-spacing:.5px}
-.celebrate-btn{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;box-shadow:0 8px 32px rgba(229,9,20,.5);transition:transform .15s,box-shadow .15s;animation:celebBtn 1s ease 1s both;}
-@keyframes celebBtn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.celebrate-btn:hover{transform:scale(1.06);box-shadow:0 12px 40px rgba(229,9,20,.65)}
-.celebrate-btn svg{width:18px;height:18px}
-.celebrate-stamp{position:absolute;top:-40px;right:-40px;width:90px;height:90px;background:var(--imdb);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#000;line-height:1.1;transform:rotate(18deg);box-shadow:0 4px 20px rgba(245,197,24,.4);animation:stampPop .5s cubic-bezier(.34,1.56,.64,1) 1.2s both;}
-@keyframes stampPop{from{opacity:0;transform:rotate(18deg) scale(0)}to{opacity:1;transform:rotate(18deg) scale(1)}}
-.celebrate-stamp span{font-size:22px}
 .celebrate-close{position:absolute;top:24px;right:24px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:3;transition:background .15s;}
 .celebrate-close:hover{background:rgba(229,9,20,.8)}
 .celebrate-close svg{width:16px;height:16px}
 
-/* ── PAGE LOAD ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards}
 .section:nth-child(1){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .55s forwards}
 .section:nth-child(2){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .65s forwards}
 .section:nth-child(3){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .75s forwards}
 .section:nth-child(4){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .85s forwards}
-.section:nth-child(5){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .95s forwards}
 
 @media(max-width:768px){
   .hero{height:380px}
   .hero-content{left:20px;bottom:44px;max-width:calc(100% - 40px)}
   .hero-title{font-size:38px}
-  .sections{padding:0 14px 60px}
   .card{width:138px}.card-wide{width:188px}.card-top10{width:155px}
-  .modal-img-wrap{height:210px}
-  .modal-img-title{font-size:24px;bottom:14px;left:16px}
-  .modal-body{padding:14px 16px 22px}
   .cd-blocks{gap:10px}
-  .cd-flip,.cd-flip-inner{width:76px}
+  .cd-flip{width:76px;height:66px}
   .cd-card{font-size:52px}
-  .cd-block-num{width:76px;height:66px}
-  .cd-flip{height:66px}
   .cd-sep{font-size:44px}
   .celebrate-title{font-size:36px}
-  .celebrate-stamp{width:70px;height:70px;top:-28px;right:-28px}
 }
 </style>
 </head>
@@ -229,7 +178,7 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
     <div class="hero-gradient"></div>
     <div class="top-bar"></div>
     <div class="hero-content">
-      <div class="hero-badge"><span class="n-logo">XI</span><span>PRESENTS</span></div>
+      <div class="hero-badge"><span class="n-logo">XII</span><span>PRESENTS</span></div>
       <div class="hero-title" id="heroTitle">REMINISCE <span class="red">2026</span></div>
       <div class="hero-part"> </div>
       <div class="hero-meta">
@@ -248,45 +197,35 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   </section>
 
   <div style="padding:0 48px 60px">
-    <div class="section" id="sec-most-liked">
+    <div class="section">
       <div class="section-header"><div class="section-title">Most Liked</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="mostLikedRow"></div></div>
     </div>
-    <div class="section" id="sec-section-1">
-      <div class="section-header"><div class="section-title">Section 1</div><div class="see-all">See all ›</div></div>
+    <div class="section">
+      <div class="section-header"><div class="section-title">We didn't realize it then,</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section1Row"></div></div>
     </div>
-    <div class="section" id="sec-section-2">
-      <div class="section-header"><div class="section-title">Section 2</div><div class="see-all">See all ›</div></div>
+    <div class="section">
+      <div class="section-header"><div class="section-title">but these were the days,</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section2Row"></div></div>
     </div>
-    <div class="section" id="sec-section-3">
-      <div class="section-header"><div class="section-title">Section 3</div><div class="see-all">See all ›</div></div>
+    <div class="section">
+      <div class="section-header"><div class="section-title">we'll miss the most.</div><div class="see-all">See all ›</div></div>
       <div class="card-row-wrapper"><div class="card-track" id="section3Row"></div></div>
-    </div>
-    <div class="section" id="sec-section-4">
-      <div class="section-header"><div class="section-title">Section 4</div><div class="see-all">See all ›</div></div>
-      <div class="card-row-wrapper"><div class="card-track" id="section4Row"></div></div>
     </div>
   </div>
 </main>
 
-<!-- MOVIE MODAL -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-img-wrap">
       <img id="modalImg" src="" alt="">
-      <div class="modal-img-gradient"></div>
       <div class="modal-close" onclick="closeModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </div>
     </div>
     <div class="modal-body">
-      <div class="modal-meta">
-        <span class="modal-badge">IMDb</span>
-        <span class="modal-rating" id="modalRating"></span>
-        <span class="modal-year" id="modalYear"></span>
-      </div>
       <div class="modal-actions">
         <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike()">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -297,10 +236,8 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   </div>
 </div>
 
-<!-- COUNTDOWN BLUR OVERLAY -->
+<!-- COUNTDOWN -->
 <div class="cd-blur-overlay" id="cdBlurOverlay" onclick="closeCountdown()"></div>
-
-<!-- DATE COUNTDOWN SCREEN -->
 <div class="countdown-screen" id="countdownScreen">
   <div class="cd-bg" id="cdBg"></div>
   <div class="cd-vignette"></div>
@@ -312,37 +249,21 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   <div class="cd-premiere-label">Premiere Countdown</div>
   <div class="cd-show-title" id="cdShowTitle">REMINISCE 2026</div>
   <div class="cd-show-sub" id="cdShowSub"></div>
-  <div class="cd-target-date" id="cdTargetDate">April 1 · 2:00 PM</div>
+  <div class="cd-target-date" id="cdTargetDate">April 10 · 2:00 PM</div>
   <div class="cd-blocks">
-    <div class="cd-block">
-      <div class="cd-flip" id="flipDays"><div class="cd-card" id="cardDays">00</div><div class="cd-card-glow"></div></div>
-      <div class="cd-block-label">Days</div>
-    </div>
+    <div class="cd-block"><div class="cd-flip"><div class="cd-card" id="cardDays">00</div><div class="cd-card-glow"></div></div><div class="cd-block-label">Days</div></div>
     <div class="cd-sep">:</div>
-    <div class="cd-block">
-      <div class="cd-flip" id="flipHours"><div class="cd-card" id="cardHours">00</div><div class="cd-card-glow"></div></div>
-      <div class="cd-block-label">Hours</div>
-    </div>
+    <div class="cd-block"><div class="cd-flip"><div class="cd-card" id="cardHours">00</div><div class="cd-card-glow"></div></div><div class="cd-block-label">Hours</div></div>
     <div class="cd-sep">:</div>
-    <div class="cd-block">
-      <div class="cd-flip" id="flipMins"><div class="cd-card" id="cardMins">00</div><div class="cd-card-glow"></div></div>
-      <div class="cd-block-label">Mins</div>
-    </div>
+    <div class="cd-block"><div class="cd-flip"><div class="cd-card" id="cardMins">00</div><div class="cd-card-glow"></div></div><div class="cd-block-label">Mins</div></div>
     <div class="cd-sep">:</div>
-    <div class="cd-block">
-      <div class="cd-flip" id="flipSecs"><div class="cd-card" id="cardSecs">00</div><div class="cd-card-glow"></div></div>
-      <div class="cd-block-label">Secs</div>
-    </div>
+    <div class="cd-block"><div class="cd-flip"><div class="cd-card" id="cardSecs">00</div><div class="cd-card-glow"></div></div><div class="cd-block-label">Secs</div></div>
   </div>
-  <div class="cd-progress-wrap">
-    <div class="cd-progress-bar"><div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div></div>
-  </div>
-  <button class="cd-celebrate-btn" onclick="triggerCelebrate()">
-    <span>🎉</span> Celebrate Premiere
-  </button>
+  <div class="cd-progress-wrap"><div class="cd-progress-bar"><div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div></div></div>
+  <button class="cd-celebrate-btn" onclick="triggerCelebrate()"><span>🎉</span> Celebrate Premiere</button>
 </div>
 
-<!-- CELEBRATION SCREEN -->
+<!-- CELEBRATION -->
 <div class="celebrate-screen" id="celebrateScreen">
   <div class="celebrate-bg"></div>
   <canvas id="celebCanvas"></canvas>
@@ -357,92 +278,36 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 </div>
 
 <script>
-// ═══════════════════════════════════
-// DATA
-// ═══════════════════════════════════
 function enrich(item){
-  const imgUrl = item.imgUrl || `./posters/${item.id}.jpg`;
-  return { ...item, imgUrl, rating: "10.0" };
+  return { ...item, imgUrl: item.imgUrl || `./posters/${item.id}.jpg` };
 }
 
 const mostLiked = [
-  { id: 1,  title: "text", sub: "text", year: "2020" },
-  { id: 2,  title: "text", sub: "text", year: "2021" },
-  { id: 3,  title: "text", sub: "text", year: "2022" },
-  { id: 4,  title: "text", sub: "text", year: "2023" },
-  { id: 5,  title: "text", sub: "text", year: "2019" },
-  { id: 6,  title: "text", sub: "text", year: "2024" },
-  { id: 7,  title: "text", sub: "text", year: "2020" },
-  { id: 8,  title: "text", sub: "text", year: "2022" },
-  { id: 9,  title: "text", sub: "text", year: "2021" },
-  { id: 10, title: "text", sub: "text", year: "2023" },
+  {id:1},{id:2},{id:3},{id:4},{id:5},{id:6},{id:7},{id:8},{id:9},{id:10}
 ];
 const section1 = [
-  { id: 11, title: "text", sub: "text", year: "2023" },
-  { id: 12, title: "text", sub: "text", year: "2022" },
-  { id: 13, title: "text", sub: "text", year: "2022" },
-  { id: 14, title: "text", sub: "text", year: "2019" },
-  { id: 15, title: "text", sub: "text", year: "2020" },
-  { id: 16, title: "text", sub: "text", year: "2021" },
-  { id: 17, title: "text", sub: "text", year: "2019" },
-  { id: 18, title: "text", sub: "text", year: "2023" },
-  { id: 19, title: "text", sub: "text", year: "2008" },
-  { id: 20, title: "text", sub: "text", year: "2010" },
+  {id:11},{id:12},{id:13},{id:14},{id:15},{id:16},{id:17},{id:18},{id:19},{id:20}
 ];
 const section2 = [
-  { id: 21, title: "text", sub: "text", year: "2020" },
-  { id: 22, title: "text", sub: "text", year: "2023" },
-  { id: 23, title: "text", sub: "text", year: "2022" },
-  { id: 24, title: "text", sub: "text", year: "2021" },
-  { id: 25, title: "text", sub: "text", year: "2019" },
-  { id: 26, title: "text", sub: "text", year: "2023" },
-  { id: 27, title: "text", sub: "text", year: "2022" },
-  { id: 28, title: "text", sub: "text", year: "2020" },
-  { id: 29, title: "text", sub: "text", year: "2021" },
-  { id: 30, title: "text", sub: "text", year: "2024" },
+  {id:21},{id:22},{id:23},{id:24},{id:25},{id:26},{id:27},{id:28},{id:29},{id:30}
 ];
 const section3 = [
-  { id: 31, title: "text", sub: "text", year: "2023" },
-  { id: 32, title: "text", sub: "text", year: "2023" },
-  { id: 33, title: "text", sub: "text", year: "2023" },
-  { id: 34, title: "text", sub: "text", year: "2023" },
-  { id: 35, title: "text", sub: "text", year: "2024" },
-  { id: 36, title: "text", sub: "text", year: "2023" },
-  { id: 37, title: "text", sub: "text", year: "2024" },
-  { id: 38, title: "text", sub: "text", year: "2024" },
-  { id: 39, title: "text", sub: "text", year: "2023" },
-  { id: 40, title: "text", sub: "text", year: "2024" },
-];
-const section4 = [
-  { id: 41, title: "text", sub: "text", year: "2023" },
-  { id: 42, title: "text", sub: "text", year: "2022" },
-  { id: 43, title: "text", sub: "text", year: "2022" },
-  { id: 44, title: "text", sub: "text", year: "2021" },
-  { id: 45, title: "text", sub: "text", year: "2021" },
-  { id: 46, title: "text", sub: "text", year: "2022" },
-  { id: 47, title: "text", sub: "text", year: "2021" },
-  { id: 48, title: "text", sub: "text", year: "2022" },
-  { id: 49, title: "text", sub: "text", year: "2023" },
-  { id: 50, title: "text", sub: "text", year: "2024" },
+  {id:31},{id:32},{id:33},{id:34},{id:35},{id:36},{id:37},{id:38},{id:39},{id:40}
 ];
 
-// ─── CARD FACTORY ───────────────────────────────────────────────────────────
 const heartSVG = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 const likedSet = new Set();
 
 function makeLikeBtn(itemId){
-  const btn=document.createElement('button');
-  btn.className='like-btn'+(likedSet.has(itemId)?' liked':'');
-  btn.innerHTML=heartSVG;
-  btn.title='Like';
-  btn.addEventListener('click',e=>{
+  const btn = document.createElement('button');
+  btn.className = 'like-btn' + (likedSet.has(itemId) ? ' liked' : '');
+  btn.innerHTML = heartSVG;
+  btn.addEventListener('click', e => {
     e.stopPropagation();
-    likedSet.has(itemId)?likedSet.delete(itemId):likedSet.add(itemId);
-    btn.classList.toggle('liked',likedSet.has(itemId));
-    btn.classList.remove('pop');
-    void btn.offsetWidth;
-    btn.classList.add('pop');
-    btn.addEventListener('animationend',()=>btn.classList.remove('pop'),{once:true});
+    likedSet.has(itemId) ? likedSet.delete(itemId) : likedSet.add(itemId);
+    btn.classList.toggle('liked', likedSet.has(itemId));
+    btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+    btn.addEventListener('animationend', () => btn.classList.remove('pop'), {once:true});
   });
   return btn;
 }
@@ -450,23 +315,16 @@ function makeLikeBtn(itemId){
 function makeCard(raw, variant='normal'){
   const item = enrich(raw);
   const card = document.createElement('div');
-  card.className = 'card' + (variant==='wide' ? ' card-wide' : '') + (variant==='top10' ? ' card-top10' : '');
-
-  // Only overlay (no text inside), plus top10 rank number
-  if(variant === 'top10'){
-    card.innerHTML = `<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay"></div><div class="top10-num">${raw.rank}</div>`;
-  } else {
-    card.innerHTML = `<img src="${item.imgUrl}" alt="${item.title}" loading="lazy"><div class="card-overlay"></div>`;
-  }
-
+  card.className = 'card' + (variant==='top10' ? ' card-top10' : '') + (variant==='wide' ? ' card-wide' : '');
+  // image only — no title, no sub text
+  card.innerHTML = variant === 'top10'
+    ? `<img src="${item.imgUrl}" alt="" loading="lazy"><div class="top10-num">${raw.rank}</div>`
+    : `<img src="${item.imgUrl}" alt="" loading="lazy">`;
   card.appendChild(makeLikeBtn(item.id));
   card.addEventListener('click', () => openModal(item));
   return card;
 }
 
-// ═══════════════════════════════════════════
-// AUTO-SCROLL CAROUSEL — alternating directions
-// ═══════════════════════════════════════════
 const SCROLL_SPEED = 0.55;
 const rowStates = {};
 let rowIndex = 0;
@@ -474,46 +332,33 @@ let rowIndex = 0;
 function populateRow(rowId, data, variant='normal'){
   const track = document.getElementById(rowId);
   if(!track) return;
-
   const goesLeft = (rowIndex % 2 === 0);
   rowIndex++;
-
   data.forEach((item, i) => {
-    if(variant === 'top10') item.rank = i + 1;
+    if(variant==='top10') item.rank = i + 1;
     track.appendChild(makeCard(item, variant));
   });
-
   const origCards = Array.from(track.children);
-  origCards.forEach(card => {
+  origCards.forEach((card, idx) => {
     const clone = card.cloneNode(true);
-    const cloneLike = clone.querySelector('.like-btn');
-    const origCard = card;
-    if(cloneLike){
-      cloneLike.addEventListener('click', e => {
-        e.stopPropagation();
-        origCard.querySelector('.like-btn')?.click();
-      });
-    }
-    const origData = data[origCards.indexOf(card)];
-    if(origData) clone.addEventListener('click', () => openModal(enrich(origData)));
+    clone.querySelector('.like-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
+      origCards[idx].querySelector('.like-btn')?.click();
+    });
+    clone.addEventListener('click', () => openModal(enrich(data[idx])));
     track.appendChild(clone);
   });
-
-  const singleWidth = origCards.reduce((sum, c) => sum + c.offsetWidth + 10, 0);
-  const startPos = goesLeft ? 0 : singleWidth;
-
-  rowStates[rowId] = { pos: startPos, goesLeft, singleWidth, paused: false };
-
+  const singleWidth = origCards.reduce((s, c) => s + c.offsetWidth + 10, 0);
+  rowStates[rowId] = { pos: goesLeft ? 0 : singleWidth, goesLeft, singleWidth, paused: false };
   const wrapper = track.closest('.card-row-wrapper');
-  wrapper.addEventListener('mouseenter', () => { rowStates[rowId].paused = true; });
-  wrapper.addEventListener('mouseleave', () => { rowStates[rowId].paused = false; });
+  wrapper.addEventListener('mouseenter', () => rowStates[rowId].paused = true);
+  wrapper.addEventListener('mouseleave', () => rowStates[rowId].paused = false);
 }
 
 populateRow('mostLikedRow', mostLiked, 'top10');
-populateRow('section1Row',  section1);
-populateRow('section2Row',  section2);
-populateRow('section3Row',  section3);
-populateRow('section4Row',  section4);
+populateRow('section1Row', section1);
+populateRow('section2Row', section2);
+populateRow('section3Row', section3);
 
 window.addEventListener('load', () => {
   Object.keys(rowStates).forEach(rowId => {
@@ -529,279 +374,148 @@ window.addEventListener('load', () => {
 
 function autoScrollLoop(){
   Object.entries(rowStates).forEach(([rowId, state]) => {
-    if(state.paused || state.singleWidth === 0) return;
+    if(state.paused || !state.singleWidth) return;
     const track = document.getElementById(rowId);
     if(!track) return;
     if(state.goesLeft){
       state.pos += SCROLL_SPEED;
       if(state.pos >= state.singleWidth) state.pos -= state.singleWidth;
-      track.style.transform = `translateX(-${state.pos}px)`;
     } else {
       state.pos -= SCROLL_SPEED;
       if(state.pos <= 0) state.pos += state.singleWidth;
-      track.style.transform = `translateX(-${state.pos}px)`;
     }
+    track.style.transform = `translateX(-${state.pos}px)`;
   });
   requestAnimationFrame(autoScrollLoop);
 }
 requestAnimationFrame(autoScrollLoop);
 
-// Hero
-let heroItem = enrich({id:999, title:"FAREWELL 2026", sub:"", imgUrl:'./posters/hero.jpg'});
-document.getElementById('heroCdBtn').onclick = () => openCountdown(heroItem);
+document.getElementById('heroCdBtn').onclick = () => openCountdown(enrich({id:999, title:"REMINISCE 2026", imgUrl:'./posters/hero.jpg'}));
 
-// ═══════════════════════════════════
-// MODAL — no description text
-// ═══════════════════════════════════
+// MODAL
 function openModal(item){
   const img = document.getElementById('modalImg');
   const modal = document.querySelector('.modal');
   img.src = item.imgUrl;
-  // Reset width first
   modal.style.width = '';
   img.onload = () => {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const sidePad = vw < 600 ? 20 : 40; // overlay padding on each side
-    const maxW = vw - sidePad * 2;
-    const maxH = vh * 0.65;
+    const maxW = window.innerWidth - 80;
+    const maxH = window.innerHeight * 0.8;
     const ratio = img.naturalWidth / img.naturalHeight;
-    // scale to fit inside maxW x maxH, preserving ratio
-    let w = maxH * ratio;
-    if (w > maxW) w = maxW;
-    w = Math.max(220, w);
-    modal.style.width = w + 'px';
+    let w = Math.min(maxH * ratio, maxW, 700);
+    modal.style.width = Math.max(220, w) + 'px';
   };
-  document.getElementById('modalRating').textContent = (item.rating||'10.0') + '/10.0';
-  document.getElementById('modalYear').textContent = item.year || '';
   const mLike = document.getElementById('modalLikeBtn');
-  const mLikeTxt = document.getElementById('modalLikeText');
   mLike.dataset.itemId = item.id;
   const liked = likedSet.has(item.id);
   mLike.classList.toggle('liked', liked);
-  mLikeTxt.textContent = liked ? 'Liked' : 'Like';
+  document.getElementById('modalLikeText').textContent = liked ? 'Liked' : 'Like';
   document.getElementById('modalOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
 function toggleModalLike(){
   const mLike = document.getElementById('modalLikeBtn');
-  const mLikeTxt = document.getElementById('modalLikeText');
   const id = Number(mLike.dataset.itemId);
   const nowLiked = likedSet.has(id);
   nowLiked ? likedSet.delete(id) : likedSet.add(id);
   mLike.classList.toggle('liked', !nowLiked);
-  mLikeTxt.textContent = nowLiked ? 'Like' : 'Liked';
+  document.getElementById('modalLikeText').textContent = nowLiked ? 'Like' : 'Liked';
   mLike.classList.remove('pop'); void mLike.offsetWidth; mLike.classList.add('pop');
   mLike.addEventListener('animationend', () => mLike.classList.remove('pop'), {once:true});
 }
 function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); document.body.style.overflow = ''; }
-function closeModalOutside(e){ if(e.target === document.getElementById('modalOverlay')) closeModal(); }
+function closeModalOutside(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-// ═══════════════════════════════════════════════════
-// DATE-BASED COUNTDOWN
-// ═══════════════════════════════════════════════════
+// COUNTDOWN
 function getTarget(){
   const now = new Date();
-  let year = now.getFullYear();
-  const t = new Date(year, 3, 1, 14, 0, 0, 0);
-  if(t <= now) t.setFullYear(year + 1);
+  const t = new Date(now.getFullYear(), 3, 10, 14, 0, 0);
+  if(t <= now) t.setFullYear(t.getFullYear() + 1);
   return t;
 }
-
-let cdInterval = null;
-let cdCurrentItem = null;
 const TARGET = getTarget();
-const prevVals = {days:-1, hours:-1, mins:-1, secs:-1};
-
-function pad(n){ return String(n).padStart(2, '0'); }
-
-function animateFlip(cardEl, newVal){
-  const old = cardEl.textContent;
-  if(old === String(newVal)) return;
-  cardEl.style.transform = 'scaleY(0.85)';
-  cardEl.style.transition = 'transform 0.1s ease';
-  setTimeout(() => { cardEl.textContent = newVal; cardEl.style.transform = 'scaleY(1)'; }, 100);
-}
-
+let cdInterval = null, cdCurrentItem = null;
+const prev = {days:-1,hours:-1,mins:-1,secs:-1};
+function pad(n){ return String(n).padStart(2,'0'); }
+function animateFlip(el, v){ if(el.textContent===v) return; el.style.transform='scaleY(.85)'; setTimeout(()=>{el.textContent=v;el.style.transform='scaleY(1)';},100); }
 function updateCountdown(){
-  const now = new Date();
-  const diff = TARGET - now;
-  if(diff <= 0){
-    clearInterval(cdInterval);
-    closeCountdown();
-    setTimeout(() => launchCelebration(cdCurrentItem), 200);
-    return;
-  }
-  const totalSecs = Math.floor(diff / 1000);
-  const days  = Math.floor(totalSecs / 86400);
-  const hours = Math.floor((totalSecs % 86400) / 3600);
-  const mins  = Math.floor((totalSecs % 3600) / 60);
-  const secs  = totalSecs % 60;
-  if(days  !== prevVals.days)  { animateFlip(document.getElementById('cardDays'),  pad(days));  prevVals.days  = days; }
-  if(hours !== prevVals.hours) { animateFlip(document.getElementById('cardHours'), pad(hours)); prevVals.hours = hours; }
-  if(mins  !== prevVals.mins)  { animateFlip(document.getElementById('cardMins'),  pad(mins));  prevVals.mins  = mins; }
-  if(secs  !== prevVals.secs)  { animateFlip(document.getElementById('cardSecs'),  pad(secs));  prevVals.secs  = secs; }
-  const totalWindow = 30 * 24 * 3600 * 1000;
-  const elapsed = totalWindow - diff;
-  const pct = Math.max(0, Math.min(100, (elapsed / totalWindow) * 100));
-  document.getElementById('cdProgressFill').style.width = (100 - pct) + '%';
+  const diff = TARGET - new Date();
+  if(diff<=0){ clearInterval(cdInterval); closeCountdown(); setTimeout(()=>launchCelebration(cdCurrentItem),200); return; }
+  const s=Math.floor(diff/1000), days=Math.floor(s/86400), hours=Math.floor((s%86400)/3600), mins=Math.floor((s%3600)/60), secs=s%60;
+  if(days!==prev.days){animateFlip(document.getElementById('cardDays'),pad(days));prev.days=days;}
+  if(hours!==prev.hours){animateFlip(document.getElementById('cardHours'),pad(hours));prev.hours=hours;}
+  if(mins!==prev.mins){animateFlip(document.getElementById('cardMins'),pad(mins));prev.mins=mins;}
+  if(secs!==prev.secs){animateFlip(document.getElementById('cardSecs'),pad(secs));prev.secs=secs;}
+  const tw=30*24*3600*1000, pct=Math.max(0,Math.min(100,((tw-diff)/tw)*100));
+  document.getElementById('cdProgressFill').style.width=(100-pct)+'%';
 }
-
 function openCountdown(item){
   closeModal();
   cdCurrentItem = item;
-  document.getElementById('cdShowTitle').textContent = item.title || 'FAREWELL 2026';
-  document.getElementById('cdShowSub').textContent = item.sub || '';
+  document.getElementById('cdShowTitle').textContent = item.title||'REMINISCE 2026';
+  document.getElementById('cdShowSub').textContent = '';
   document.getElementById('cdBg').style.backgroundImage = `url('${item.imgUrl}')`;
-  const opts = {month:'long', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true};
-  document.getElementById('cdTargetDate').textContent = TARGET.toLocaleString('en-IN', opts);
+  document.getElementById('cdTargetDate').textContent = TARGET.toLocaleString('en-IN',{month:'long',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
   const screen = document.getElementById('countdownScreen');
-  screen.classList.remove('hiding');
-  screen.style.display = 'flex';
-  void screen.offsetWidth;
-  screen.classList.add('show');
+  screen.classList.remove('hiding'); screen.style.display='flex'; void screen.offsetWidth; screen.classList.add('show');
   document.getElementById('cdBlurOverlay').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  updateCountdown();
-  clearInterval(cdInterval);
-  cdInterval = setInterval(updateCountdown, 1000);
+  document.body.style.overflow='hidden';
+  updateCountdown(); clearInterval(cdInterval); cdInterval=setInterval(updateCountdown,1000);
 }
-
 function closeCountdown(){
   clearInterval(cdInterval);
-  const screen = document.getElementById('countdownScreen');
+  const screen=document.getElementById('countdownScreen');
   if(!screen.classList.contains('show')) return;
   document.getElementById('cdBlurOverlay').classList.remove('show');
   screen.classList.add('hiding');
-  screen.addEventListener('animationend', () => {
-    screen.classList.remove('show', 'hiding');
-    screen.style.display = '';
-    document.body.style.overflow = '';
-  }, {once:true});
+  screen.addEventListener('animationend',()=>{ screen.classList.remove('show','hiding'); screen.style.display=''; document.body.style.overflow=''; },{once:true});
 }
-
 function triggerCelebrate(){
-  const screen = document.getElementById('countdownScreen');
+  const screen=document.getElementById('countdownScreen');
   clearInterval(cdInterval);
   document.getElementById('cdBlurOverlay').classList.remove('show');
-  screen.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
-  screen.style.transform = 'scale(1.12)';
-  screen.style.opacity = '0';
-  setTimeout(() => {
-    screen.classList.remove('show', 'hiding');
-    screen.style.display = '';
-    screen.style.transform = '';
-    screen.style.opacity = '';
-    screen.style.transition = '';
-    document.body.style.overflow = '';
-    launchCelebration(cdCurrentItem || {title:'FAREWELL 2026', sub:''});
-  }, 420);
+  screen.style.transition='transform .5s,opacity .4s'; screen.style.transform='scale(1.12)'; screen.style.opacity='0';
+  setTimeout(()=>{ screen.classList.remove('show','hiding'); screen.style.cssText=''; document.body.style.overflow=''; launchCelebration(cdCurrentItem||{title:'REMINISCE 2026'}); },420);
 }
 
-// ═══════════════════════════════════════════════════
-// CELEBRATION — Fireworks + Confetti
-// ═══════════════════════════════════════════════════
-const celebCanvas = document.getElementById('celebCanvas');
-const ctx = celebCanvas.getContext('2d');
-let particles = [], fireworks = [], animFrame = null;
-
-function resizeCanvas(){ celebCanvas.width = window.innerWidth; celebCanvas.height = window.innerHeight; }
-
-class Confetti{
-  constructor(){ this.reset(true); }
-  reset(initial=false){
-    this.x = Math.random() * window.innerWidth;
-    this.y = initial ? Math.random() * -window.innerHeight * 2 : -20;
-    this.w = Math.random() * 10 + 4; this.h = Math.random() * 6 + 3;
-    this.rot = Math.random() * Math.PI * 2; this.rotSpeed = (Math.random() - .5) * .2;
-    this.vy = Math.random() * 3 + 2; this.vx = (Math.random() - .5) * 2;
-    this.color = CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)];
-    this.opacity = 1;
-  }
-  update(){ this.x += this.vx; this.y += this.vy; this.rot += this.rotSpeed; if(this.y > window.innerHeight + 20) this.reset(); }
-  draw(){ ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color; ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h); ctx.restore(); }
-}
-
-class Firework{
-  constructor(){ this.reset(); }
-  reset(){
-    this.x = Math.random() * window.innerWidth; this.y = window.innerHeight;
-    this.tx = Math.random() * window.innerWidth * .8 + window.innerWidth * .1;
-    this.ty = Math.random() * window.innerHeight * .5 + 50;
-    this.color = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
-    this.speed = Math.random() * 4 + 6;
-    const angle = Math.atan2(this.ty - this.y, this.tx - this.x);
-    this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed;
-    this.trail = []; this.done = false;
-  }
-  update(){
-    this.trail.push({x:this.x, y:this.y});
-    if(this.trail.length > 12) this.trail.shift();
-    this.x += this.vx; this.y += this.vy;
-    const dx = this.tx - this.x, dy = this.ty - this.y;
-    if(Math.sqrt(dx*dx + dy*dy) < this.speed * 2){ this.explode(); this.done = true; }
-  }
-  explode(){
-    const count = 80 + Math.floor(Math.random() * 40);
-    for(let i = 0; i < count; i++){ const angle = (i/count)*Math.PI*2; const speed = Math.random()*5+1; particles.push(new Spark(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, this.color)); }
-    const ring = 30;
-    for(let i = 0; i < ring; i++){ const angle = (i/ring)*Math.PI*2; const speed = 6 + Math.random()*3; particles.push(new Spark(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, '#fff')); }
-  }
-  draw(){
-    for(let i = 0; i < this.trail.length; i++){ const a = i/this.trail.length; ctx.beginPath(); ctx.arc(this.trail[i].x, this.trail[i].y, 2*a, 0, Math.PI*2); ctx.fillStyle = this.color; ctx.globalAlpha = a*.6; ctx.fill(); }
-    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
-  }
-}
-
-class Spark{
-  constructor(x,y,vx,vy,color){ this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.color=color; this.life=1; this.decay=Math.random()*.015+.008; this.r=Math.random()*2.5+1; this.gravity=.08; }
-  update(){ this.vx*=.97; this.vy=this.vy*.97+this.gravity; this.x+=this.vx; this.y+=this.vy; this.life-=this.decay; }
-  draw(){ ctx.beginPath(); ctx.arc(this.x, this.y, Math.max(0, this.r*this.life), 0, Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.life; ctx.shadowBlur=6; ctx.shadowColor=this.color; ctx.fill(); ctx.shadowBlur=0; }
-  get dead(){ return this.life <= 0; }
-}
-
-const CONF_COLORS=['#E50914','#f5c518','#ff6b6b','#ffd700','#ff4757','#ff6348','#fff','#e84393','#2ed573','#1e90ff'];
-const FW_COLORS=['#E50914','#f5c518','#ff6b6b','#ff4757','#ffa502','#ff6348','#a29bfe','#fd79a8','#00cec9','#55efc4'];
-let fwSpawnTimer=0, confettiPieces=[];
-
+// CELEBRATION
+const celebCanvas=document.getElementById('celebCanvas'), ctx=celebCanvas.getContext('2d');
+let particles=[],fireworks=[],animFrame=null,fwTimer=0,confetti=[];
+function resizeCanvas(){ celebCanvas.width=innerWidth; celebCanvas.height=innerHeight; }
+const CC=['#E50914','#f5c518','#ff6b6b','#ffd700','#ff4757','#ff6348','#fff','#e84393','#2ed573','#1e90ff'];
+const FC=['#E50914','#f5c518','#ff6b6b','#ff4757','#ffa502','#ff6348','#a29bfe','#fd79a8','#00cec9','#55efc4'];
+class Conf{ constructor(){this.reset(true);} reset(init=false){this.x=Math.random()*innerWidth;this.y=init?Math.random()*-innerHeight*2:-20;this.w=Math.random()*10+4;this.h=Math.random()*6+3;this.rot=Math.random()*Math.PI*2;this.rs=(Math.random()-.5)*.2;this.vy=Math.random()*3+2;this.vx=(Math.random()-.5)*2;this.color=CC[~~(Math.random()*CC.length)];} update(){this.x+=this.vx;this.y+=this.vy;this.rot+=this.rs;if(this.y>innerHeight+20)this.reset();} draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.globalAlpha=1;ctx.fillStyle=this.color;ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);ctx.restore();} }
+class Spark{ constructor(x,y,vx,vy,c){this.x=x;this.y=y;this.vx=vx;this.vy=vy;this.color=c;this.life=1;this.decay=Math.random()*.015+.008;this.r=Math.random()*2.5+1;} update(){this.vx*=.97;this.vy=this.vy*.97+.08;this.x+=this.vx;this.y+=this.vy;this.life-=this.decay;} draw(){ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0,this.r*this.life),0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=this.life;ctx.shadowBlur=6;ctx.shadowColor=this.color;ctx.fill();ctx.shadowBlur=0;} get dead(){return this.life<=0;} }
+class FW{ constructor(){this.x=Math.random()*innerWidth;this.y=innerHeight;this.tx=Math.random()*innerWidth*.8+innerWidth*.1;this.ty=Math.random()*innerHeight*.5+50;this.color=FC[~~(Math.random()*FC.length)];this.speed=Math.random()*4+6;const a=Math.atan2(this.ty-this.y,this.tx-this.x);this.vx=Math.cos(a)*this.speed;this.vy=Math.sin(a)*this.speed;this.trail=[];this.done=false;} update(){this.trail.push({x:this.x,y:this.y});if(this.trail.length>12)this.trail.shift();this.x+=this.vx;this.y+=this.vy;const dx=this.tx-this.x,dy=this.ty-this.y;if(Math.sqrt(dx*dx+dy*dy)<this.speed*2){this.explode();this.done=true;}} explode(){for(let i=0;i<100;i++){const a=(i/100)*Math.PI*2,s=Math.random()*5+1;particles.push(new Spark(this.x,this.y,Math.cos(a)*s,Math.sin(a)*s,this.color));}for(let i=0;i<30;i++){const a=(i/30)*Math.PI*2,s=6+Math.random()*3;particles.push(new Spark(this.x,this.y,Math.cos(a)*s,Math.sin(a)*s,'#fff'));}} draw(){for(let i=0;i<this.trail.length;i++){const a=i/this.trail.length;ctx.beginPath();ctx.arc(this.trail[i].x,this.trail[i].y,2*a,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=a*.6;ctx.fill();}ctx.globalAlpha=1;ctx.beginPath();ctx.arc(this.x,this.y,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();} }
 function celebLoop(){
-  ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(0,0,celebCanvas.width,celebCanvas.height);
-  fwSpawnTimer++;
-  if(fwSpawnTimer % 28 === 0) fireworks.push(new Firework());
-  if(fwSpawnTimer % 8 === 0 && confettiPieces.length < 220) confettiPieces.push(new Confetti());
-  fireworks = fireworks.filter(fw => { fw.update(); if(!fw.done) fw.draw(); return !fw.done; });
-  particles = particles.filter(p => { p.update(); p.draw(); ctx.globalAlpha=1; return !p.dead; });
-  confettiPieces.forEach(c => { c.update(); c.draw(); }); ctx.globalAlpha=1;
-  animFrame = requestAnimationFrame(celebLoop);
+  ctx.fillStyle='rgba(0,0,0,0.18)';ctx.fillRect(0,0,celebCanvas.width,celebCanvas.height);
+  fwTimer++;
+  if(fwTimer%28===0)fireworks.push(new FW());
+  if(fwTimer%8===0&&confetti.length<220)confetti.push(new Conf());
+  fireworks=fireworks.filter(fw=>{fw.update();if(!fw.done)fw.draw();return !fw.done;});
+  particles=particles.filter(p=>{p.update();p.draw();ctx.globalAlpha=1;return !p.dead;});
+  confetti.forEach(c=>{c.update();c.draw();});ctx.globalAlpha=1;
+  animFrame=requestAnimationFrame(celebLoop);
 }
-
 function launchCelebration(item){
-  resizeCanvas(); particles=[]; fireworks=[]; confettiPieces=[]; fwSpawnTimer=0;
-  document.getElementById('celebTitle').innerHTML = (item.title||'FAREWELL 2026').replace(/ /,' <span class="red-hi">').replace(/(\w+)$/, '$1</span>');
+  resizeCanvas();particles=[];fireworks=[];confetti=[];fwTimer=0;
+  document.getElementById('celebTitle').innerHTML=(item.title||'REMINISCE 2026').replace(/(\S+)\s*$/,'<span class="red-hi">$1</span>');
   document.getElementById('celebrateScreen').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  for(let i=0;i<5;i++){ setTimeout(()=>{ const fw=new Firework(); fw.tx=window.innerWidth/2+(Math.random()-.5)*300; fw.ty=window.innerHeight*.3+(Math.random()-.5)*120; const angle=Math.atan2(fw.ty-fw.y,fw.tx-fw.x); fw.vx=Math.cos(angle)*10; fw.vy=Math.sin(angle)*10; fireworks.push(fw); }, i*120); }
-  cancelAnimationFrame(animFrame); celebLoop();
+  document.body.style.overflow='hidden';
+  for(let i=0;i<5;i++) setTimeout(()=>{ const fw=new FW();fw.tx=innerWidth/2+(Math.random()-.5)*300;fw.ty=innerHeight*.3+(Math.random()-.5)*120;const a=Math.atan2(fw.ty-fw.y,fw.tx-fw.x);fw.vx=Math.cos(a)*10;fw.vy=Math.sin(a)*10;fireworks.push(fw); },i*120);
+  cancelAnimationFrame(animFrame);celebLoop();
 }
-
 function closeCelebrate(){
   cancelAnimationFrame(animFrame);
   document.getElementById('celebrateScreen').classList.remove('show');
-  document.body.style.overflow = '';
-  ctx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
+  document.body.style.overflow='';
+  ctx.clearRect(0,0,celebCanvas.width,celebCanvas.height);
 }
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-const mainEl = document.querySelector('.main');
-mainEl.addEventListener('scroll', () => {
-  document.getElementById('heroBg').style.transform = `scale(1.03) translateY(${mainEl.scrollTop * .22}px)`;
-}, {passive: true});
-
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){ closeModal(); closeCountdown(); closeCelebrate(); }
-});
+window.addEventListener('resize',resizeCanvas);resizeCanvas();
+document.querySelector('.main').addEventListener('scroll',function(){
+  document.getElementById('heroBg').style.transform=`scale(1.03) translateY(${this.scrollTop*.22}px)`;
+},{passive:true});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeModal();closeCountdown();closeCelebrate();} });
 </script>
 </body>
 </html>
