@@ -308,9 +308,222 @@ html{height:-webkit-fill-available}
   .cd-show-sub{margin-bottom:16px}
   .cd-target-date{margin-bottom:16px}
 }
+
+/* ══════════════════════════════════════
+   EXPERIENCE PROMPT OVERLAY
+══════════════════════════════════════ */
+#expOverlay {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,.96);
+  opacity: 1;
+  transition: opacity .6s cubic-bezier(.4,0,.2,1),
+              transform .6s cubic-bezier(.4,0,.2,1);
+}
+#expOverlay.exp-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Animated background — subtle red radial pulse */
+#expOverlay::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%,
+      rgba(229,9,20,.13) 0%, transparent 70%);
+  animation: expPulse 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes expPulse {
+  0%,100% { opacity: .6; transform: scale(1); }
+  50%      { opacity: 1;  transform: scale(1.08); }
+}
+
+.exp-card {
+  position: relative; z-index: 1;
+  max-width: 420px; width: 100%;
+  text-align: center;
+  animation: expCardIn .7s cubic-bezier(.34,1.36,.64,1) .1s both;
+}
+@keyframes expCardIn {
+  from { opacity:0; transform: translateY(28px) scale(.96); }
+  to   { opacity:1; transform: translateY(0)   scale(1);   }
+}
+
+/* Logo */
+.exp-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 8vw, 52px);
+  color: var(--red);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+  text-shadow: 0 0 60px rgba(229,9,20,.55), 0 0 120px rgba(229,9,20,.2);
+  animation: expLogoGlow 2.5s ease-in-out infinite;
+}
+@keyframes expLogoGlow {
+  0%,100% { text-shadow: 0 0 40px rgba(229,9,20,.5),  0 0 80px rgba(229,9,20,.15); }
+  50%      { text-shadow: 0 0 70px rgba(229,9,20,.85), 0 0 140px rgba(229,9,20,.3); }
+}
+
+.exp-eyebrow {
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  font-weight: 500;
+  margin-bottom: 32px;
+  display: block;
+}
+
+/* Divider */
+.exp-divider {
+  width: 48px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  margin: 0 auto 28px;
+  border-radius: 2px;
+}
+
+.exp-headline {
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  letter-spacing: -.4px;
+  margin-bottom: 10px;
+}
+
+.exp-sub {
+  font-size: clamp(13px, 2vw, 14px);
+  color: rgba(255,255,255,.42);
+  line-height: 1.65;
+  margin-bottom: 8px;
+  max-width: 320px;
+  margin-left: auto; margin-right: auto;
+}
+
+/* Landscape tip */
+.exp-landscape-tip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .3px;
+  margin-bottom: 36px;
+  font-weight: 500;
+}
+.exp-landscape-tip svg {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  opacity: .6;
+  animation: expRotateHint 3s ease-in-out 1.2s infinite;
+}
+@keyframes expRotateHint {
+  0%   { transform: rotate(0deg);   opacity: .6; }
+  30%  { transform: rotate(90deg);  opacity: 1;  }
+  60%  { transform: rotate(90deg);  opacity: 1;  }
+  90%  { transform: rotate(0deg);   opacity: .6; }
+  100% { transform: rotate(0deg);   opacity: .6; }
+}
+/* Hide landscape tip on landscape screens */
+@media (orientation: landscape) {
+  .exp-landscape-tip { display: none; }
+}
+
+/* Buttons */
+.exp-actions {
+  display: flex; flex-direction: column; gap: 12px;
+  align-items: center;
+}
+
+.exp-btn-primary {
+  width: 100%; max-width: 320px;
+  background: var(--red);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 16px 28px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: 'Barlow', sans-serif;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 6px 28px rgba(229,9,20,.38);
+  letter-spacing: .2px;
+  position: relative; overflow: hidden;
+}
+.exp-btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.exp-btn-primary:hover {
+  background: var(--red-hover);
+  transform: scale(1.03) translateY(-1px);
+  box-shadow: 0 10px 36px rgba(229,9,20,.52);
+}
+.exp-btn-primary:active { transform: scale(.98); }
+.exp-btn-primary svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.exp-btn-secondary {
+  background: none; border: none;
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,.35);
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: color .2s, background .2s;
+  letter-spacing: .2px;
+}
+.exp-btn-secondary:hover {
+  color: rgba(255,255,255,.7);
+  background: rgba(255,255,255,.06);
+}
+
+/* Session check badge */
+.exp-session-note {
+  font-size: 11px;
+  color: rgba(255,255,255,.16);
+  margin-top: 20px;
+  letter-spacing: .5px;
+}
+
 </style>
 </head>
 <body>
+
+
+<!-- ══ EXPERIENCE PROMPT OVERLAY ══ -->
+<div id="expOverlay">
+  <div class="exp-card">
+    <div class="exp-logo">REMINISCE</div>
+    <span class="exp-eyebrow">Class XII · 2026</span>
+    <div class="exp-divider"></div>
+    <h2 class="exp-headline">Ready for the full experience?</h2>
+    <p class="exp-sub">Enable fullscreen for an immersive, cinema-like browsing experience.</p>
+    <div class="exp-landscape-tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 2l-4 5-4-5"/>
+      </svg>
+      Rotate to landscape for the best view
+    </div>
+    <div class="exp-actions">
+      <button class="exp-btn-primary" id="expFsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+        Enter Fullscreen
+      </button>
+      <button class="exp-btn-secondary" id="expSkipBtn">Continue without fullscreen</button>
+    </div>
+    <div class="exp-session-note">Your choice is remembered for this session</div>
+  </div>
+</div>
 
 <main class="main" id="mainEl">
   <section class="hero">
@@ -413,18 +626,48 @@ html{height:-webkit-fill-available}
 </div>
 
 <script>
-/* ── IMMERSIVE MODE (no prompt) ── */
-// Attempt silent fullscreen on first user interaction (works on Android Chrome)
+/* ── EXPERIENCE PROMPT ── */
 (function(){
-  function tryFS(){
-    const el = document.documentElement;
-    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-    if(req) req.call(el).catch(()=>{});
-    document.removeEventListener('touchstart', tryFS, {once:true});
-    document.removeEventListener('click', tryFS, {once:true});
+  const overlay  = document.getElementById('expOverlay');
+  const fsBtn    = document.getElementById('expFsBtn');
+  const skipBtn  = document.getElementById('expSkipBtn');
+
+  // If user already chose this session, skip straight in
+  if(sessionStorage.getItem('exp_seen')){
+    overlay.style.display = 'none';
   }
-  document.addEventListener('touchstart', tryFS, {once:true, passive:true});
-  document.addEventListener('click', tryFS, {once:true});
+
+  function dismissOverlay(){
+    sessionStorage.setItem('exp_seen', '1');
+    overlay.classList.add('exp-out');
+    // Remove from DOM after transition
+    overlay.addEventListener('transitionend', () => {
+      overlay.remove();
+      // Unlock main scroll
+      document.getElementById('mainEl').style.overflow = '';
+    }, {once:true});
+  }
+
+  function requestFS(){
+    const el  = document.documentElement;
+    const req = el.requestFullscreen
+             || el.webkitRequestFullscreen
+             || el.mozRequestFullScreen
+             || el.msRequestFullscreen;
+    if(req) return req.call(el).catch(()=>{});
+    return Promise.resolve();
+  }
+
+  fsBtn.addEventListener('click', ()=>{
+    requestFS().finally(dismissOverlay);
+  });
+
+  skipBtn.addEventListener('click', dismissOverlay);
+
+  // Lock main scroll while overlay is showing
+  if(!sessionStorage.getItem('exp_seen')){
+    document.getElementById('mainEl').style.overflow = 'hidden';
+  }
 })();
 
 /* ── DATA ── */
