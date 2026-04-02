@@ -45,16 +45,19 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .section-title{font-size:20px;font-weight:700;color:#fff}
 .see-all{font-size:13px;color:var(--red);font-weight:600;cursor:pointer}
 
+/* IMPROVED: Reduced gradient width for mobile, made more subtle */
 .card-row-wrapper{position:relative;overflow:hidden;}
-.card-row-wrapper::before,.card-row-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:10;pointer-events:none;}
+.card-row-wrapper::before,.card-row-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:20px;z-index:10;pointer-events:none;opacity:0.6;}
 .card-row-wrapper::before{left:0;background:linear-gradient(90deg,var(--dark),transparent);}
 .card-row-wrapper::after{right:0;background:linear-gradient(270deg,var(--dark),transparent);}
-.card-track{display:flex;gap:10px;padding-bottom:10px;width:max-content;will-change:transform;}
+
+/* IMPROVED: Added manual scrolling support */
+.card-track{display:flex;gap:10px;padding-bottom:10px;width:max-content;will-change:transform;cursor:grab;user-select:none;}
+.card-track.grabbing{cursor:grabbing;}
 
 .card{flex:0 0 auto;width:175px;border-radius:8px;overflow:hidden;background:var(--card-bg);cursor:pointer;transition:transform .25s cubic-bezier(.25,.8,.25,1),box-shadow .25s;position:relative}
 .card:hover{transform:scale(1.09) translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.7);z-index:5}
 .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;}
-/* no hover tint on cards */
 .card-overlay{display:none;}
 
 .like-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6;transition:background .2s,border-color .2s,transform .2s;backdrop-filter:blur(4px);}
@@ -65,11 +68,12 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .like-btn.pop{animation:likePop .4s cubic-bezier(.36,1.8,.6,1) forwards}
 @keyframes likePop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
 
-.modal-like-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.18);border-radius:30px;padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s,border-color .2s,transform .15s;}
-.modal-like-btn:hover{background:rgba(229,9,20,.12);border-color:rgba(229,9,20,.4);transform:scale(1.02)}
+/* IMPROVED: Modal like button now overlays the image */
+.modal-like-btn{position:absolute;top:12px;left:12px;z-index:11;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.65);color:#fff;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s,border-color .2s,transform .15s;backdrop-filter:blur(8px);}
+.modal-like-btn:hover{background:rgba(229,9,20,.75);border-color:rgba(229,9,20,.8);transform:scale(1.05)}
 .modal-like-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;transition:fill .25s,stroke .25s}
-.modal-like-btn.liked{background:rgba(229,9,20,.18);border-color:rgba(229,9,20,.6);color:#ff6b6b}
-.modal-like-btn.liked svg{fill:#ff6b6b;stroke:#ff6b6b}
+.modal-like-btn.liked{background:rgba(229,9,20,.8);border-color:rgba(229,9,20,.9);color:#fff}
+.modal-like-btn.liked svg{fill:#fff;stroke:#fff}
 .modal-like-btn.pop{animation:likePop .45s cubic-bezier(.34,1.8,.64,1) forwards}
 
 .card-top10{width:200px}
@@ -79,20 +83,16 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .main::-webkit-scrollbar{width:5px}
 .main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
 
-/* MODAL — no tint, no gradient, no meta text */
+/* IMPROVED: Modal without bottom bar, simplified structure */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:20px 12px;backdrop-filter:blur(10px)}
 .modal-overlay.show{display:flex}
 .modal{background:#181818;border-radius:14px;overflow:hidden;max-width:min(700px,calc(100vw - 24px));width:auto;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;position:relative}
 @keyframes modalPop{from{opacity:0;transform:scale(.88) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-img-wrap{position:relative;flex-shrink:0;overflow:hidden}
-/* FIX 1: full brightness — no dark tint */
 .modal-img-wrap img{width:100%;height:auto;max-height:80vh;max-width:700px;object-fit:cover;display:block;}
-.modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:10;transition:background .15s}
+.modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;z-index:10;transition:background .15s;backdrop-filter:blur(6px);}
 .modal-close:hover{background:var(--red)}
 .modal-close svg{width:16px;height:16px}
-/* FIX 2: compact body, no title/sub/year/rating shown */
-.modal-body{padding:14px 18px 18px;}
-.modal-actions{display:flex;gap:12px;}
 
 .countdown-screen{display:none;position:fixed;inset:0;z-index:600;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;gap:0;opacity:0;transform:scale(1.06)}
 .countdown-screen.show{display:flex;animation:cdEnter .55s cubic-bezier(.22,1,.36,1) forwards}
@@ -130,9 +130,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 @keyframes sepBlink{0%,100%{opacity:.8}50%{opacity:.15}}
 .cd-blur-overlay{display:none;position:fixed;inset:0;z-index:599;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .35s ease;opacity:0;}
 .cd-blur-overlay.show{display:block;opacity:1}
-.cd-celebrate-btn{position:relative;z-index:3;margin-top:32px;background:linear-gradient(135deg,rgba(229,9,20,.18),rgba(229,9,20,.08));border:1.5px solid rgba(229,9,20,.45);color:#fff;border-radius:30px;padding:12px 30px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:10px;transition:background .2s,border-color .2s,transform .15s,box-shadow .2s;backdrop-filter:blur(6px);letter-spacing:.3px;}
-.cd-celebrate-btn:hover{background:linear-gradient(135deg,rgba(229,9,20,.35),rgba(229,9,20,.18));border-color:rgba(229,9,20,.8);transform:scale(1.05);box-shadow:0 6px 24px rgba(229,9,20,.35);}
-.cd-celebrate-btn span{font-size:18px}
 .cd-progress-wrap{position:absolute;bottom:0;left:0;right:0;z-index:3}
 .cd-progress-bar{height:3px;background:rgba(255,255,255,.07)}
 .cd-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .9s linear;box-shadow:0 0 10px rgba(229,9,20,.7)}
@@ -157,16 +154,72 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
 .section:nth-child(3){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .75s forwards}
 .section:nth-child(4){opacity:0;animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .85s forwards}
 
+/* IMPROVED: Responsive design for mobile and desktop */
 @media(max-width:768px){
   .hero{height:380px}
   .hero-content{left:20px;bottom:44px;max-width:calc(100% - 40px)}
   .hero-title{font-size:38px}
+  .hero-badge{margin-bottom:8px}
+  .hero-badge .n-logo{font-size:14px}
+  .hero-badge span{font-size:10px;letter-spacing:2px}
+  .hero-part{font-size:12px;letter-spacing:3px;margin-bottom:14px}
+  .hero-meta{gap:12px;margin-bottom:18px}
+  .imdb-badge{font-size:10px;padding:2px 6px}
+  .rating{font-size:13px}
+  .streams{font-size:12px}
+  .btn-countdown,.btn-trailer{padding:10px 22px;font-size:14px}
+  .btn-countdown svg{width:15px;height:15px}
+  
+  .section{margin-bottom:32px}
+  .section-title{font-size:18px}
+  .section-header{margin-bottom:14px;padding:0 20px}
+  
+  /* Smaller gradient overlays on mobile */
+  .card-row-wrapper::before,.card-row-wrapper::after{width:12px;opacity:0.4;}
+  
   .card{width:138px}.card-wide{width:188px}.card-top10{width:155px}
-  .cd-blocks{gap:10px}
+  .top10-num{font-size:70px;-webkit-text-stroke:2.5px rgba(255,255,255,.15)}
+  
+  .like-btn{width:28px;height:28px;top:6px;right:6px}
+  .like-btn svg{width:13px;height:13px}
+  
+  .modal{max-width:calc(100vw - 32px);border-radius:12px}
+  .modal-close{width:32px;height:32px;top:10px;right:10px}
+  .modal-close svg{width:14px;height:14px}
+  .modal-like-btn{padding:8px 16px;font-size:13px;top:10px;left:10px}
+  .modal-like-btn svg{width:15px;height:15px}
+  
+  .cd-blocks{gap:10px;flex-wrap:wrap}
   .cd-flip{width:76px;height:66px}
   .cd-card{font-size:52px}
   .cd-sep{font-size:44px}
+  .cd-show-title{font-size:32px}
+  .cd-target-date{font-size:11px;letter-spacing:1.5px}
+  .cd-logo{font-size:28px;top:20px;left:20px}
+  .cd-close{width:34px;height:34px;top:20px;right:20px}
+  
   .celebrate-title{font-size:36px}
+  .celebrate-n{font-size:32px}
+  .celebrate-now{font-size:11px;letter-spacing:4px}
+  .celebrate-close{width:34px;height:34px;top:20px;right:20px}
+  
+  .main > div{padding:0 20px 60px !important}
+}
+
+@media(min-width:769px) and (max-width:1200px){
+  .hero{height:450px}
+  .hero-content{left:36px}
+  .hero-title{font-size:56px}
+  .card{width:160px}.card-wide{width:220px}.card-top10{width:185px}
+  .section-header{padding:0 36px}
+  .main > div{padding:0 36px 60px !important}
+}
+
+@media(min-width:1201px){
+  .card-row-wrapper::before,.card-row-wrapper::after{width:30px}
+  .hero{height:550px}
+  .hero-title{font-size:72px}
+  .card{width:190px}.card-wide{width:260px}.card-top10{width:215px}
 }
 </style>
 </head>
@@ -221,16 +274,13 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
   <div class="modal">
     <div class="modal-img-wrap">
       <img id="modalImg" src="" alt="">
+      <!-- IMPROVED: Like button now overlays the image -->
+      <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike(event)">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span id="modalLikeText">Like</span>
+      </button>
       <div class="modal-close" onclick="closeModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-actions">
-        <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike()">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          <span id="modalLikeText">Like</span>
-        </button>
       </div>
     </div>
   </div>
@@ -260,7 +310,6 @@ html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-ser
     <div class="cd-block"><div class="cd-flip"><div class="cd-card" id="cardSecs">00</div><div class="cd-card-glow"></div></div><div class="cd-block-label">Secs</div></div>
   </div>
   <div class="cd-progress-wrap"><div class="cd-progress-bar"><div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div></div></div>
-  <button class="cd-celebrate-btn" onclick="triggerCelebrate()"><span>🎉</span> Celebrate Premiere</button>
 </div>
 
 <!-- CELEBRATION -->
@@ -316,7 +365,6 @@ function makeCard(raw, variant='normal'){
   const item = enrich(raw);
   const card = document.createElement('div');
   card.className = 'card' + (variant==='top10' ? ' card-top10' : '') + (variant==='wide' ? ' card-wide' : '');
-  // image only — no title, no sub text
   card.innerHTML = variant === 'top10'
     ? `<img src="${item.imgUrl}" alt="" loading="lazy"><div class="top10-num">${raw.rank}</div>`
     : `<img src="${item.imgUrl}" alt="" loading="lazy">`;
@@ -328,6 +376,67 @@ function makeCard(raw, variant='normal'){
 const SCROLL_SPEED = 0.55;
 const rowStates = {};
 let rowIndex = 0;
+
+// IMPROVED: Added drag/manual scroll functionality
+function setupManualScroll(track, rowId){
+  let isDragging = false;
+  let startX = 0;
+  let scrollLeft = 0;
+  let dragOffset = 0;
+  
+  const onPointerDown = (e) => {
+    isDragging = true;
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = rowStates[rowId].pos;
+    dragOffset = 0;
+    track.classList.add('grabbing');
+    rowStates[rowId].paused = true;
+  };
+  
+  const onPointerMove = (e) => {
+    if(!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    const walk = (x - startX);
+    dragOffset = walk;
+    const newPos = scrollLeft - walk;
+    rowStates[rowId].pos = newPos;
+  };
+  
+  const onPointerUp = () => {
+    if(!isDragging) return;
+    isDragging = false;
+    track.classList.remove('grabbing');
+    
+    // If drag was minimal (< 5px), treat as click
+    if(Math.abs(dragOffset) < 5){
+      rowStates[rowId].paused = false;
+    } else {
+      // Normalize position after manual scroll
+      const singleWidth = rowStates[rowId].singleWidth;
+      if(rowStates[rowId].pos < 0){
+        rowStates[rowId].pos += singleWidth;
+      } else if(rowStates[rowId].pos >= singleWidth){
+        rowStates[rowId].pos -= singleWidth;
+      }
+      // Resume auto-scroll after manual interaction
+      setTimeout(() => {
+        rowStates[rowId].paused = false;
+      }, 1500);
+    }
+  };
+  
+  track.addEventListener('pointerdown', onPointerDown);
+  document.addEventListener('pointermove', onPointerMove);
+  document.addEventListener('pointerup', onPointerUp);
+  
+  // Also handle mouse enter/leave for pause
+  const wrapper = track.closest('.card-row-wrapper');
+  wrapper.addEventListener('mouseenter', () => rowStates[rowId].paused = true);
+  wrapper.addEventListener('mouseleave', () => {
+    if(!isDragging) rowStates[rowId].paused = false;
+  });
+}
 
 function populateRow(rowId, data, variant='normal'){
   const track = document.getElementById(rowId);
@@ -350,9 +459,9 @@ function populateRow(rowId, data, variant='normal'){
   });
   const singleWidth = origCards.reduce((s, c) => s + c.offsetWidth + 10, 0);
   rowStates[rowId] = { pos: goesLeft ? 0 : singleWidth, goesLeft, singleWidth, paused: false };
-  const wrapper = track.closest('.card-row-wrapper');
-  wrapper.addEventListener('mouseenter', () => rowStates[rowId].paused = true);
-  wrapper.addEventListener('mouseleave', () => rowStates[rowId].paused = false);
+  
+  // IMPROVED: Setup manual scrolling
+  setupManualScroll(track, rowId);
 }
 
 populateRow('mostLikedRow', mostLiked, 'top10');
@@ -413,7 +522,8 @@ function openModal(item){
   document.getElementById('modalOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
-function toggleModalLike(){
+function toggleModalLike(e){
+  e.stopPropagation();
   const mLike = document.getElementById('modalLikeBtn');
   const id = Number(mLike.dataset.itemId);
   const nowLiked = likedSet.has(id);
@@ -440,7 +550,13 @@ function pad(n){ return String(n).padStart(2,'0'); }
 function animateFlip(el, v){ if(el.textContent===v) return; el.style.transform='scaleY(.85)'; setTimeout(()=>{el.textContent=v;el.style.transform='scaleY(1)';},100); }
 function updateCountdown(){
   const diff = TARGET - new Date();
-  if(diff<=0){ clearInterval(cdInterval); closeCountdown(); setTimeout(()=>launchCelebration(cdCurrentItem),200); return; }
+  // IMPROVED: Auto-trigger celebration when countdown reaches zero
+  if(diff<=0){ 
+    clearInterval(cdInterval); 
+    closeCountdown(); 
+    setTimeout(()=>launchCelebration(cdCurrentItem),200); 
+    return; 
+  }
   const s=Math.floor(diff/1000), days=Math.floor(s/86400), hours=Math.floor((s%86400)/3600), mins=Math.floor((s%3600)/60), secs=s%60;
   if(days!==prev.days){animateFlip(document.getElementById('cardDays'),pad(days));prev.days=days;}
   if(hours!==prev.hours){animateFlip(document.getElementById('cardHours'),pad(hours));prev.hours=hours;}
@@ -469,13 +585,6 @@ function closeCountdown(){
   document.getElementById('cdBlurOverlay').classList.remove('show');
   screen.classList.add('hiding');
   screen.addEventListener('animationend',()=>{ screen.classList.remove('show','hiding'); screen.style.display=''; document.body.style.overflow=''; },{once:true});
-}
-function triggerCelebrate(){
-  const screen=document.getElementById('countdownScreen');
-  clearInterval(cdInterval);
-  document.getElementById('cdBlurOverlay').classList.remove('show');
-  screen.style.transition='transform .5s,opacity .4s'; screen.style.transform='scale(1.12)'; screen.style.opacity='0';
-  setTimeout(()=>{ screen.classList.remove('show','hiding'); screen.style.cssText=''; document.body.style.overflow=''; launchCelebration(cdCurrentItem||{title:'REMINISCE 2026'}); },420);
 }
 
 // CELEBRATION
