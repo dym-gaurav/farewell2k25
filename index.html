@@ -717,59 +717,87 @@ let rowIndex = 0;
 function setupInteraction(track, rowId){
   let isDragging = false;
   let startX = 0;
+  let startY = 0;
   let startPos = 0;
   let lastX = 0;
   let velocity = 0;
   let dragDelta = 0;
   let momentumRAF = null;
+  // Store pointer down target so we can fire click on tap
+  let pointerDownTarget = null;
 
-  // Manual drag blends directly into auto-scroll position — no pause
+  const DRAG_THRESHOLD = 6; // px — below this is a tap, not a drag
+
   const applyPos = (pos) => {
     const sw = rowStates[rowId].singleWidth;
-    if(sw){
-      pos = ((pos % sw) + sw) % sw;
-    }
+    if(sw) pos = ((pos % sw) + sw) % sw;
     rowStates[rowId].pos = pos;
   };
 
+  // ── pointerdown: start tracking but do NOT capture pointer ──
+  // Not calling setPointerCapture lets native click events still fire on children.
+  // We only steal the pointer if the user actually drags.
   track.addEventListener('pointerdown', e => {
+    // Only respond to primary button (left-click / first touch)
+    if(e.button !== 0 && e.pointerType === 'mouse') return;
     cancelAnimationFrame(momentumRAF);
-    isDragging = true;
+    isDragging = false; // not yet — wait to see if they move
     dragDelta = 0;
     velocity = 0;
     startX = e.clientX;
+    startY = e.clientY;
     lastX = e.clientX;
     startPos = rowStates[rowId].pos;
-    track.classList.add('grabbing');
-    track.setPointerCapture(e.pointerId);
-    rowStates[rowId].paused = true;
+    pointerDownTarget = e.target;
   });
 
   track.addEventListener('pointermove', e => {
-    if(!isDragging) return;
+    // Only activate drag if primary button is still held
+    if(e.buttons === 0 && e.pointerType === 'mouse') return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    // Don't start dragging until threshold crossed
+    if(!isDragging && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+
+    if(!isDragging){
+      // Commit to drag: now capture pointer to prevent text selection etc.
+      isDragging = true;
+      track.classList.add('grabbing');
+      rowStates[rowId].paused = true;
+      try { track.setPointerCapture(e.pointerId); } catch(_){}
+    }
+
     e.preventDefault();
-    // Track velocity for momentum
     velocity = lastX - e.clientX;
     lastX = e.clientX;
     dragDelta = startX - e.clientX;
     applyPos(startPos + dragDelta);
-    // Apply transform immediately for snappy feel
     track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
   }, {passive:false});
 
-  const endDrag = () => {
-    if(!isDragging) return;
-    isDragging = false;
+  const endDrag = (e) => {
     track.classList.remove('grabbing');
 
-    if(Math.abs(dragDelta) < 6){
-      // Tap — resume auto-scroll immediately
+    if(!isDragging){
+      // It was a genuine tap/click — do nothing here.
+      // The card's own 'click' event will fire naturally.
+      rowStates[rowId].paused = false;
+      isDragging = false;
+      return;
+    }
+
+    isDragging = false;
+
+    if(Math.abs(dragDelta) < DRAG_THRESHOLD){
+      // Barely moved — treat as tap, resume auto-scroll
       rowStates[rowId].paused = false;
       return;
     }
 
-    // Momentum: glide then hand off to auto-scroll seamlessly
-    let vel = velocity * 1.4; // amplify slightly
+    // Momentum glide then hand off to auto-scroll
+    let vel = velocity * 1.4;
     const decay = 0.88;
     const momentumStep = () => {
       vel *= decay;
@@ -778,7 +806,6 @@ function setupInteraction(track, rowId){
         track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
         momentumRAF = requestAnimationFrame(momentumStep);
       } else {
-        // Hand off: resume auto-scroll from current position
         rowStates[rowId].paused = false;
       }
     };
@@ -788,7 +815,15 @@ function setupInteraction(track, rowId){
   track.addEventListener('pointerup', endDrag);
   track.addEventListener('pointercancel', endDrag);
 
-  // Desktop hover: pause auto-scroll so user can examine cards
+  // Prevent click from firing after a real drag
+  track.addEventListener('click', e => {
+    if(Math.abs(dragDelta) >= DRAG_THRESHOLD){
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, true); // capture phase — fires before card's click handler
+
+  // Desktop hover: pause auto-scroll
   const wrapper = track.closest('.card-row-wrapper');
   wrapper.addEventListener('mouseenter', ()=>{
     if(!isDragging) rowStates[rowId].paused = true;
