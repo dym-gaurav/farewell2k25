@@ -25,26 +25,8 @@ html,body{
   /* Force fullscreen feel */
   position:fixed;top:0;left:0;right:0;bottom:0;
 }
-/* Fullscreen request overlay */
-#fsPrompt{
-  display:none;position:fixed;inset:0;z-index:9999;
-  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
-  flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  color:#fff;text-align:center;padding:20px;
-}
-#fsPrompt.show{display:flex}
-#fsPrompt .fs-logo{color:var(--red);font-family:'Bebas Neue';font-size:42px;letter-spacing:-1px;text-shadow:0 0 40px rgba(229,9,20,.6)}
-#fsPrompt h2{font-size:22px;font-weight:700;line-height:1.3}
-#fsPrompt p{font-size:14px;color:rgba(255,255,255,.55);max-width:280px;line-height:1.6}
-#fsPrompt .fs-btn{
-  background:var(--red);color:#fff;border:none;border-radius:30px;
-  padding:14px 36px;font-size:16px;font-weight:700;cursor:pointer;
-  font-family:'Barlow',sans-serif;transition:transform .15s,box-shadow .2s;
-  box-shadow:0 6px 24px rgba(229,9,20,.4);
-}
-#fsPrompt .fs-btn:hover{transform:scale(1.05);box-shadow:0 8px 30px rgba(229,9,20,.55)}
-#fsPrompt .fs-skip{font-size:13px;color:rgba(255,255,255,.35);cursor:pointer;border:none;background:none;font-family:'Barlow',sans-serif}
-#fsPrompt .fs-skip:hover{color:rgba(255,255,255,.6)}
+/* Immersive fullscreen-like on mobile — no prompt, no permission */
+html{height:-webkit-fill-available}
 
 .main{
   position:absolute;inset:0;
@@ -330,15 +312,6 @@ html,body{
 </head>
 <body>
 
-<!-- Fullscreen prompt (mobile) -->
-<div id="fsPrompt">
-  <div class="fs-logo">Netflix</div>
-  <h2>Go Fullscreen for the best experience</h2>
-  <p>Tap below to enjoy an immersive, distraction-free viewing experience.</p>
-  <button class="fs-btn" onclick="requestFS()">Go Fullscreen</button>
-  <button class="fs-skip" onclick="dismissFS()">Continue without fullscreen</button>
-</div>
-
 <main class="main" id="mainEl">
   <section class="hero">
     <div class="hero-bg" id="heroBg"></div>
@@ -440,36 +413,19 @@ html,body{
 </div>
 
 <script>
-/* ── FULLSCREEN ── */
-function isMobileDevice(){
-  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 1024;
-}
-function requestFS(){
-  const el = document.documentElement;
-  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-  if(req) req.call(el).catch(()=>{});
-  dismissFS();
-}
-function dismissFS(){
-  document.getElementById('fsPrompt').classList.remove('show');
-}
-// Show fullscreen prompt on mobile/tablet
-window.addEventListener('DOMContentLoaded', ()=>{
-  if(isMobileDevice()){
-    // Small delay so page renders first
-    setTimeout(()=>{
-      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-      if(!fsEl) document.getElementById('fsPrompt').classList.add('show');
-    }, 800);
+/* ── IMMERSIVE MODE (no prompt) ── */
+// Attempt silent fullscreen on first user interaction (works on Android Chrome)
+(function(){
+  function tryFS(){
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if(req) req.call(el).catch(()=>{});
+    document.removeEventListener('touchstart', tryFS, {once:true});
+    document.removeEventListener('click', tryFS, {once:true});
   }
-});
-// Re-prompt on orientation change if not fullscreen
-window.addEventListener('orientationchange', ()=>{
-  setTimeout(()=>{
-    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-    if(!fsEl && isMobileDevice()) document.getElementById('fsPrompt').classList.add('show');
-  }, 600);
-});
+  document.addEventListener('touchstart', tryFS, {once:true, passive:true});
+  document.addEventListener('click', tryFS, {once:true});
+})();
 
 /* ── DATA ── */
 function enrich(item){
@@ -516,67 +472,86 @@ const rowStates = {};
 let rowIndex = 0;
 
 function setupInteraction(track, rowId){
-  // ---- Pointer (mouse + touch) drag ----
   let isDragging = false;
   let startX = 0;
   let startPos = 0;
+  let lastX = 0;
+  let velocity = 0;
   let dragDelta = 0;
-  let resumeTimer = null;
+  let momentumRAF = null;
 
-  function pauseScroll(){ rowStates[rowId].paused = true; }
-  function scheduleResume(){
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(()=>{ rowStates[rowId].paused = false; }, 1600);
-  }
+  // Manual drag blends directly into auto-scroll position — no pause
+  const applyPos = (pos) => {
+    const sw = rowStates[rowId].singleWidth;
+    if(sw){
+      pos = ((pos % sw) + sw) % sw;
+    }
+    rowStates[rowId].pos = pos;
+  };
 
   track.addEventListener('pointerdown', e => {
+    cancelAnimationFrame(momentumRAF);
     isDragging = true;
     dragDelta = 0;
+    velocity = 0;
     startX = e.clientX;
+    lastX = e.clientX;
     startPos = rowStates[rowId].pos;
     track.classList.add('grabbing');
     track.setPointerCapture(e.pointerId);
-    pauseScroll();
+    rowStates[rowId].paused = true;
   });
 
   track.addEventListener('pointermove', e => {
     if(!isDragging) return;
     e.preventDefault();
+    // Track velocity for momentum
+    velocity = lastX - e.clientX;
+    lastX = e.clientX;
     dragDelta = startX - e.clientX;
-    rowStates[rowId].pos = startPos + dragDelta;
-    // Wrap
-    const sw = rowStates[rowId].singleWidth;
-    if(sw){
-      if(rowStates[rowId].pos < 0) rowStates[rowId].pos += sw;
-      if(rowStates[rowId].pos >= sw) rowStates[rowId].pos -= sw;
-    }
+    applyPos(startPos + dragDelta);
+    // Apply transform immediately for snappy feel
+    track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
   }, {passive:false});
 
-  track.addEventListener('pointerup', e => {
+  const endDrag = () => {
     if(!isDragging) return;
     isDragging = false;
     track.classList.remove('grabbing');
+
     if(Math.abs(dragDelta) < 6){
-      // treat as click — resume immediately
+      // Tap — resume auto-scroll immediately
       rowStates[rowId].paused = false;
-    } else {
-      scheduleResume();
+      return;
     }
-  });
 
-  track.addEventListener('pointercancel', ()=>{
-    isDragging = false;
-    track.classList.remove('grabbing');
-    scheduleResume();
-  });
+    // Momentum: glide then hand off to auto-scroll seamlessly
+    let vel = velocity * 1.4; // amplify slightly
+    const decay = 0.88;
+    const momentumStep = () => {
+      vel *= decay;
+      if(Math.abs(vel) > 0.3){
+        applyPos(rowStates[rowId].pos + vel);
+        track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
+        momentumRAF = requestAnimationFrame(momentumStep);
+      } else {
+        // Hand off: resume auto-scroll from current position
+        rowStates[rowId].paused = false;
+      }
+    };
+    momentumRAF = requestAnimationFrame(momentumStep);
+  };
 
-  // ---- Hover pause (desktop) ----
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+
+  // Desktop hover: pause auto-scroll so user can examine cards
   const wrapper = track.closest('.card-row-wrapper');
-  let hovered = false;
-  wrapper.addEventListener('mouseenter', ()=>{ hovered=true; pauseScroll(); });
+  wrapper.addEventListener('mouseenter', ()=>{
+    if(!isDragging) rowStates[rowId].paused = true;
+  });
   wrapper.addEventListener('mouseleave', ()=>{
-    hovered = false;
-    if(!isDragging){ rowStates[rowId].paused = false; }
+    if(!isDragging) rowStates[rowId].paused = false;
   });
 }
 
