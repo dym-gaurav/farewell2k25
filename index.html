@@ -1924,7 +1924,7 @@
       if (mins !== prev.mins) { animateFlip(document.getElementById('cardMins'), pad(mins)); prev.mins = mins; }
       if (secs !== prev.secs) { animateFlip(document.getElementById('cardSecs'), pad(secs)); prev.secs = secs; }
       // Progress bar: based on 30-day window
-      const tw = 30 * 24 * 3600 * 1000;
+      const tw = 10 * 24 * 3600 * 1000;
       const pct = Math.max(0, Math.min(100, ((tw - diff) / tw) * 100));
       document.getElementById('cdProgressFill').style.width = (100 - pct) + '%';
     }
