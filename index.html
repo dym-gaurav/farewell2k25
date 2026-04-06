@@ -1432,7 +1432,7 @@
             </svg>
             Premiere Countdown
           </button>
-          <button class="btn-trailer">Watch Trailer  · Coming soon </button>
+          <button class="btn-trailer">Watch Trailer</button>
         </div>
       </div>
     </section>
@@ -2075,6 +2075,65 @@
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+// Toast notification for Watch Trailer button
+function showToast(message) {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(229, 9, 20, 0.95);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 100000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: toastSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  `;
+  
+  // Add animation keyframes if not already added
+  if (!document.querySelector('#toastStyles')) {
+    const style = document.createElement('style');
+    style.id = 'toastStyles';
+    style.textContent = `
+      @keyframes toastSlideUp {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(toast);
+  
+  // Remove toast after 2.5 seconds
+  setTimeout(() => {
+    toast.style.animation = 'toastSlideUp 0.25s ease reverse forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// Add click handler to Watch Trailer button
+document.querySelector('.btn-trailer').addEventListener('click', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  showToast('🎬 Coming Soon!');
+});
   </script>
 </body>
 
