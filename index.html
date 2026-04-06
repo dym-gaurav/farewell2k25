@@ -1432,7 +1432,7 @@
             </svg>
             Premiere Countdown
           </button>
-          <button class="btn-trailer">Watch Trailer</button>
+          <button class="btn-trailer">Watch Trailer  · Coming soon </button>
         </div>
       </div>
     </section>
@@ -1897,7 +1897,9 @@
     TARGET_DATE.setMonth(3); // April (0-indexed)
     TARGET_DATE.setDate(10);
     TARGET_DATE.setHours(15, 30, 0, 0);
+    document.getElementById('cdTargetDate').innerHTML = 'April 10th · 3:30 PM · VENUE : CONARD HALL';
     // If already past, do NOT advance year — just treat as expired immediately
+
     const TARGET_EXPIRED = TARGET_DATE <= new Date();
 
     let cdInterval = null, cdCurrentItem = null;
@@ -1942,8 +1944,7 @@
       document.getElementById('cdShowTitle').textContent = item.title || 'REMINISCE 2026';
       document.getElementById('cdShowSub').textContent = '';
       document.getElementById('cdBg').style.backgroundImage = `url('${item.imgUrl}')`;
-      document.getElementById('cdTargetDate').textContent =
-        TARGET_DATE.toLocaleString('en-IN', { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+      document.getElementById('cdTargetDate').innerHTML = 'April 10th · 3:30 PM · VENUE : CONARD HALL';
 
       const screen = document.getElementById('countdownScreen');
       screen.classList.remove('hiding');
