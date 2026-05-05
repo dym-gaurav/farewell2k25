@@ -2,2085 +2,2087 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>REMINISCE 2026</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
-    :root {
-      --red: #E50914;
-      --red-hover: #f40612;
-      --dark: #141414;
-      --card-bg: #1a1a1a;
-      --text: #e5e5e5;
-      --muted: #999;
-      --imdb: #F5C518;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --safe-left: env(safe-area-inset-left, 0px);
-      --safe-right: env(safe-area-inset-right, 0px);
-    }
-
-    html,
-    body {
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'Barlow', sans-serif;
-      height: 100%;
-      width: 100%;
-      overflow-x: hidden;
-      /* Force fullscreen feel */
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    /* Immersive fullscreen-like on mobile — no prompt, no permission */
-    html {
-      height: -webkit-fill-available
-    }
-
-    .main {
-      position: absolute;
-      inset: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: clamp(320px, 55vw, 580px);
-      overflow: hidden;
-      background: #000;
-    }
-
-    /* landscape phone: use taller hero */
-    @media (max-height:500px) and (orientation:landscape) {
-      .hero {
-        height: 100svh
-      }
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: url('./posters/hero.jpg') center/cover no-repeat;
-      filter: brightness(.55) saturate(.8);
-      transform: scale(1.03);
-      transition: background-image .6s ease, transform 8s ease;
-      opacity: 0;
-      animation: fadeUp .8s cubic-bezier(.22, 1, .36, 1) 0s forwards
-    }
-
-    .hero:hover .hero-bg {
-      transform: scale(1)
-    }
-
-    .hero-gradient {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(0, 0, 0, .88) 0%, rgba(0, 0, 0, .3) 55%, transparent 100%),
-        linear-gradient(180deg, transparent 50%, var(--dark) 100%)
-    }
-
-    .top-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 18px 28px;
-      z-index: 50;
-      display: flex;
-      justify-content: flex-end
-    }
-
-    .hero-content {
-      position: absolute;
-      bottom: clamp(36px, 7vw, 80px);
-      left: clamp(20px, 5vw, 56px);
-      max-width: min(460px, calc(100% - 40px));
-    }
-
-    .hero-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      opacity: 0;
-      animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .1s forwards
-    }
-
-    .hero-badge .n-logo {
-      color: var(--red);
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      font-family: 'Bebas Neue'
-    }
-
-    .hero-badge span {
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: #ccc;
-      text-transform: uppercase;
-      font-weight: 500
-    }
-
-    .hero-title {
-      font-size: clamp(32px, 6vw, 76px);
-      font-weight: 800;
-      line-height: .95;
-      letter-spacing: -1px;
-      margin-bottom: 6px;
-      opacity: 0;
-      animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .2s forwards
-    }
-
-    .hero-title .red {
-      background: var(--red);
-      color: #fff;
-      padding: 2px 10px;
-      border-radius: 4px;
-      display: inline-block
-    }
-
-    .hero-part {
-      font-size: clamp(11px, 1.5vw, 14px);
-      letter-spacing: 4px;
-      color: #ccc;
-      margin-bottom: 16px;
-      opacity: 0;
-      animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .28s forwards
-    }
-
-    .hero-meta {
-      display: flex;
-      align-items: center;
-      gap: clamp(10px, 2vw, 18px);
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .36s forwards
-    }
-
-    .imdb-badge {
-      background: var(--imdb);
-      color: #000;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 4px
-    }
-
-    .rating {
-      font-size: 15px;
-      font-weight: 700
-    }
-
-    .streams {
-      font-size: 14px;
-      color: var(--red);
-      font-weight: 600
-    }
-
-    .streams span {
-      color: #fff
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .44s forwards
-    }
-
-    .btn-countdown {
-      background: var(--red);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      padding: clamp(10px, 1.5vw, 13px) clamp(20px, 2.5vw, 28px);
-      font-size: clamp(13px, 1.5vw, 15px);
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      transition: background .2s, transform .15s, box-shadow .2s;
-      font-family: 'Barlow', sans-serif;
-      white-space: nowrap;
-    }
-
-    .btn-countdown:hover {
-      background: var(--red-hover);
-      transform: scale(1.04);
-      box-shadow: 0 6px 24px rgba(229, 9, 20, .45)
-    }
-
-    .btn-countdown svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0
-    }
-
-    .btn-trailer {
-      background: rgba(255, 255, 255, .12);
-      color: #fff;
-      border: 1.5px solid rgba(255, 255, 255, .25);
-      border-radius: 30px;
-      padding: clamp(10px, 1.5vw, 13px) clamp(20px, 2.5vw, 28px);
-      font-size: clamp(13px, 1.5vw, 15px);
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      transition: background .2s, transform .15s;
-      font-family: 'Barlow', sans-serif;
-      white-space: nowrap;
-    }
-
-    .btn-trailer:hover {
-      background: rgba(255, 255, 255, .22);
-      transform: scale(1.04)
-    }
-
-    /* ── SECTIONS ── */
-    .sections-wrap {
-      padding: 0 clamp(16px, 4vw, 52px) clamp(40px, 5vw, 70px);
-    }
-
-    .section {
-      margin-bottom: clamp(28px, 4vw, 44px)
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px
-    }
-
-    .section-title {
-      font-size: clamp(15px, 2vw, 21px);
-      font-weight: 700;
-      color: #fff
-    }
-
-    .see-all {
-      font-size: 13px;
-      color: var(--red);
-      font-weight: 600;
-      cursor: pointer
-    }
-
-    /* ── CAROUSEL ── */
-    .card-row-wrapper {
-      position: relative;
-      overflow: hidden;
-      /* Tiny edge hints only */
-      mask-image: linear-gradient(90deg, transparent 0, #000 8px, #000 calc(100% - 8px), transparent 100%);
-      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8px, #000 calc(100% - 8px), transparent 100%);
-    }
-
-    /* Remove pseudo-element overlays entirely — mask handles it */
-    .card-row-wrapper::before,
-    .card-row-wrapper::after {
-      display: none
-    }
-
-    .card-track {
-      display: flex;
-      gap: 10px;
-      padding-bottom: 10px;
-      width: max-content;
-      will-change: transform;
-      cursor: grab;
-      user-select: none;
-      touch-action: pan-y;
-    }
-
-    .card-track.grabbing {
-      cursor: grabbing
-    }
-
-    /* ── CARDS ── */
-    .card {
-      flex: 0 0 auto;
-      width: clamp(120px, 18vw, 200px);
-      border-radius: 8px;
-      overflow: hidden;
-      background: var(--card-bg);
-      cursor: pointer;
-      transition: transform .25s cubic-bezier(.25, .8, .25, 1), box-shadow .25s;
-      position: relative;
-    }
-
-    .card:hover {
-      transform: scale(1.09) translateY(-4px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, .7);
-      z-index: 5
-    }
-
-    .card img {
-      width: 100%;
-      aspect-ratio: 2/3;
-      object-fit: cover;
-      display: block
-    }
-
-    .card-top10 {
-      width: clamp(140px, 20vw, 220px)
-    }
-
-    .top10-num {
-      position: absolute;
-      bottom: -8px;
-      left: -4px;
-      font-size: clamp(64px, 10vw, 96px);
-      font-weight: 900;
-      font-family: 'Bebas Neue', sans-serif;
-      color: transparent;
-      -webkit-text-stroke: 3px rgba(255, 255, 255, .15);
-      line-height: 1;
-      pointer-events: none;
-      z-index: 1;
-      transition: -webkit-text-stroke .25s;
-    }
-
-    .card-top10:hover .top10-num {
-      -webkit-text-stroke-color: rgba(229, 9, 20, .35)
-    }
-
-    .card-wide {
-      width: clamp(160px, 25vw, 270px)
-    }
-
-    /* ── LIKE BUTTON ── */
-    .like-btn {
-      position: absolute;
-      top: 7px;
-      right: 7px;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, .55);
-      border: 1.5px solid rgba(255, 255, 255, .18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 6;
-      transition: background .2s, border-color .2s, transform .2s;
-      backdrop-filter: blur(4px);
-    }
-
-    .like-btn:hover {
-      background: rgba(229, 9, 20, .2);
-      border-color: rgba(229, 9, 20, .5)
-    }
-
-    .like-btn svg {
-      width: 14px;
-      height: 14px;
-      transition: fill .25s, stroke .25s;
-      fill: none;
-      stroke: rgba(255, 255, 255, .8);
-      stroke-width: 2
-    }
-
-    .like-btn.liked {
-      background: rgba(229, 9, 20, .28);
-      border-color: rgba(229, 9, 20, .75)
-    }
-
-    .like-btn.liked svg {
-      fill: var(--red);
-      stroke: var(--red)
-    }
-
-    .like-btn.pop {
-      animation: likePop .4s cubic-bezier(.36, 1.8, .6, 1) forwards
-    }
-
-    @keyframes likePop {
-      0% {
-        transform: scale(1)
-      }
-
-      40% {
-        transform: scale(1.55)
-      }
-
-      70% {
-        transform: scale(.9)
-      }
-
-      100% {
-        transform: scale(1)
-      }
-    }
-
-    /* ── MODAL (image-only, no bottom bar) ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .82);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      backdrop-filter: blur(10px);
-    }
-
-    .modal-overlay.show {
-      display: flex
-    }
-
-    .modal {
-      background: transparent;
-      border-radius: 14px;
-      overflow: hidden;
-      max-width: min(700px, calc(100vw - 32px));
-      width: auto;
-      max-height: 90svh;
-      box-shadow: 0 40px 100px rgba(0, 0, 0, .85);
-      animation: modalPop .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
-      position: relative;
-    }
-
-    @keyframes modalPop {
-      from {
-        opacity: 0;
-        transform: scale(.88) translateY(30px)
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0)
-      }
-    }
-
-    .modal-img-wrap {
-      position: relative;
-      overflow: hidden;
-      border-radius: 14px
-    }
-
-    .modal-img-wrap img {
-      width: 100%;
-      height: auto;
-      max-height: 88svh;
-      max-width: 700px;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* Like overlaid on image */
-    .modal-like-btn {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 11;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0, 0, 0, .65);
-      color: #fff;
-      border: 1.5px solid rgba(255, 255, 255, .25);
-      border-radius: 30px;
-      padding: 9px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Barlow', sans-serif;
-      transition: background .2s, border-color .2s, transform .15s;
-      backdrop-filter: blur(8px);
-    }
-
-    .modal-like-btn:hover {
-      background: rgba(229, 9, 20, .75);
-      border-color: rgba(229, 9, 20, .8);
-      transform: scale(1.05)
-    }
-
-    .modal-like-btn svg {
-      width: 16px;
-      height: 16px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      transition: fill .25s, stroke .25s;
-      flex-shrink: 0
-    }
-
-    .modal-like-btn.liked {
-      background: rgba(229, 9, 20, .8);
-      border-color: rgba(229, 9, 20, .9)
-    }
-
-    .modal-like-btn.liked svg {
-      fill: #fff;
-      stroke: #fff
-    }
-
-    .modal-like-btn.pop {
-      animation: likePop .45s cubic-bezier(.34, 1.8, .64, 1) forwards
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, .75);
-      border: 1px solid rgba(255, 255, 255, .2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #fff;
-      z-index: 10;
-      transition: background .15s;
-      backdrop-filter: blur(6px);
-    }
-
-    .modal-close:hover {
-      background: var(--red)
-    }
-
-    .modal-close svg {
-      width: 16px;
-      height: 16px
-    }
-
-    /* ── COUNTDOWN ── */
-    .countdown-screen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 600;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      gap: 0;
-      opacity: 0;
-      transform: scale(1.06);
-    }
-
-    .countdown-screen.show {
-      display: flex;
-      animation: cdEnter .55s cubic-bezier(.22, 1, .36, 1) forwards
-    }
-
-    .countdown-screen.hiding {
-      animation: cdExit .35s cubic-bezier(.4, 0, .2, 1) forwards
-    }
-
-    @keyframes cdEnter {
-      0% {
-        opacity: 0;
-        transform: scale(1.08)
-      }
-
-      60% {
-        opacity: 1;
-        transform: scale(.99)
-      }
-
-      100% {
-        opacity: 1;
-        transform: scale(1)
-      }
-    }
-
-    @keyframes cdExit {
-      0% {
-        opacity: 1;
-        transform: scale(1)
-      }
-
-      100% {
-        opacity: 0;
-        transform: scale(.94)
-      }
-    }
-
-    .countdown-screen.show .cd-premiere-label {
-      animation: cdChildIn .4s ease .12s both
-    }
-
-    .countdown-screen.show .cd-show-title {
-      animation: cdChildIn .4s ease .2s both
-    }
-
-    .countdown-screen.show .cd-show-sub {
-      animation: cdChildIn .4s ease .26s both
-    }
-
-    .countdown-screen.show .cd-target-date {
-      animation: cdChildIn .4s ease .32s both
-    }
-
-    .countdown-screen.show .cd-blocks {
-      animation: cdChildIn .5s cubic-bezier(.34, 1.56, .64, 1) .38s both
-    }
-
-    @keyframes cdChildIn {
-      from {
-        opacity: 0;
-        transform: translateY(16px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    .countdown-screen.show .cd-logo {
-      animation: cdLogoIn .5s cubic-bezier(.34, 1.56, .64, 1) .05s both
-    }
-
-    @keyframes cdLogoIn {
-      from {
-        opacity: 0;
-        transform: translateX(-20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0)
-      }
-    }
-
-    .cd-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      filter: brightness(.18) blur(12px) saturate(.4);
-      transform: scale(1.12)
-    }
-
-    .cd-vignette {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .7) 100%)
-    }
-
-    .cd-scanlines {
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .08) 2px, rgba(0, 0, 0, .08) 4px);
-      pointer-events: none;
-      z-index: 1
-    }
-
-    .cd-logo {
-      position: absolute;
-      top: 26px;
-      left: 30px;
-      color: var(--red);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
-      letter-spacing: -.5px;
-      z-index: 3
-    }
-
-    .cd-close {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .1);
-      border: 1px solid rgba(255, 255, 255, .2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #fff;
-      z-index: 3;
-      transition: background .15s
-    }
-
-    .cd-close:hover {
-      background: rgba(229, 9, 20, .8)
-    }
-
-    .cd-close svg {
-      width: 16px;
-      height: 16px
-    }
-
-    .cd-premiere-label {
-      position: relative;
-      z-index: 2;
-      font-size: 11px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .4);
-      margin-bottom: 18px;
-      font-weight: 500
-    }
-
-    .cd-show-title {
-      position: relative;
-      z-index: 2;
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -.5px;
-      margin-bottom: 4px;
-      text-align: center;
-      text-shadow: 0 2px 30px rgba(0, 0, 0, .8)
-    }
-
-    .cd-show-sub {
-      position: relative;
-      z-index: 2;
-      font-size: 13px;
-      color: rgba(255, 255, 255, .4);
-      margin-bottom: 32px;
-      letter-spacing: .5px;
-      text-align: center
-    }
-
-    .cd-target-date {
-      position: relative;
-      z-index: 2;
-      font-size: clamp(11px, 1.5vw, 13px);
-      color: rgba(255, 255, 255, .35);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: clamp(24px, 4vw, 36px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 20px;
-      max-width: 440px;
-      width: 100%
-    }
-
-    .cd-target-date::before,
-    .cd-target-date::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, .1)
-    }
-
-    .cd-blocks {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      gap: clamp(10px, 2vw, 20px);
-      align-items: flex-start;
-      justify-content: center;
-      flex-wrap: wrap
-    }
-
-    .cd-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px
-    }
-
-    .cd-flip {
-      position: relative;
-      width: clamp(72px, 11vw, 112px);
-      height: clamp(62px, 9vw, 98px);
-      perspective: 600px
-    }
-
-    .cd-card {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, rgba(40, 40, 40, .9), rgba(18, 18, 18, .95));
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(48px, 8vw, 80px);
-      line-height: 1;
-      color: #fff;
-      letter-spacing: -.5px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .06);
-      overflow: hidden;
-    }
-
-    .cd-card::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      height: 1px;
-      background: rgba(0, 0, 0, .35)
-    }
-
-    .cd-card-glow {
-      position: absolute;
-      inset: 0;
-      border-radius: 12px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, .12), transparent 70%);
-      pointer-events: none
-    }
-
-    .cd-block-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .35);
-      font-weight: 500
-    }
-
-    .cd-sep {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(44px, 7vw, 66px);
-      color: rgba(255, 255, 255, .2);
-      line-height: 1;
-      margin-top: clamp(12px, 2vw, 18px);
-      animation: sepBlink 1s step-end infinite
-    }
-
-    @keyframes sepBlink {
-
-      0%,
-      100% {
-        opacity: .8
-      }
-
-      50% {
-        opacity: .15
-      }
-    }
-
-    .cd-blur-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 599;
-      background: rgba(0, 0, 0, .55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: opacity .35s ease;
-      opacity: 0
-    }
-
-    .cd-blur-overlay.show {
-      display: block;
-      opacity: 1
-    }
-
-    .cd-progress-wrap {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3
-    }
-
-    .cd-progress-bar {
-      height: 3px;
-      background: rgba(255, 255, 255, .07)
-    }
-
-    .cd-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--red), #ff6b6b);
-      transition: width .9s linear;
-      box-shadow: 0 0 10px rgba(229, 9, 20, .7)
-    }
-
-    /* ── CELEBRATION ── */
-    .celebrate-screen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 700;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden
-    }
-
-    .celebrate-screen.show {
-      display: flex
-    }
-
-    #celebCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%
-    }
-
-    .celebrate-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, #1a0005 0%, #0a0000 100%)
-    }
-
-    .celebrate-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      animation: celebFadeIn .8s ease .3s both
-    }
-
-    @keyframes celebFadeIn {
-      from {
-        opacity: 0;
-        transform: scale(.85) translateY(20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0)
-      }
-    }
-
-    .celebrate-n {
-      color: var(--red);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 40px;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-      text-shadow: 0 0 40px rgba(229, 9, 20, .8)
-    }
-
-    .celebrate-now {
-      font-size: 13px;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .5);
-      margin-bottom: 10px
-    }
-
-    .celebrate-title {
-      font-size: clamp(36px, 7vw, 60px);
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 8px;
-      text-shadow: 0 0 60px rgba(229, 9, 20, .5), 0 4px 30px rgba(0, 0, 0, .8)
-    }
-
-    .celebrate-title .red-hi {
-      background: var(--red);
-      padding: 0 10px;
-      border-radius: 6px
-    }
-
-    .celebrate-close {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .1);
-      border: 1px solid rgba(255, 255, 255, .2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #fff;
-      z-index: 3;
-      transition: background .15s
-    }
-
-    .celebrate-close:hover {
-      background: rgba(229, 9, 20, .8)
-    }
-
-    .celebrate-close svg {
-      width: 16px;
-      height: 16px
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(28px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    .section:nth-child(1) {
-      opacity: 0;
-      animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .55s forwards
-    }
-
-    .section:nth-child(2) {
-      opacity: 0;
-      animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .65s forwards
-    }
-
-    .section:nth-child(3) {
-      opacity: 0;
-      animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .75s forwards
-    }
-
-    .section:nth-child(4) {
-      opacity: 0;
-      animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .85s forwards
-    }
-
-    /* ── SCROLLBAR ── */
-    .main::-webkit-scrollbar {
-      width: 5px
-    }
-
-    .main::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, .12);
-      border-radius: 4px
-    }
-
-    /* ── LANDSCAPE PHONE: treat like desktop ── */
-    @media (max-height:500px) and (orientation:landscape) {
-      .hero-content {
-        left: 36px;
-        max-width: 380px
-      }
-
-      .hero-title {
-        font-size: 42px
-      }
-
-      .sections-wrap {
-        padding: 0 36px 40px
-      }
-
-      .cd-blocks {
-        gap: 12px
-      }
-
-      .cd-show-title {
-        font-size: 26px;
-        margin-bottom: 2px
-      }
-
-      .cd-show-sub {
-        margin-bottom: 16px
-      }
-
-      .cd-target-date {
-        margin-bottom: 16px
-      }
-    }
-
-    /* ══════════════════════════════════════
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>REMINISCE 2026</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --red: #E50914;
+            --red-hover: #f40612;
+            --dark: #141414;
+            --card-bg: #1a1a1a;
+            --text: #e5e5e5;
+            --muted: #999;
+            --imdb: #F5C518;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+        }
+
+        html,
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'Barlow', sans-serif;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            /* Force fullscreen feel */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* Immersive fullscreen-like on mobile — no prompt, no permission */
+        html {
+            height: -webkit-fill-available
+        }
+
+        .main {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: clamp(320px, 55vw, 580px);
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* landscape phone: use taller hero */
+        @media (max-height:500px) and (orientation:landscape) {
+            .hero {
+                height: 100svh
+            }
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('./posters/hero.jpg') center/cover no-repeat;
+            filter: brightness(.55) saturate(.8);
+            transform: scale(1.03);
+            transition: background-image .6s ease, transform 8s ease;
+            opacity: 0;
+            animation: fadeUp .8s cubic-bezier(.22, 1, .36, 1) 0s forwards
+        }
+
+        .hero:hover .hero-bg {
+            transform: scale(1)
+        }
+
+        .hero-gradient {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, .88) 0%, rgba(0, 0, 0, .3) 55%, transparent 100%),
+                linear-gradient(180deg, transparent 50%, var(--dark) 100%)
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 18px 28px;
+            z-index: 50;
+            display: flex;
+            justify-content: flex-end
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: clamp(36px, 7vw, 80px);
+            left: clamp(20px, 5vw, 56px);
+            max-width: min(460px, calc(100% - 40px));
+        }
+
+        .hero-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .1s forwards
+        }
+
+        .hero-badge .n-logo {
+            color: var(--red);
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            font-family: 'Bebas Neue'
+        }
+
+        .hero-badge span {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #ccc;
+            text-transform: uppercase;
+            font-weight: 500
+        }
+
+        .hero-title {
+            font-size: clamp(32px, 6vw, 76px);
+            font-weight: 800;
+            line-height: .95;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .2s forwards
+        }
+
+        .hero-title .red {
+            background: var(--red);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            display: inline-block
+        }
+
+        .hero-part {
+            font-size: clamp(11px, 1.5vw, 14px);
+            letter-spacing: 4px;
+            color: #ccc;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .28s forwards
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: clamp(10px, 2vw, 18px);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .36s forwards
+        }
+
+        .imdb-badge {
+            background: var(--imdb);
+            color: #000;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 4px
+        }
+
+        .rating {
+            font-size: 15px;
+            font-weight: 700
+        }
+
+        .streams {
+            font-size: 14px;
+            color: var(--red);
+            font-weight: 600
+        }
+
+        .streams span {
+            color: #fff
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp .6s cubic-bezier(.22, 1, .36, 1) .44s forwards
+        }
+
+        .btn-countdown {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: clamp(10px, 1.5vw, 13px) clamp(20px, 2.5vw, 28px);
+            font-size: clamp(13px, 1.5vw, 15px);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: background .2s, transform .15s, box-shadow .2s;
+            font-family: 'Barlow', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-countdown:hover {
+            background: var(--red-hover);
+            transform: scale(1.04);
+            box-shadow: 0 6px 24px rgba(229, 9, 20, .45)
+        }
+
+        .btn-countdown svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0
+        }
+
+        .btn-trailer {
+            background: rgba(255, 255, 255, .12);
+            color: #fff;
+            border: 1.5px solid rgba(255, 255, 255, .25);
+            border-radius: 30px;
+            padding: clamp(10px, 1.5vw, 13px) clamp(20px, 2.5vw, 28px);
+            font-size: clamp(13px, 1.5vw, 15px);
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            transition: background .2s, transform .15s;
+            font-family: 'Barlow', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-trailer:hover {
+            background: rgba(255, 255, 255, .22);
+            transform: scale(1.04)
+        }
+
+        /* ── SECTIONS ── */
+        .sections-wrap {
+            padding: 0 clamp(16px, 4vw, 52px) clamp(40px, 5vw, 70px);
+        }
+
+        .section {
+            margin-bottom: clamp(28px, 4vw, 44px)
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px
+        }
+
+        .section-title {
+            font-size: clamp(15px, 2vw, 21px);
+            font-weight: 700;
+            color: #fff
+        }
+
+        .see-all {
+            font-size: 13px;
+            color: var(--red);
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        /* ── CAROUSEL ── */
+        .card-row-wrapper {
+            position: relative;
+            overflow: hidden;
+            /* Tiny edge hints only */
+            mask-image: linear-gradient(90deg, transparent 0, #000 8px, #000 calc(100% - 8px), transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8px, #000 calc(100% - 8px), transparent 100%);
+        }
+
+        /* Remove pseudo-element overlays entirely — mask handles it */
+        .card-row-wrapper::before,
+        .card-row-wrapper::after {
+            display: none
+        }
+
+        .card-track {
+            display: flex;
+            gap: 10px;
+            padding-bottom: 10px;
+            width: max-content;
+            will-change: transform;
+            cursor: grab;
+            user-select: none;
+            touch-action: pan-y;
+        }
+
+        .card-track.grabbing {
+            cursor: grabbing
+        }
+
+        /* ── CARDS ── */
+        .card {
+            flex: 0 0 auto;
+            width: clamp(120px, 18vw, 200px);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: transform .25s cubic-bezier(.25, .8, .25, 1), box-shadow .25s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.09) translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .7);
+            z-index: 5
+        }
+
+        .card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            display: block
+        }
+
+        .card-top10 {
+            width: clamp(140px, 20vw, 220px)
+        }
+
+        .top10-num {
+            position: absolute;
+            bottom: -8px;
+            left: -4px;
+            font-size: clamp(64px, 10vw, 96px);
+            font-weight: 900;
+            font-family: 'Bebas Neue', sans-serif;
+            color: transparent;
+            -webkit-text-stroke: 3px rgba(255, 255, 255, .15);
+            line-height: 1;
+            pointer-events: none;
+            z-index: 1;
+            transition: -webkit-text-stroke .25s;
+        }
+
+        .card-top10:hover .top10-num {
+            -webkit-text-stroke-color: rgba(229, 9, 20, .35)
+        }
+
+        .card-wide {
+            width: clamp(160px, 25vw, 270px)
+        }
+
+        /* ── LIKE BUTTON ── */
+        .like-btn {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .55);
+            border: 1.5px solid rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 6;
+            transition: background .2s, border-color .2s, transform .2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .like-btn:hover {
+            background: rgba(229, 9, 20, .2);
+            border-color: rgba(229, 9, 20, .5)
+        }
+
+        .like-btn svg {
+            width: 14px;
+            height: 14px;
+            transition: fill .25s, stroke .25s;
+            fill: none;
+            stroke: rgba(255, 255, 255, .8);
+            stroke-width: 2
+        }
+
+        .like-btn.liked {
+            background: rgba(229, 9, 20, .28);
+            border-color: rgba(229, 9, 20, .75)
+        }
+
+        .like-btn.liked svg {
+            fill: var(--red);
+            stroke: var(--red)
+        }
+
+        .like-btn.pop {
+            animation: likePop .4s cubic-bezier(.36, 1.8, .6, 1) forwards
+        }
+
+        @keyframes likePop {
+            0% {
+                transform: scale(1)
+            }
+
+            40% {
+                transform: scale(1.55)
+            }
+
+            70% {
+                transform: scale(.9)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        /* ── MODAL (image-only, no bottom bar) ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .82);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-overlay.show {
+            display: flex
+        }
+
+        .modal {
+            background: transparent;
+            border-radius: 14px;
+            overflow: hidden;
+            max-width: min(700px, calc(100vw - 32px));
+            width: auto;
+            max-height: 90svh;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, .85);
+            animation: modalPop .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+            position: relative;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(.88) translateY(30px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .modal-img-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px
+        }
+
+        .modal-img-wrap img {
+            width: 100%;
+            height: auto;
+            max-height: 88svh;
+            max-width: 700px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Like overlaid on image */
+        .modal-like-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, .65);
+            color: #fff;
+            border: 1.5px solid rgba(255, 255, 255, .25);
+            border-radius: 30px;
+            padding: 9px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Barlow', sans-serif;
+            transition: background .2s, border-color .2s, transform .15s;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-like-btn:hover {
+            background: rgba(229, 9, 20, .75);
+            border-color: rgba(229, 9, 20, .8);
+            transform: scale(1.05)
+        }
+
+        .modal-like-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            transition: fill .25s, stroke .25s;
+            flex-shrink: 0
+        }
+
+        .modal-like-btn.liked {
+            background: rgba(229, 9, 20, .8);
+            border-color: rgba(229, 9, 20, .9)
+        }
+
+        .modal-like-btn.liked svg {
+            fill: #fff;
+            stroke: #fff
+        }
+
+        .modal-like-btn.pop {
+            animation: likePop .45s cubic-bezier(.34, 1.8, .64, 1) forwards
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .75);
+            border: 1px solid rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            z-index: 10;
+            transition: background .15s;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-close:hover {
+            background: var(--red)
+        }
+
+        .modal-close svg {
+            width: 16px;
+            height: 16px
+        }
+
+        /* ── COUNTDOWN ── */
+        .countdown-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            gap: 0;
+            opacity: 0;
+            transform: scale(1.06);
+        }
+
+        .countdown-screen.show {
+            display: flex;
+            animation: cdEnter .55s cubic-bezier(.22, 1, .36, 1) forwards
+        }
+
+        .countdown-screen.hiding {
+            animation: cdExit .35s cubic-bezier(.4, 0, .2, 1) forwards
+        }
+
+        @keyframes cdEnter {
+            0% {
+                opacity: 0;
+                transform: scale(1.08)
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(.99)
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        @keyframes cdExit {
+            0% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(.94)
+            }
+        }
+
+        .countdown-screen.show .cd-premiere-label {
+            animation: cdChildIn .4s ease .12s both
+        }
+
+        .countdown-screen.show .cd-show-title {
+            animation: cdChildIn .4s ease .2s both
+        }
+
+        .countdown-screen.show .cd-show-sub {
+            animation: cdChildIn .4s ease .26s both
+        }
+
+        .countdown-screen.show .cd-target-date {
+            animation: cdChildIn .4s ease .32s both
+        }
+
+        .countdown-screen.show .cd-blocks {
+            animation: cdChildIn .5s cubic-bezier(.34, 1.56, .64, 1) .38s both
+        }
+
+        @keyframes cdChildIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .countdown-screen.show .cd-logo {
+            animation: cdLogoIn .5s cubic-bezier(.34, 1.56, .64, 1) .05s both
+        }
+
+        @keyframes cdLogoIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .cd-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(.18) blur(12px) saturate(.4);
+            transform: scale(1.12)
+        }
+
+        .cd-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .7) 100%)
+        }
+
+        .cd-scanlines {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .08) 2px, rgba(0, 0, 0, .08) 4px);
+            pointer-events: none;
+            z-index: 1
+        }
+
+        .cd-logo {
+            position: absolute;
+            top: 26px;
+            left: 30px;
+            color: var(--red);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: -.5px;
+            z-index: 3
+        }
+
+        .cd-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            z-index: 3;
+            transition: background .15s
+        }
+
+        .cd-close:hover {
+            background: rgba(229, 9, 20, .8)
+        }
+
+        .cd-close svg {
+            width: 16px;
+            height: 16px
+        }
+
+        .cd-premiere-label {
+            position: relative;
+            z-index: 2;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .4);
+            margin-bottom: 18px;
+            font-weight: 500
+        }
+
+        .cd-show-title {
+            position: relative;
+            z-index: 2;
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -.5px;
+            margin-bottom: 4px;
+            text-align: center;
+            text-shadow: 0 2px 30px rgba(0, 0, 0, .8)
+        }
+
+        .cd-show-sub {
+            position: relative;
+            z-index: 2;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .4);
+            margin-bottom: 32px;
+            letter-spacing: .5px;
+            text-align: center
+        }
+
+        .cd-target-date {
+            position: relative;
+            z-index: 2;
+            font-size: clamp(11px, 1.5vw, 13px);
+            color: rgba(255, 255, 255, .35);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: clamp(24px, 4vw, 36px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            max-width: 440px;
+            width: 100%
+        }
+
+        .cd-target-date::before,
+        .cd-target-date::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, .1)
+        }
+
+        .cd-blocks {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: clamp(10px, 2vw, 20px);
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        .cd-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px
+        }
+
+        .cd-flip {
+            position: relative;
+            width: clamp(72px, 11vw, 112px);
+            height: clamp(62px, 9vw, 98px);
+            perspective: 600px
+        }
+
+        .cd-card {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(40, 40, 40, .9), rgba(18, 18, 18, .95));
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(48px, 8vw, 80px);
+            line-height: 1;
+            color: #fff;
+            letter-spacing: -.5px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .06);
+            overflow: hidden;
+        }
+
+        .cd-card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: rgba(0, 0, 0, .35)
+        }
+
+        .cd-card-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, .12), transparent 70%);
+            pointer-events: none
+        }
+
+        .cd-block-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .35);
+            font-weight: 500
+        }
+
+        .cd-sep {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(44px, 7vw, 66px);
+            color: rgba(255, 255, 255, .2);
+            line-height: 1;
+            margin-top: clamp(12px, 2vw, 18px);
+            animation: sepBlink 1s step-end infinite
+        }
+
+        @keyframes sepBlink {
+
+            0%,
+            100% {
+                opacity: .8
+            }
+
+            50% {
+                opacity: .15
+            }
+        }
+
+        .cd-blur-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 599;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: opacity .35s ease;
+            opacity: 0
+        }
+
+        .cd-blur-overlay.show {
+            display: block;
+            opacity: 1
+        }
+
+        .cd-progress-wrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 3
+        }
+
+        .cd-progress-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, .07)
+        }
+
+        .cd-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red), #ff6b6b);
+            transition: width .9s linear;
+            box-shadow: 0 0 10px rgba(229, 9, 20, .7)
+        }
+
+        /* ── CELEBRATION ── */
+        .celebrate-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 700;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden
+        }
+
+        .celebrate-screen.show {
+            display: flex
+        }
+
+        #celebCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%
+        }
+
+        .celebrate-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #1a0005 0%, #0a0000 100%)
+        }
+
+        .celebrate-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            animation: celebFadeIn .8s ease .3s both
+        }
+
+        @keyframes celebFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(.85) translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .celebrate-n {
+            color: var(--red);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 40px;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            text-shadow: 0 0 40px rgba(229, 9, 20, .8)
+        }
+
+        .celebrate-now {
+            font-size: 13px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 10px
+        }
+
+        .celebrate-title {
+            font-size: clamp(36px, 7vw, 60px);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 60px rgba(229, 9, 20, .5), 0 4px 30px rgba(0, 0, 0, .8)
+        }
+
+        .celebrate-title .red-hi {
+            background: var(--red);
+            padding: 0 10px;
+            border-radius: 6px
+        }
+
+        .celebrate-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            z-index: 3;
+            transition: background .15s
+        }
+
+        .celebrate-close:hover {
+            background: rgba(229, 9, 20, .8)
+        }
+
+        .celebrate-close svg {
+            width: 16px;
+            height: 16px
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(28px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .section:nth-child(1) {
+            opacity: 0;
+            animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .55s forwards
+        }
+
+        .section:nth-child(2) {
+            opacity: 0;
+            animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .65s forwards
+        }
+
+        .section:nth-child(3) {
+            opacity: 0;
+            animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .75s forwards
+        }
+
+        .section:nth-child(4) {
+            opacity: 0;
+            animation: fadeUp .65s cubic-bezier(.22, 1, .36, 1) .85s forwards
+        }
+
+        /* ── SCROLLBAR ── */
+        .main::-webkit-scrollbar {
+            width: 5px
+        }
+
+        .main::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .12);
+            border-radius: 4px
+        }
+
+        /* ── LANDSCAPE PHONE: treat like desktop ── */
+        @media (max-height:500px) and (orientation:landscape) {
+            .hero-content {
+                left: 36px;
+                max-width: 380px
+            }
+
+            .hero-title {
+                font-size: 42px
+            }
+
+            .sections-wrap {
+                padding: 0 36px 40px
+            }
+
+            .cd-blocks {
+                gap: 12px
+            }
+
+            .cd-show-title {
+                font-size: 26px;
+                margin-bottom: 2px
+            }
+
+            .cd-show-sub {
+                margin-bottom: 16px
+            }
+
+            .cd-target-date {
+                margin-bottom: 16px
+            }
+        }
+
+        /* ══════════════════════════════════════
    EXPERIENCE PROMPT OVERLAY
 ══════════════════════════════════════ */
-    #expOverlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(0, 0, 0, .96);
-      opacity: 1;
-      transition: opacity .6s cubic-bezier(.4, 0, .2, 1),
-        transform .6s cubic-bezier(.4, 0, .2, 1);
-    }
+        #expOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, .96);
+            opacity: 1;
+            transition: opacity .6s cubic-bezier(.4, 0, .2, 1),
+                transform .6s cubic-bezier(.4, 0, .2, 1);
+        }
 
-    #expOverlay.exp-out {
-      opacity: 0;
-      pointer-events: none;
-    }
+        #expOverlay.exp-out {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    /* Animated background — subtle red radial pulse */
-    #expOverlay::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 70% 60% at 50% 50%,
-          rgba(229, 9, 20, .13) 0%, transparent 70%);
-      animation: expPulse 3.5s ease-in-out infinite;
-      pointer-events: none;
-    }
+        /* Animated background — subtle red radial pulse */
+        #expOverlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 60% at 50% 50%,
+                    rgba(229, 9, 20, .13) 0%, transparent 70%);
+            animation: expPulse 3.5s ease-in-out infinite;
+            pointer-events: none;
+        }
 
-    @keyframes expPulse {
+        @keyframes expPulse {
 
-      0%,
-      100% {
-        opacity: .6;
-        transform: scale(1);
-      }
+            0%,
+            100% {
+                opacity: .6;
+                transform: scale(1);
+            }
 
-      50% {
-        opacity: 1;
-        transform: scale(1.08);
-      }
-    }
+            50% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
+        }
 
-    .exp-card {
-      position: relative;
-      z-index: 1;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      animation: expCardIn .7s cubic-bezier(.34, 1.36, .64, 1) .1s both;
-    }
+        .exp-card {
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            animation: expCardIn .7s cubic-bezier(.34, 1.36, .64, 1) .1s both;
+        }
 
-    @keyframes expCardIn {
-      from {
-        opacity: 0;
-        transform: translateY(28px) scale(.96);
-      }
+        @keyframes expCardIn {
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(.96);
+            }
 
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
-    /* Logo */
-    .exp-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(36px, 8vw, 52px);
-      color: var(--red);
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 6px;
-      text-shadow: 0 0 60px rgba(229, 9, 20, .55), 0 0 120px rgba(229, 9, 20, .2);
-      animation: expLogoGlow 2.5s ease-in-out infinite;
-    }
+        /* Logo */
+        .exp-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(36px, 8vw, 52px);
+            color: var(--red);
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 6px;
+            text-shadow: 0 0 60px rgba(229, 9, 20, .55), 0 0 120px rgba(229, 9, 20, .2);
+            animation: expLogoGlow 2.5s ease-in-out infinite;
+        }
 
-    @keyframes expLogoGlow {
+        @keyframes expLogoGlow {
 
-      0%,
-      100% {
-        text-shadow: 0 0 40px rgba(229, 9, 20, .5), 0 0 80px rgba(229, 9, 20, .15);
-      }
+            0%,
+            100% {
+                text-shadow: 0 0 40px rgba(229, 9, 20, .5), 0 0 80px rgba(229, 9, 20, .15);
+            }
 
-      50% {
-        text-shadow: 0 0 70px rgba(229, 9, 20, .85), 0 0 140px rgba(229, 9, 20, .3);
-      }
-    }
+            50% {
+                text-shadow: 0 0 70px rgba(229, 9, 20, .85), 0 0 140px rgba(229, 9, 20, .3);
+            }
+        }
 
-    .exp-eyebrow {
-      font-size: 10px;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .3);
-      font-weight: 500;
-      margin-bottom: 32px;
-      display: block;
-    }
+        .exp-eyebrow {
+            font-size: 10px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .3);
+            font-weight: 500;
+            margin-bottom: 32px;
+            display: block;
+        }
 
-    /* Divider */
-    .exp-divider {
-      width: 48px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--red), transparent);
-      margin: 0 auto 28px;
-      border-radius: 2px;
-    }
+        /* Divider */
+        .exp-divider {
+            width: 48px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
+            margin: 0 auto 28px;
+            border-radius: 2px;
+        }
 
-    .exp-headline {
-      font-size: clamp(20px, 4vw, 26px);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.25;
-      letter-spacing: -.4px;
-      margin-bottom: 10px;
-    }
+        .exp-headline {
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            letter-spacing: -.4px;
+            margin-bottom: 10px;
+        }
 
-    .exp-sub {
-      font-size: clamp(13px, 2vw, 14px);
-      color: rgba(255, 255, 255, .42);
-      line-height: 1.65;
-      margin-bottom: 8px;
-      max-width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+        .exp-sub {
+            font-size: clamp(13px, 2vw, 14px);
+            color: rgba(255, 255, 255, .42);
+            line-height: 1.65;
+            margin-bottom: 8px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    /* Landscape tip */
-    .exp-landscape-tip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 30px;
-      padding: 8px 16px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, .45);
-      letter-spacing: .3px;
-      margin-bottom: 36px;
-      font-weight: 500;
-    }
+        /* Landscape tip */
+        .exp-landscape-tip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .45);
+            letter-spacing: .3px;
+            margin-bottom: 36px;
+            font-weight: 500;
+        }
 
-    .exp-landscape-tip svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      opacity: .6;
-      animation: expRotateHint 3s ease-in-out 1.2s infinite;
-    }
+        .exp-landscape-tip svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            opacity: .6;
+            animation: expRotateHint 3s ease-in-out 1.2s infinite;
+        }
 
-    @keyframes expRotateHint {
-      0% {
-        transform: rotate(0deg);
-        opacity: .6;
-      }
+        @keyframes expRotateHint {
+            0% {
+                transform: rotate(0deg);
+                opacity: .6;
+            }
 
-      30% {
-        transform: rotate(90deg);
-        opacity: 1;
-      }
+            30% {
+                transform: rotate(90deg);
+                opacity: 1;
+            }
 
-      60% {
-        transform: rotate(90deg);
-        opacity: 1;
-      }
+            60% {
+                transform: rotate(90deg);
+                opacity: 1;
+            }
 
-      90% {
-        transform: rotate(0deg);
-        opacity: .6;
-      }
+            90% {
+                transform: rotate(0deg);
+                opacity: .6;
+            }
 
-      100% {
-        transform: rotate(0deg);
-        opacity: .6;
-      }
-    }
+            100% {
+                transform: rotate(0deg);
+                opacity: .6;
+            }
+        }
 
-    /* Hide landscape tip on landscape screens */
-    @media (orientation: landscape) {
-      .exp-landscape-tip {
-        display: none;
-      }
-    }
+        /* Hide landscape tip on landscape screens */
+        @media (orientation: landscape) {
+            .exp-landscape-tip {
+                display: none;
+            }
+        }
 
-    /* Buttons */
-    .exp-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
+        /* Buttons */
+        .exp-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
 
-    .exp-btn-primary {
-      width: 100%;
-      max-width: 320px;
-      background: var(--red);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 16px 28px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-family: 'Barlow', sans-serif;
-      transition: background .2s, transform .15s, box-shadow .2s;
-      box-shadow: 0 6px 28px rgba(229, 9, 20, .38);
-      letter-spacing: .2px;
-      position: relative;
-      overflow: hidden;
-    }
+        .exp-btn-primary {
+            width: 100%;
+            max-width: 320px;
+            background: var(--red);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Barlow', sans-serif;
+            transition: background .2s, transform .15s, box-shadow .2s;
+            box-shadow: 0 6px 28px rgba(229, 9, 20, .38);
+            letter-spacing: .2px;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .exp-btn-primary::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, .12) 0%, transparent 60%);
-      pointer-events: none;
-    }
+        .exp-btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .12) 0%, transparent 60%);
+            pointer-events: none;
+        }
 
-    .exp-btn-primary:hover {
-      background: var(--red-hover);
-      transform: scale(1.03) translateY(-1px);
-      box-shadow: 0 10px 36px rgba(229, 9, 20, .52);
-    }
+        .exp-btn-primary:hover {
+            background: var(--red-hover);
+            transform: scale(1.03) translateY(-1px);
+            box-shadow: 0 10px 36px rgba(229, 9, 20, .52);
+        }
 
-    .exp-btn-primary:active {
-      transform: scale(.98);
-    }
+        .exp-btn-primary:active {
+            transform: scale(.98);
+        }
 
-    .exp-btn-primary svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
+        .exp-btn-primary svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
 
-    .exp-btn-secondary {
-      background: none;
-      border: none;
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, .35);
-      cursor: pointer;
-      font-family: 'Barlow', sans-serif;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: color .2s, background .2s;
-      letter-spacing: .2px;
-    }
+        .exp-btn-secondary {
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, .35);
+            cursor: pointer;
+            font-family: 'Barlow', sans-serif;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: color .2s, background .2s;
+            letter-spacing: .2px;
+        }
 
-    .exp-btn-secondary:hover {
-      color: rgba(255, 255, 255, .7);
-      background: rgba(255, 255, 255, .06);
-    }
+        .exp-btn-secondary:hover {
+            color: rgba(255, 255, 255, .7);
+            background: rgba(255, 255, 255, .06);
+        }
 
-    /* Session check badge */
-    .exp-session-note {
-      font-size: 11px;
-      color: rgba(255, 255, 255, .16);
-      margin-top: 20px;
-      letter-spacing: .5px;
-    }
-  </style>
+        /* Session check badge */
+        .exp-session-note {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .16);
+            margin-top: 20px;
+            letter-spacing: .5px;
+        }
+    </style>
 </head>
 
 <body>
 
 
-  <!-- ══ EXPERIENCE PROMPT OVERLAY ══ -->
-  <div id="expOverlay">
-    <div class="exp-card">
-      <div class="exp-logo">REMINISCE</div>
-      <span class="exp-eyebrow">Class XII · 2026</span>
-      <div class="exp-divider"></div>
-      <h2 class="exp-headline">Ready for the full experience?</h2>
-      <p class="exp-sub">Enable fullscreen for an immersive, cinema-like browsing experience.</p>
-      <div class="exp-landscape-tip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <rect x="2" y="7" width="20" height="14" rx="2" />
-          <path d="M16 2l-4 5-4-5" />
-        </svg>
-        Rotate to landscape for the best view
-      </div>
-      <div class="exp-actions">
-        <button class="exp-btn-primary" id="expFsBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-          </svg>
-          Enter Fullscreen
-        </button>
-        <button class="exp-btn-secondary" id="expSkipBtn">Continue without fullscreen</button>
-      </div>
-      
-    </div>
-  </div>
+    <!-- ══ EXPERIENCE PROMPT OVERLAY ══ -->
+    <div id="expOverlay">
+        <div class="exp-card">
+            <div class="exp-logo">REMINISCE</div>
+            <span class="exp-eyebrow">Class XII · 2026</span>
+            <div class="exp-divider"></div>
+            <h2 class="exp-headline">Ready for the full experience?</h2>
+            <p class="exp-sub">Enable fullscreen for an immersive, cinema-like browsing experience.</p>
+            <div class="exp-landscape-tip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 2l-4 5-4-5" />
+                </svg>
+                Rotate to landscape for the best view
+            </div>
+            <div class="exp-actions">
+                <button class="exp-btn-primary" id="expFsBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                    </svg>
+                    Enter Fullscreen
+                </button>
+                <button class="exp-btn-secondary" id="expSkipBtn">Continue without fullscreen</button>
+            </div>
 
-  <main class="main" id="mainEl">
-    <section class="hero">
-      <div class="hero-bg" id="heroBg"></div>
-      <div class="hero-gradient"></div>
-      <div class="top-bar"></div>
-      <div class="hero-content">
-        <div class="hero-badge"><span class="n-logo">XII</span><span>PRESENTS</span></div>
-        <div class="hero-title" id="heroTitle">REMINISCE <span class="red">2026</span></div>
-        <div class="hero-part"> </div>
-        <div class="hero-meta">
-          <span class="imdb-badge">IMDb</span>
-          <span class="rating">10.0/10.0</span>
-          <span class="streams">2B+ <span>Streams</span></span>
         </div>
-        <div class="hero-buttons">
-          <button class="btn-countdown" id="heroCdBtn">
+    </div>
+
+    <main class="main" id="mainEl">
+        <section class="hero">
+            <div class="hero-bg" id="heroBg"></div>
+            <div class="hero-gradient"></div>
+            <div class="top-bar"></div>
+            <div class="hero-content">
+                <div class="hero-badge"><span class="n-logo">XII</span><span>PRESENTS</span></div>
+                <div class="hero-title" id="heroTitle">REMINISCE <span class="red">2026</span></div>
+                <div class="hero-part"> </div>
+                <div class="hero-meta">
+                    <span class="imdb-badge">IMDb</span>
+                    <span class="rating">10.0/10.0</span>
+                    <span class="streams">2B+ <span>Streams</span></span>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn-countdown" id="heroCdBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        Premiere Countdown
+                    </button>
+                    <button class="btn-trailer">Watch Trailer</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="sections-wrap">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Most Liked</div>
+                    <div class="see-all">See all ›</div>
+                </div>
+                <div class="card-row-wrapper">
+                    <div class="card-track" id="mostLikedRow"></div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">We didn't realize it then,</div>
+                    <div class="see-all">See all ›</div>
+                </div>
+                <div class="card-row-wrapper">
+                    <div class="card-track" id="section1Row"></div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">But these were the days,</div>
+                    <div class="see-all">See all ›</div>
+                </div>
+                <div class="card-row-wrapper">
+                    <div class="card-track" id="section2Row"></div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">We'll miss the most.</div>
+                    <div class="see-all">See all ›</div>
+                </div>
+                <div class="card-row-wrapper">
+                    <div class="card-track" id="section3Row"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL (image-only, no bottom bar) -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+        <div class="modal">
+            <div class="modal-img-wrap">
+                <img id="modalImg" src="" alt="">
+                <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike(event)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                    <span id="modalLikeText">Like</span>
+                </button>
+                <div class="modal-close" onclick="closeModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="cd-blur-overlay" id="cdBlurOverlay" onclick="closeCountdown()"></div>
+    <div class="countdown-screen" id="countdownScreen">
+        <div class="cd-bg" id="cdBg"></div>
+        <div class="cd-vignette"></div>
+        <div class="cd-scanlines"></div>
+        <div class="cd-logo">REMINISCE</div>
+        <div class="cd-close" onclick="closeCountdown()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
-            Premiere Countdown
-          </button>
-          <button class="btn-trailer">Watch Trailer</button>
         </div>
-      </div>
-    </section>
-
-    <div class="sections-wrap">
-      <div class="section">
-        <div class="section-header">
-          <div class="section-title">Most Liked</div>
-          <div class="see-all">See all ›</div>
+        <div class="cd-premiere-label">Premiere Countdown</div>
+        <div class="cd-show-title" id="cdShowTitle">REMINISCE 2026</div>
+        <div class="cd-show-sub" id="cdShowSub"></div>
+        <div class="cd-target-date" id="cdTargetDate">April 10th · 3:30 PM · VENUE : CONARD HALL </div>
+        <div class="cd-blocks">
+            <div class="cd-block">
+                <div class="cd-flip">
+                    <div class="cd-card" id="cardDays">00</div>
+                    <div class="cd-card-glow"></div>
+                </div>
+                <div class="cd-block-label">Days</div>
+            </div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block">
+                <div class="cd-flip">
+                    <div class="cd-card" id="cardHours">00</div>
+                    <div class="cd-card-glow"></div>
+                </div>
+                <div class="cd-block-label">Hours</div>
+            </div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block">
+                <div class="cd-flip">
+                    <div class="cd-card" id="cardMins">00</div>
+                    <div class="cd-card-glow"></div>
+                </div>
+                <div class="cd-block-label">Mins</div>
+            </div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block">
+                <div class="cd-flip">
+                    <div class="cd-card" id="cardSecs">00</div>
+                    <div class="cd-card-glow"></div>
+                </div>
+                <div class="cd-block-label">Secs</div>
+            </div>
         </div>
-        <div class="card-row-wrapper">
-          <div class="card-track" id="mostLikedRow"></div>
+        <div class="cd-progress-wrap">
+            <div class="cd-progress-bar">
+                <div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div>
+            </div>
         </div>
-      </div>
-      <div class="section">
-        <div class="section-header">
-          <div class="section-title">We didn't realize it then,</div>
-          <div class="see-all">See all ›</div>
-        </div>
-        <div class="card-row-wrapper">
-          <div class="card-track" id="section1Row"></div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="section-header">
-          <div class="section-title">But these were the days,</div>
-          <div class="see-all">See all ›</div>
-        </div>
-        <div class="card-row-wrapper">
-          <div class="card-track" id="section2Row"></div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="section-header">
-          <div class="section-title">We'll miss the most.</div>
-          <div class="see-all">See all ›</div>
-        </div>
-        <div class="card-row-wrapper">
-          <div class="card-track" id="section3Row"></div>
-        </div>
-      </div>
     </div>
-  </main>
 
-  <!-- MODAL (image-only, no bottom bar) -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-    <div class="modal">
-      <div class="modal-img-wrap">
-        <img id="modalImg" src="" alt="">
-        <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleModalLike(event)">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-          <span id="modalLikeText">Like</span>
-        </button>
-        <div class="modal-close" onclick="closeModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+    <!-- CELEBRATION -->
+    <div class="celebrate-screen" id="celebrateScreen">
+        <div class="celebrate-bg"></div>
+        <canvas id="celebCanvas"></canvas>
+        <div class="celebrate-close" onclick="closeCelebrate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COUNTDOWN -->
-  <div class="cd-blur-overlay" id="cdBlurOverlay" onclick="closeCountdown()"></div>
-  <div class="countdown-screen" id="countdownScreen">
-    <div class="cd-bg" id="cdBg"></div>
-    <div class="cd-vignette"></div>
-    <div class="cd-scanlines"></div>
-    <div class="cd-logo">REMINISCE</div>
-    <div class="cd-close" onclick="closeCountdown()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </svg>
-    </div>
-    <div class="cd-premiere-label">Premiere Countdown</div>
-    <div class="cd-show-title" id="cdShowTitle">REMINISCE 2026</div>
-    <div class="cd-show-sub" id="cdShowSub"></div>
-    <div class="cd-target-date" id="cdTargetDate">April 10th · 3:30 PM · VENUE : CONARD HALL </div>
-    <div class="cd-blocks">
-      <div class="cd-block">
-        <div class="cd-flip">
-          <div class="cd-card" id="cardDays">00</div>
-          <div class="cd-card-glow"></div>
+        <div class="celebrate-content">
+            <div class="celebrate-n">CLASS XII</div>
+            <div class="celebrate-now">Now Streaming</div>
+            <div class="celebrate-title" id="celebTitle">REMINISCE <span class="red-hi">2026</span></div>
         </div>
-        <div class="cd-block-label">Days</div>
-      </div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block">
-        <div class="cd-flip">
-          <div class="cd-card" id="cardHours">00</div>
-          <div class="cd-card-glow"></div>
-        </div>
-        <div class="cd-block-label">Hours</div>
-      </div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block">
-        <div class="cd-flip">
-          <div class="cd-card" id="cardMins">00</div>
-          <div class="cd-card-glow"></div>
-        </div>
-        <div class="cd-block-label">Mins</div>
-      </div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block">
-        <div class="cd-flip">
-          <div class="cd-card" id="cardSecs">00</div>
-          <div class="cd-card-glow"></div>
-        </div>
-        <div class="cd-block-label">Secs</div>
-      </div>
     </div>
-    <div class="cd-progress-wrap">
-      <div class="cd-progress-bar">
-        <div class="cd-progress-fill" id="cdProgressFill" style="width:100%"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- CELEBRATION -->
-  <div class="celebrate-screen" id="celebrateScreen">
-    <div class="celebrate-bg"></div>
-    <canvas id="celebCanvas"></canvas>
-    <div class="celebrate-close" onclick="closeCelebrate()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </svg>
-    </div>
-    <div class="celebrate-content">
-      <div class="celebrate-n">CLASS XII</div>
-      <div class="celebrate-now">Now Streaming</div>
-      <div class="celebrate-title" id="celebTitle">REMINISCE <span class="red-hi">2026</span></div>
-    </div>
-  </div>
+    <script>
+        /* ── EXPERIENCE PROMPT ── */
+        (function () {
+            const overlay = document.getElementById('expOverlay');
+            const fsBtn = document.getElementById('expFsBtn');
+            const skipBtn = document.getElementById('expSkipBtn');
 
-  <script>
-    /* ── EXPERIENCE PROMPT ── */
-    (function () {
-      const overlay = document.getElementById('expOverlay');
-      const fsBtn = document.getElementById('expFsBtn');
-      const skipBtn = document.getElementById('expSkipBtn');
+            // If user already chose this session, skip straight in
+            if (sessionStorage.getItem('exp_seen')) {
+                overlay.style.display = 'none';
+            }
 
-      // If user already chose this session, skip straight in
-      if (sessionStorage.getItem('exp_seen')) {
-        overlay.style.display = 'none';
-      }
+            function dismissOverlay() {
+                sessionStorage.setItem('exp_seen', '1');
+                overlay.classList.add('exp-out');
+                // Remove from DOM after transition
+                overlay.addEventListener('transitionend', () => {
+                    overlay.remove();
+                    // Unlock main scroll
+                    document.getElementById('mainEl').style.overflow = '';
+                }, { once: true });
+            }
 
-      function dismissOverlay() {
-        sessionStorage.setItem('exp_seen', '1');
-        overlay.classList.add('exp-out');
-        // Remove from DOM after transition
-        overlay.addEventListener('transitionend', () => {
-          overlay.remove();
-          // Unlock main scroll
-          document.getElementById('mainEl').style.overflow = '';
-        }, { once: true });
-      }
+            function requestFS() {
+                const el = document.documentElement;
+                const req = el.requestFullscreen
+                    || el.webkitRequestFullscreen
+                    || el.mozRequestFullScreen
+                    || el.msRequestFullscreen;
+                if (req) return req.call(el).catch(() => { });
+                return Promise.resolve();
+            }
 
-      function requestFS() {
-        const el = document.documentElement;
-        const req = el.requestFullscreen
-          || el.webkitRequestFullscreen
-          || el.mozRequestFullScreen
-          || el.msRequestFullscreen;
-        if (req) return req.call(el).catch(() => { });
-        return Promise.resolve();
-      }
+            fsBtn.addEventListener('click', () => {
+                requestFS().finally(dismissOverlay);
+            });
 
-      fsBtn.addEventListener('click', () => {
-        requestFS().finally(dismissOverlay);
-      });
+            skipBtn.addEventListener('click', dismissOverlay);
 
-      skipBtn.addEventListener('click', dismissOverlay);
+            // Lock main scroll while overlay is showing
+            if (!sessionStorage.getItem('exp_seen')) {
+                document.getElementById('mainEl').style.overflow = 'hidden';
+            }
+        })();
 
-      // Lock main scroll while overlay is showing
-      if (!sessionStorage.getItem('exp_seen')) {
-        document.getElementById('mainEl').style.overflow = 'hidden';
-      }
-    })();
+        /* ── DATA ── */
+        function enrich(item) {
+            return { ...item, imgUrl: item.imgUrl || `./posters/${item.id}.jpg` };
+        }
+        const mostLiked = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }];
+        const section1 = [{ id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }];
+        const section2 = [{ id: 21 }, { id: 22 }, { id: 23 }, { id: 24 }, { id: 25 }, { id: 26 }, { id: 27 }, { id: 28 }, { id: 29 }, { id: 30 }];
+        const section3 = [{ id: 31 }, { id: 32 }, { id: 33 }, { id: 34 }, { id: 35 }, { id: 36 }, { id: 37 }, { id: 38 }, { id: 39 }, { id: 40 }];
 
-    /* ── DATA ── */
-    function enrich(item) {
-      return { ...item, imgUrl: item.imgUrl || `./posters/${item.id}.jpg` };
-    }
-    const mostLiked = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }];
-    const section1 = [{ id: 11 }, { id: 12 }, { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 }];
-    const section2 = [{ id: 21 }, { id: 22 }, { id: 23 }, { id: 24 }, { id: 25 }, { id: 26 }, { id: 27 }, { id: 28 }, { id: 29 }, { id: 30 }];
-    const section3 = [{ id: 31 }, { id: 32 }, { id: 33 }, { id: 34 }, { id: 35 }, { id: 36 }, { id: 37 }, { id: 38 }, { id: 39 }, { id: 40 }];
-
-    /* ── LIKE ── */
-    const heartSVG = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
-    const likedSet = new Set();
-    function makeLikeBtn(itemId) {
-      const btn = document.createElement('button');
-      btn.className = 'like-btn' + (likedSet.has(itemId) ? ' liked' : '');
-      btn.innerHTML = heartSVG;
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        likedSet.has(itemId) ? likedSet.delete(itemId) : likedSet.add(itemId);
-        btn.classList.toggle('liked', likedSet.has(itemId));
-        btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
-        btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
-      });
-      return btn;
-    }
-
-    /* ── CARDS ── */
-    function makeCard(raw, variant = 'normal') {
-      const item = enrich(raw);
-      const card = document.createElement('div');
-      card.className = 'card' + (variant === 'top10' ? ' card-top10' : '') + (variant === 'wide' ? ' card-wide' : '');
-      card.innerHTML = variant === 'top10'
-        ? `<img src="${item.imgUrl}" alt="" loading="lazy"><div class="top10-num">${raw.rank}</div>`
-        : `<img src="${item.imgUrl}" alt="" loading="lazy">`;
-      card.appendChild(makeLikeBtn(item.id));
-      card.addEventListener('click', () => openModal(item));
-      return card;
-    }
-
-    /* ── CAROUSEL ── */
-    const SCROLL_SPEED = 0.55;
-    const rowStates = {};
-    let rowIndex = 0;
-
-    function setupInteraction(track, rowId) {
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
-      let startPos = 0;
-      let lastX = 0;
-      let velocity = 0;
-      let dragDelta = 0;
-      let momentumRAF = null;
-      // Store pointer down target so we can fire click on tap
-      let pointerDownTarget = null;
-
-      const DRAG_THRESHOLD = 6; // px — below this is a tap, not a drag
-
-      const applyPos = (pos) => {
-        const sw = rowStates[rowId].singleWidth;
-        if (sw) pos = ((pos % sw) + sw) % sw;
-        rowStates[rowId].pos = pos;
-      };
-
-      // ── pointerdown: start tracking but do NOT capture pointer ──
-      // Not calling setPointerCapture lets native click events still fire on children.
-      // We only steal the pointer if the user actually drags.
-      track.addEventListener('pointerdown', e => {
-        // Only respond to primary button (left-click / first touch)
-        if (e.button !== 0 && e.pointerType === 'mouse') return;
-        cancelAnimationFrame(momentumRAF);
-        isDragging = false; // not yet — wait to see if they move
-        dragDelta = 0;
-        velocity = 0;
-        startX = e.clientX;
-        startY = e.clientY;
-        lastX = e.clientX;
-        startPos = rowStates[rowId].pos;
-        pointerDownTarget = e.target;
-      });
-
-      track.addEventListener('pointermove', e => {
-        // Only activate drag if primary button is still held
-        if (e.buttons === 0 && e.pointerType === 'mouse') return;
-
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-
-        // Don't start dragging until threshold crossed
-        if (!isDragging && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
-
-        if (!isDragging) {
-          // Commit to drag: now capture pointer to prevent text selection etc.
-          isDragging = true;
-          track.classList.add('grabbing');
-          rowStates[rowId].paused = true;
-          try { track.setPointerCapture(e.pointerId); } catch (_) { }
+        /* ── LIKE ── */
+        const heartSVG = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+        const likedSet = new Set();
+        function makeLikeBtn(itemId) {
+            const btn = document.createElement('button');
+            btn.className = 'like-btn' + (likedSet.has(itemId) ? ' liked' : '');
+            btn.innerHTML = heartSVG;
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                likedSet.has(itemId) ? likedSet.delete(itemId) : likedSet.add(itemId);
+                btn.classList.toggle('liked', likedSet.has(itemId));
+                btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+                btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+            });
+            return btn;
         }
 
-        e.preventDefault();
-        velocity = lastX - e.clientX;
-        lastX = e.clientX;
-        dragDelta = startX - e.clientX;
-        applyPos(startPos + dragDelta);
-        track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
-      }, { passive: false });
-
-      const endDrag = (e) => {
-        track.classList.remove('grabbing');
-
-        if (!isDragging) {
-          // It was a genuine tap/click — do nothing here.
-          // The card's own 'click' event will fire naturally.
-          rowStates[rowId].paused = false;
-          isDragging = false;
-          return;
+        /* ── CARDS ── */
+        function makeCard(raw, variant = 'normal') {
+            const item = enrich(raw);
+            const card = document.createElement('div');
+            card.className = 'card' + (variant === 'top10' ? ' card-top10' : '') + (variant === 'wide' ? ' card-wide' : '');
+            card.innerHTML = variant === 'top10'
+                ? `<img src="${item.imgUrl}" alt="" loading="lazy"><div class="top10-num">${raw.rank}</div>`
+                : `<img src="${item.imgUrl}" alt="" loading="lazy">`;
+            card.appendChild(makeLikeBtn(item.id));
+            card.addEventListener('click', () => openModal(item));
+            return card;
         }
 
-        isDragging = false;
+        /* ── CAROUSEL ── */
+        const SCROLL_SPEED = 0.55;
+        const rowStates = {};
+        let rowIndex = 0;
 
-        if (Math.abs(dragDelta) < DRAG_THRESHOLD) {
-          // Barely moved — treat as tap, resume auto-scroll
-          rowStates[rowId].paused = false;
-          return;
+        function setupInteraction(track, rowId) {
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let startPos = 0;
+            let lastX = 0;
+            let velocity = 0;
+            let dragDelta = 0;
+            let momentumRAF = null;
+            // Store pointer down target so we can fire click on tap
+            let pointerDownTarget = null;
+
+            const DRAG_THRESHOLD = 6; // px — below this is a tap, not a drag
+
+            const applyPos = (pos) => {
+                const sw = rowStates[rowId].singleWidth;
+                if (sw) pos = ((pos % sw) + sw) % sw;
+                rowStates[rowId].pos = pos;
+            };
+
+            // ── pointerdown: start tracking but do NOT capture pointer ──
+            // Not calling setPointerCapture lets native click events still fire on children.
+            // We only steal the pointer if the user actually drags.
+            track.addEventListener('pointerdown', e => {
+                // Only respond to primary button (left-click / first touch)
+                if (e.button !== 0 && e.pointerType === 'mouse') return;
+                cancelAnimationFrame(momentumRAF);
+                isDragging = false; // not yet — wait to see if they move
+                dragDelta = 0;
+                velocity = 0;
+                startX = e.clientX;
+                startY = e.clientY;
+                lastX = e.clientX;
+                startPos = rowStates[rowId].pos;
+                pointerDownTarget = e.target;
+            });
+
+            track.addEventListener('pointermove', e => {
+                // Only activate drag if primary button is still held
+                if (e.buttons === 0 && e.pointerType === 'mouse') return;
+
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                // Don't start dragging until threshold crossed
+                if (!isDragging && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+
+                if (!isDragging) {
+                    // Commit to drag: now capture pointer to prevent text selection etc.
+                    isDragging = true;
+                    track.classList.add('grabbing');
+                    rowStates[rowId].paused = true;
+                    try { track.setPointerCapture(e.pointerId); } catch (_) { }
+                }
+
+                e.preventDefault();
+                velocity = lastX - e.clientX;
+                lastX = e.clientX;
+                dragDelta = startX - e.clientX;
+                applyPos(startPos + dragDelta);
+                track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
+            }, { passive: false });
+
+            const endDrag = (e) => {
+                track.classList.remove('grabbing');
+
+                if (!isDragging) {
+                    // It was a genuine tap/click — do nothing here.
+                    // The card's own 'click' event will fire naturally.
+                    rowStates[rowId].paused = false;
+                    isDragging = false;
+                    return;
+                }
+
+                isDragging = false;
+
+                if (Math.abs(dragDelta) < DRAG_THRESHOLD) {
+                    // Barely moved — treat as tap, resume auto-scroll
+                    rowStates[rowId].paused = false;
+                    return;
+                }
+
+                // Momentum glide then hand off to auto-scroll
+                let vel = velocity * 1.4;
+                const decay = 0.88;
+                const momentumStep = () => {
+                    vel *= decay;
+                    if (Math.abs(vel) > 0.3) {
+                        applyPos(rowStates[rowId].pos + vel);
+                        track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
+                        momentumRAF = requestAnimationFrame(momentumStep);
+                    } else {
+                        rowStates[rowId].paused = false;
+                    }
+                };
+                momentumRAF = requestAnimationFrame(momentumStep);
+            };
+
+            track.addEventListener('pointerup', endDrag);
+            track.addEventListener('pointercancel', endDrag);
+
+            // Prevent click from firing after a real drag
+            track.addEventListener('click', e => {
+                if (Math.abs(dragDelta) >= DRAG_THRESHOLD) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            }, true); // capture phase — fires before card's click handler
+
+            // Desktop hover: pause auto-scroll
+            const wrapper = track.closest('.card-row-wrapper');
+            wrapper.addEventListener('mouseenter', () => {
+                if (!isDragging) rowStates[rowId].paused = true;
+            });
+            wrapper.addEventListener('mouseleave', () => {
+                if (!isDragging) rowStates[rowId].paused = false;
+            });
         }
 
-        // Momentum glide then hand off to auto-scroll
-        let vel = velocity * 1.4;
-        const decay = 0.88;
-        const momentumStep = () => {
-          vel *= decay;
-          if (Math.abs(vel) > 0.3) {
-            applyPos(rowStates[rowId].pos + vel);
-            track.style.transform = `translateX(-${rowStates[rowId].pos}px)`;
-            momentumRAF = requestAnimationFrame(momentumStep);
-          } else {
-            rowStates[rowId].paused = false;
-          }
-        };
-        momentumRAF = requestAnimationFrame(momentumStep);
-      };
+        function populateRow(rowId, data, variant = 'normal') {
+            const track = document.getElementById(rowId);
+            if (!track) return;
+            const goesLeft = (rowIndex % 2 === 0);
+            rowIndex++;
 
-      track.addEventListener('pointerup', endDrag);
-      track.addEventListener('pointercancel', endDrag);
+            data.forEach((item, i) => {
+                if (variant === 'top10') item.rank = i + 1;
+                track.appendChild(makeCard(item, variant));
+            });
 
-      // Prevent click from firing after a real drag
-      track.addEventListener('click', e => {
-        if (Math.abs(dragDelta) >= DRAG_THRESHOLD) {
-          e.stopPropagation();
-          e.preventDefault();
+            // Clone for seamless loop
+            const origCards = Array.from(track.children);
+            origCards.forEach((card, idx) => {
+                const clone = card.cloneNode(true);
+                clone.querySelector('.like-btn')?.addEventListener('click', e => {
+                    e.stopPropagation();
+                    origCards[idx].querySelector('.like-btn')?.click();
+                });
+                clone.addEventListener('click', () => openModal(enrich(data[idx])));
+                track.appendChild(clone);
+            });
+
+            const singleWidth = origCards.reduce((s, c) => s + c.offsetWidth + 10, 0);
+            rowStates[rowId] = { pos: goesLeft ? 0 : singleWidth, goesLeft, singleWidth, paused: false };
+            setupInteraction(track, rowId);
         }
-      }, true); // capture phase — fires before card's click handler
 
-      // Desktop hover: pause auto-scroll
-      const wrapper = track.closest('.card-row-wrapper');
-      wrapper.addEventListener('mouseenter', () => {
-        if (!isDragging) rowStates[rowId].paused = true;
-      });
-      wrapper.addEventListener('mouseleave', () => {
-        if (!isDragging) rowStates[rowId].paused = false;
-      });
-    }
+        populateRow('mostLikedRow', mostLiked, 'top10');
+        populateRow('section1Row', section1);
+        populateRow('section2Row', section2);
+        populateRow('section3Row', section3);
 
-    function populateRow(rowId, data, variant = 'normal') {
-      const track = document.getElementById(rowId);
-      if (!track) return;
-      const goesLeft = (rowIndex % 2 === 0);
-      rowIndex++;
-
-      data.forEach((item, i) => {
-        if (variant === 'top10') item.rank = i + 1;
-        track.appendChild(makeCard(item, variant));
-      });
-
-      // Clone for seamless loop
-      const origCards = Array.from(track.children);
-      origCards.forEach((card, idx) => {
-        const clone = card.cloneNode(true);
-        clone.querySelector('.like-btn')?.addEventListener('click', e => {
-          e.stopPropagation();
-          origCards[idx].querySelector('.like-btn')?.click();
+        // Re-measure after fonts/images load
+        window.addEventListener('load', () => {
+            Object.keys(rowStates).forEach(rowId => {
+                const track = document.getElementById(rowId);
+                if (!track) return;
+                const half = track.children.length / 2;
+                let w = 0;
+                for (let i = 0; i < half; i++) w += track.children[i].offsetWidth + 10;
+                rowStates[rowId].singleWidth = w;
+                if (!rowStates[rowId].goesLeft) rowStates[rowId].pos = w;
+            });
         });
-        clone.addEventListener('click', () => openModal(enrich(data[idx])));
-        track.appendChild(clone);
-      });
 
-      const singleWidth = origCards.reduce((s, c) => s + c.offsetWidth + 10, 0);
-      rowStates[rowId] = { pos: goesLeft ? 0 : singleWidth, goesLeft, singleWidth, paused: false };
-      setupInteraction(track, rowId);
-    }
-
-    populateRow('mostLikedRow', mostLiked, 'top10');
-    populateRow('section1Row', section1);
-    populateRow('section2Row', section2);
-    populateRow('section3Row', section3);
-
-    // Re-measure after fonts/images load
-    window.addEventListener('load', () => {
-      Object.keys(rowStates).forEach(rowId => {
-        const track = document.getElementById(rowId);
-        if (!track) return;
-        const half = track.children.length / 2;
-        let w = 0;
-        for (let i = 0; i < half; i++) w += track.children[i].offsetWidth + 10;
-        rowStates[rowId].singleWidth = w;
-        if (!rowStates[rowId].goesLeft) rowStates[rowId].pos = w;
-      });
-    });
-
-    function autoScrollLoop() {
-      Object.entries(rowStates).forEach(([rowId, state]) => {
-        if (state.paused || !state.singleWidth) return;
-        const track = document.getElementById(rowId);
-        if (!track) return;
-        if (state.goesLeft) {
-          state.pos += SCROLL_SPEED;
-          if (state.pos >= state.singleWidth) state.pos -= state.singleWidth;
-        } else {
-          state.pos -= SCROLL_SPEED;
-          if (state.pos <= 0) state.pos += state.singleWidth;
+        function autoScrollLoop() {
+            Object.entries(rowStates).forEach(([rowId, state]) => {
+                if (state.paused || !state.singleWidth) return;
+                const track = document.getElementById(rowId);
+                if (!track) return;
+                if (state.goesLeft) {
+                    state.pos += SCROLL_SPEED;
+                    if (state.pos >= state.singleWidth) state.pos -= state.singleWidth;
+                } else {
+                    state.pos -= SCROLL_SPEED;
+                    if (state.pos <= 0) state.pos += state.singleWidth;
+                }
+                track.style.transform = `translateX(-${state.pos}px)`;
+            });
+            requestAnimationFrame(autoScrollLoop);
         }
-        track.style.transform = `translateX(-${state.pos}px)`;
-      });
-      requestAnimationFrame(autoScrollLoop);
-    }
-    requestAnimationFrame(autoScrollLoop);
+        requestAnimationFrame(autoScrollLoop);
 
-    /* ── HERO BUTTON ── */
-    document.getElementById('heroCdBtn').onclick = () =>
-      openCountdown(enrich({ id: 999, title: "REMINISCE 2026", imgUrl: './posters/hero.jpg' }));
+        /* ── HERO BUTTON ── */
+        document.getElementById('heroCdBtn').onclick = () =>
+            openCountdown(enrich({ id: 999, title: "REMINISCE 2026", imgUrl: './posters/hero.jpg' }));
 
-    /* ── MODAL ── */
-    function openModal(item) {
-      const img = document.getElementById('modalImg');
-      const modal = document.querySelector('.modal');
-      img.src = item.imgUrl;
-      modal.style.width = '';
-      img.onload = () => {
-        const maxW = window.innerWidth - 40;
-        const maxH = window.innerHeight * 0.88;
-        const ratio = img.naturalWidth / img.naturalHeight;
-        let w = Math.min(maxH * ratio, maxW, 700);
-        modal.style.width = Math.max(200, w) + 'px';
-      };
-      const mLike = document.getElementById('modalLikeBtn');
-      mLike.dataset.itemId = item.id;
-      const liked = likedSet.has(item.id);
-      mLike.classList.toggle('liked', liked);
-      document.getElementById('modalLikeText').textContent = liked ? 'Liked' : 'Like';
-      document.getElementById('modalOverlay').classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-    function toggleModalLike(e) {
-      e.stopPropagation();
-      const mLike = document.getElementById('modalLikeBtn');
-      const id = Number(mLike.dataset.itemId);
-      const nowLiked = likedSet.has(id);
-      nowLiked ? likedSet.delete(id) : likedSet.add(id);
-      mLike.classList.toggle('liked', !nowLiked);
-      document.getElementById('modalLikeText').textContent = nowLiked ? 'Like' : 'Liked';
-      mLike.classList.remove('pop'); void mLike.offsetWidth; mLike.classList.add('pop');
-      mLike.addEventListener('animationend', () => mLike.classList.remove('pop'), { once: true });
-    }
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('show');
-      document.body.style.overflow = '';
-    }
-    function closeModalOutside(e) {
-      if (e.target === document.getElementById('modalOverlay')) closeModal();
-    }
+        /* ── MODAL ── */
+        function openModal(item) {
+            const img = document.getElementById('modalImg');
+            const modal = document.querySelector('.modal');
+            img.src = item.imgUrl;
+            modal.style.width = '';
+            img.onload = () => {
+                const maxW = window.innerWidth - 40;
+                const maxH = window.innerHeight * 0.88;
+                const ratio = img.naturalWidth / img.naturalHeight;
+                let w = Math.min(maxH * ratio, maxW, 700);
+                modal.style.width = Math.max(200, w) + 'px';
+            };
+            const mLike = document.getElementById('modalLikeBtn');
+            mLike.dataset.itemId = item.id;
+            const liked = likedSet.has(item.id);
+            mLike.classList.toggle('liked', liked);
+            document.getElementById('modalLikeText').textContent = liked ? 'Liked' : 'Like';
+            document.getElementById('modalOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function toggleModalLike(e) {
+            e.stopPropagation();
+            const mLike = document.getElementById('modalLikeBtn');
+            const id = Number(mLike.dataset.itemId);
+            const nowLiked = likedSet.has(id);
+            nowLiked ? likedSet.delete(id) : likedSet.add(id);
+            mLike.classList.toggle('liked', !nowLiked);
+            document.getElementById('modalLikeText').textContent = nowLiked ? 'Like' : 'Liked';
+            mLike.classList.remove('pop'); void mLike.offsetWidth; mLike.classList.add('pop');
+            mLike.addEventListener('animationend', () => mLike.classList.remove('pop'), { once: true });
+        }
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        function closeModalOutside(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
+        }
 
-    /* ── COUNTDOWN ──
-       Fixed target: April 10, current or next year — but NEVER reset after expiry.
-       Once target passes, go straight to celebration.
-    */
-    const TARGET_DATE = new Date();
-    TARGET_DATE.setMonth(3); // April (0-indexed)
-    TARGET_DATE.setDate(10);
-    TARGET_DATE.setHours(15, 30, 0, 0);
-    document.getElementById('cdTargetDate').innerHTML = 'April 10th · 3:30 PM · VENUE : CONRAD HALL';
-    // If already past, do NOT advance year — just treat as expired immediately
+        /* ── COUNTDOWN ──
+           Fixed target: April 10, current or next year — but NEVER reset after expiry.
+           Once target passes, go straight to celebration.
+        */
+        const TARGET_DATE = new Date();
 
-    const TARGET_EXPIRED = TARGET_DATE <= new Date();
+        TARGET_DATE.setMonth(9); // April (0-indexed)
+        TARGET_DATE.setDate(10);
+        TARGET_DATE.setHours(15, 30, 0, 0);
+        document.getElementById('cdTargetDate').innerHTML = ' · 3:30 PM · VENUE : CONRAD HALL';
 
-    let cdInterval = null, cdCurrentItem = null;
-    const prev = { days: -1, hours: -1, mins: -1, secs: -1 };
-    function pad(n) { return String(n).padStart(2, '0'); }
-    function animateFlip(el, v) { if (el.textContent === v) return; el.style.transform = 'scaleY(.85)'; setTimeout(() => { el.textContent = v; el.style.transform = 'scaleY(1)'; }, 100); }
 
-    function updateCountdown() {
-      const diff = TARGET_DATE - new Date();
-      if (diff <= 0) {
-        clearInterval(cdInterval);
-        closeCountdown();
-        // Auto-trigger celebration
-        setTimeout(() => launchCelebration(cdCurrentItem), 350);
-        return;
-      }
-      const totalSecs = Math.floor(diff / 1000);
-      const days = Math.floor(totalSecs / 86400);
-      const hours = Math.floor((totalSecs % 86400) / 3600);
-      const mins = Math.floor((totalSecs % 3600) / 60);
-      const secs = totalSecs % 60;
-      if (days !== prev.days) { animateFlip(document.getElementById('cardDays'), pad(days)); prev.days = days; }
-      if (hours !== prev.hours) { animateFlip(document.getElementById('cardHours'), pad(hours)); prev.hours = hours; }
-      if (mins !== prev.mins) { animateFlip(document.getElementById('cardMins'), pad(mins)); prev.mins = mins; }
-      if (secs !== prev.secs) { animateFlip(document.getElementById('cardSecs'), pad(secs)); prev.secs = secs; }
-      // Progress bar: based on 30-day window
-      const tw = 10 * 24 * 3600 * 1000;
-      const pct = Math.max(0, Math.min(100, ((tw - diff) / tw) * 100));
-      document.getElementById('cdProgressFill').style.width = (100 - pct) + '%';
-    }
+        const TARGET_EXPIRED = TARGET_DATE <= new Date();
 
-    function openCountdown(item) {
-      closeModal();
-      cdCurrentItem = item;
+        let cdInterval = null, cdCurrentItem = null;
+        const prev = { days: -1, hours: -1, mins: -1, secs: -1 };
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function animateFlip(el, v) { if (el.textContent === v) return; el.style.transform = 'scaleY(.85)'; setTimeout(() => { el.textContent = v; el.style.transform = 'scaleY(1)'; }, 100); }
 
-      // If already past target, skip straight to celebration
-      if (TARGET_EXPIRED) {
-        setTimeout(() => launchCelebration(item), 200);
-        return;
-      }
+        function updateCountdown() {
+            const diff = TARGET_DATE - new Date();
+            if (diff <= 0) {
+                clearInterval(cdInterval);
+                closeCountdown();
 
-      document.getElementById('cdShowTitle').textContent = item.title || 'REMINISCE 2026';
-      document.getElementById('cdShowSub').textContent = '';
-      document.getElementById('cdBg').style.backgroundImage = `url('${item.imgUrl}')`;
-      document.getElementById('cdTargetDate').innerHTML = 'April 10th · 3:30 PM · VENUE : CONRAD HALL';
+                setTimeout(() => launchCelebration(cdCurrentItem), 350);
+                return;
+            }
+            const totalSecs = Math.floor(diff / 1000);
+            const days = Math.floor(totalSecs / 86400);
+            const hours = Math.floor((totalSecs % 86400) / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            const secs = totalSecs % 60;
+            if (days !== prev.days) { animateFlip(document.getElementById('cardDays'), pad(days)); prev.days = days; }
+            if (hours !== prev.hours) { animateFlip(document.getElementById('cardHours'), pad(hours)); prev.hours = hours; }
+            if (mins !== prev.mins) { animateFlip(document.getElementById('cardMins'), pad(mins)); prev.mins = mins; }
+            if (secs !== prev.secs) { animateFlip(document.getElementById('cardSecs'), pad(secs)); prev.secs = secs; }
 
-      const screen = document.getElementById('countdownScreen');
-      screen.classList.remove('hiding');
-      screen.style.display = 'flex';
-      void screen.offsetWidth;
-      screen.classList.add('show');
-      document.getElementById('cdBlurOverlay').classList.add('show');
-      document.body.style.overflow = 'hidden';
+            const tw = 10 * 24 * 3600 * 1000;
+            const pct = Math.max(0, Math.min(100, ((tw - diff) / tw) * 100));
+            document.getElementById('cdProgressFill').style.width = (100 - pct) + '%';
+        }
 
-      updateCountdown();
-      clearInterval(cdInterval);
-      cdInterval = setInterval(updateCountdown, 1000);
-    }
+        function openCountdown(item) {
+            closeModal();
+            cdCurrentItem = item;
 
-    function closeCountdown() {
-      clearInterval(cdInterval);
-      const screen = document.getElementById('countdownScreen');
-      if (!screen.classList.contains('show')) return;
-      document.getElementById('cdBlurOverlay').classList.remove('show');
-      screen.classList.add('hiding');
-      screen.addEventListener('animationend', () => {
-        screen.classList.remove('show', 'hiding');
-        screen.style.display = '';
-        document.body.style.overflow = '';
-      }, { once: true });
-    }
 
-    /* ── CELEBRATION ── */
-    const celebCanvas = document.getElementById('celebCanvas');
-    const ctx = celebCanvas.getContext('2d');
-    let particles = [], fireworks = [], animFrame = null, fwTimer = 0, confetti = [];
+            if (TARGET_EXPIRED) {
+                setTimeout(() => launchCelebration(item), 200);
+                return;
+            }
 
-    function resizeCanvas() { celebCanvas.width = innerWidth; celebCanvas.height = innerHeight; }
+            document.getElementById('cdShowTitle').textContent = item.title || 'REMINISCE 2026';
+            document.getElementById('cdShowSub').textContent = '';
+            document.getElementById('cdBg').style.backgroundImage = `url('${item.imgUrl}')`;
+            document.getElementById('cdTargetDate').innerHTML = 'April 10th · 3:30 PM · VENUE : CONRAD HALL';
 
-    const CC = ['#E50914', '#f5c518', '#ff6b6b', '#ffd700', '#ff4757', '#ff6348', '#fff', '#e84393', '#2ed573', '#1e90ff'];
-    const FC = ['#E50914', '#f5c518', '#ff6b6b', '#ff4757', '#ffa502', '#ff6348', '#a29bfe', '#fd79a8', '#00cec9', '#55efc4'];
+            const screen = document.getElementById('countdownScreen');
+            screen.classList.remove('hiding');
+            screen.style.display = 'flex';
+            void screen.offsetWidth;
+            screen.classList.add('show');
+            document.getElementById('cdBlurOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
 
-    class Conf {
-      constructor() { this.reset(true); }
-      reset(init = false) {
-        this.x = Math.random() * innerWidth;
-        this.y = init ? Math.random() * -innerHeight * 2 : -20;
-        this.w = Math.random() * 10 + 4; this.h = Math.random() * 6 + 3;
-        this.rot = Math.random() * Math.PI * 2; this.rs = (Math.random() - .5) * .2;
-        this.vy = Math.random() * 3 + 2; this.vx = (Math.random() - .5) * 2;
-        this.color = CC[~~(Math.random() * CC.length)];
-      }
-      update() { this.x += this.vx; this.y += this.vy; this.rot += this.rs; if (this.y > innerHeight + 20) this.reset(); }
-      draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = 1; ctx.fillStyle = this.color; ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h); ctx.restore(); }
-    }
-    class Spark {
-      constructor(x, y, vx, vy, c) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = c; this.life = 1; this.decay = Math.random() * .015 + .008; this.r = Math.random() * 2.5 + 1; }
-      update() { this.vx *= .97; this.vy = this.vy * .97 + .08; this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
-      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, Math.max(0, this.r * this.life), 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = this.life; ctx.shadowBlur = 6; ctx.shadowColor = this.color; ctx.fill(); ctx.shadowBlur = 0; }
-      get dead() { return this.life <= 0; }
-    }
-    class FW {
-      constructor() {
-        this.x = Math.random() * innerWidth; this.y = innerHeight;
-        this.tx = Math.random() * innerWidth * .8 + innerWidth * .1;
-        this.ty = Math.random() * innerHeight * .5 + 50;
-        this.color = FC[~~(Math.random() * FC.length)];
-        this.speed = Math.random() * 4 + 6;
-        const a = Math.atan2(this.ty - this.y, this.tx - this.x);
-        this.vx = Math.cos(a) * this.speed; this.vy = Math.sin(a) * this.speed;
-        this.trail = []; this.done = false;
-      }
-      update() {
-        this.trail.push({ x: this.x, y: this.y });
-        if (this.trail.length > 12) this.trail.shift();
-        this.x += this.vx; this.y += this.vy;
-        const dx = this.tx - this.x, dy = this.ty - this.y;
-        if (Math.sqrt(dx * dx + dy * dy) < this.speed * 2) { this.explode(); this.done = true; }
-      }
-      explode() {
-        for (let i = 0; i < 100; i++) { const a = (i / 100) * Math.PI * 2, s = Math.random() * 5 + 1; particles.push(new Spark(this.x, this.y, Math.cos(a) * s, Math.sin(a) * s, this.color)); }
-        for (let i = 0; i < 30; i++) { const a = (i / 30) * Math.PI * 2, s = 6 + Math.random() * 3; particles.push(new Spark(this.x, this.y, Math.cos(a) * s, Math.sin(a) * s, '#fff')); }
-      }
-      draw() {
-        for (let i = 0; i < this.trail.length; i++) { const al = i / this.trail.length; ctx.beginPath(); ctx.arc(this.trail[i].x, this.trail[i].y, 2 * al, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = al * .6; ctx.fill(); }
-        ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-      }
-    }
+            updateCountdown();
+            clearInterval(cdInterval);
+            cdInterval = setInterval(updateCountdown, 1000);
+        }
 
-    function celebLoop() {
-      ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0, 0, celebCanvas.width, celebCanvas.height);
-      fwTimer++;
-      if (fwTimer % 28 === 0) fireworks.push(new FW());
-      if (fwTimer % 8 === 0 && confetti.length < 220) confetti.push(new Conf());
-      fireworks = fireworks.filter(fw => { fw.update(); if (!fw.done) fw.draw(); return !fw.done; });
-      particles = particles.filter(p => { p.update(); p.draw(); ctx.globalAlpha = 1; return !p.dead; });
-      confetti.forEach(c => { c.update(); c.draw(); }); ctx.globalAlpha = 1;
-      animFrame = requestAnimationFrame(celebLoop);
-    }
+        function closeCountdown() {
+            clearInterval(cdInterval);
+            const screen = document.getElementById('countdownScreen');
+            if (!screen.classList.contains('show')) return;
+            document.getElementById('cdBlurOverlay').classList.remove('show');
+            screen.classList.add('hiding');
+            screen.addEventListener('animationend', () => {
+                screen.classList.remove('show', 'hiding');
+                screen.style.display = '';
+                document.body.style.overflow = '';
+            }, { once: true });
+        }
 
-    function launchCelebration(item) {
-      resizeCanvas(); particles = []; fireworks = []; confetti = []; fwTimer = 0;
-      document.getElementById('celebTitle').innerHTML =
-        (item.title || 'REMINISCE 2026').replace(/(\S+)\s*$/, '<span class="red-hi">$1</span>');
-      document.getElementById('celebrateScreen').classList.add('show');
-      document.body.style.overflow = 'hidden';
-      for (let i = 0; i < 5; i++) setTimeout(() => {
-        const fw = new FW();
-        fw.tx = innerWidth / 2 + (Math.random() - .5) * 300;
-        fw.ty = innerHeight * .3 + (Math.random() - .5) * 120;
-        const a = Math.atan2(fw.ty - fw.y, fw.tx - fw.x);
-        fw.vx = Math.cos(a) * 10; fw.vy = Math.sin(a) * 10;
-        fireworks.push(fw);
-      }, i * 120);
-      cancelAnimationFrame(animFrame); celebLoop();
-    }
-    function closeCelebrate() {
-      cancelAnimationFrame(animFrame);
-      document.getElementById('celebrateScreen').classList.remove('show');
-      document.body.style.overflow = '';
-      ctx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
-    }
 
-    /* ── PARALLAX ── */
-    document.querySelector('.main').addEventListener('scroll', function () {
-      document.getElementById('heroBg').style.transform = `scale(1.03) translateY(${this.scrollTop * .22}px)`;
-    }, { passive: true });
+        const celebCanvas = document.getElementById('celebCanvas');
+        const ctx = celebCanvas.getContext('2d');
+        let particles = [], fireworks = [], animFrame = null, fwTimer = 0, confetti = [];
 
-    /* ── KEYBOARD ── */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeModal(); closeCountdown(); closeCelebrate(); }
-    });
+        function resizeCanvas() { celebCanvas.width = innerWidth; celebCanvas.height = innerHeight; }
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-// Toast notification for Watch Trailer button
-function showToast(message) {
-  // Create toast element
-  const toast = document.createElement('div');
-  toast.textContent = message;
-  toast.style.cssText = `
+        const CC = ['#E50914', '#f5c518', '#ff6b6b', '#ffd700', '#ff4757', '#ff6348', '#fff', '#e84393', '#2ed573', '#1e90ff'];
+        const FC = ['#E50914', '#f5c518', '#ff6b6b', '#ff4757', '#ffa502', '#ff6348', '#a29bfe', '#fd79a8', '#00cec9', '#55efc4'];
+
+        class Conf {
+            constructor() { this.reset(true); }
+            reset(init = false) {
+                this.x = Math.random() * innerWidth;
+                this.y = init ? Math.random() * -innerHeight * 2 : -20;
+                this.w = Math.random() * 10 + 4; this.h = Math.random() * 6 + 3;
+                this.rot = Math.random() * Math.PI * 2; this.rs = (Math.random() - .5) * .2;
+                this.vy = Math.random() * 3 + 2; this.vx = (Math.random() - .5) * 2;
+                this.color = CC[~~(Math.random() * CC.length)];
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.rot += this.rs; if (this.y > innerHeight + 20) this.reset(); }
+            draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = 1; ctx.fillStyle = this.color; ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h); ctx.restore(); }
+        }
+        class Spark {
+            constructor(x, y, vx, vy, c) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = c; this.life = 1; this.decay = Math.random() * .015 + .008; this.r = Math.random() * 2.5 + 1; }
+            update() { this.vx *= .97; this.vy = this.vy * .97 + .08; this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, Math.max(0, this.r * this.life), 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = this.life; ctx.shadowBlur = 6; ctx.shadowColor = this.color; ctx.fill(); ctx.shadowBlur = 0; }
+            get dead() { return this.life <= 0; }
+        }
+        class FW {
+            constructor() {
+                this.x = Math.random() * innerWidth; this.y = innerHeight;
+                this.tx = Math.random() * innerWidth * .8 + innerWidth * .1;
+                this.ty = Math.random() * innerHeight * .5 + 50;
+                this.color = FC[~~(Math.random() * FC.length)];
+                this.speed = Math.random() * 4 + 6;
+                const a = Math.atan2(this.ty - this.y, this.tx - this.x);
+                this.vx = Math.cos(a) * this.speed; this.vy = Math.sin(a) * this.speed;
+                this.trail = []; this.done = false;
+            }
+            update() {
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > 12) this.trail.shift();
+                this.x += this.vx; this.y += this.vy;
+                const dx = this.tx - this.x, dy = this.ty - this.y;
+                if (Math.sqrt(dx * dx + dy * dy) < this.speed * 2) { this.explode(); this.done = true; }
+            }
+            explode() {
+                for (let i = 0; i < 100; i++) { const a = (i / 100) * Math.PI * 2, s = Math.random() * 5 + 1; particles.push(new Spark(this.x, this.y, Math.cos(a) * s, Math.sin(a) * s, this.color)); }
+                for (let i = 0; i < 30; i++) { const a = (i / 30) * Math.PI * 2, s = 6 + Math.random() * 3; particles.push(new Spark(this.x, this.y, Math.cos(a) * s, Math.sin(a) * s, '#fff')); }
+            }
+            draw() {
+                for (let i = 0; i < this.trail.length; i++) { const al = i / this.trail.length; ctx.beginPath(); ctx.arc(this.trail[i].x, this.trail[i].y, 2 * al, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = al * .6; ctx.fill(); }
+                ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+            }
+        }
+
+        function celebLoop() {
+            ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0, 0, celebCanvas.width, celebCanvas.height);
+            fwTimer++;
+            if (fwTimer % 28 === 0) fireworks.push(new FW());
+            if (fwTimer % 8 === 0 && confetti.length < 220) confetti.push(new Conf());
+            fireworks = fireworks.filter(fw => { fw.update(); if (!fw.done) fw.draw(); return !fw.done; });
+            particles = particles.filter(p => { p.update(); p.draw(); ctx.globalAlpha = 1; return !p.dead; });
+            confetti.forEach(c => { c.update(); c.draw(); }); ctx.globalAlpha = 1;
+            animFrame = requestAnimationFrame(celebLoop);
+        }
+
+        function launchCelebration(item) {
+            resizeCanvas(); particles = []; fireworks = []; confetti = []; fwTimer = 0;
+            document.getElementById('celebTitle').innerHTML =
+                (item.title || 'REMINISCE 2026').replace(/(\S+)\s*$/, '<span class="red-hi">$1</span>');
+            document.getElementById('celebrateScreen').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            for (let i = 0; i < 5; i++) setTimeout(() => {
+                const fw = new FW();
+                fw.tx = innerWidth / 2 + (Math.random() - .5) * 300;
+                fw.ty = innerHeight * .3 + (Math.random() - .5) * 120;
+                const a = Math.atan2(fw.ty - fw.y, fw.tx - fw.x);
+                fw.vx = Math.cos(a) * 10; fw.vy = Math.sin(a) * 10;
+                fireworks.push(fw);
+            }, i * 120);
+            cancelAnimationFrame(animFrame); celebLoop();
+        }
+        function closeCelebrate() {
+            cancelAnimationFrame(animFrame);
+            document.getElementById('celebrateScreen').classList.remove('show');
+            document.body.style.overflow = '';
+            ctx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
+        }
+
+
+        document.querySelector('.main').addEventListener('scroll', function () {
+            document.getElementById('heroBg').style.transform = `scale(1.03) translateY(${this.scrollTop * .22}px)`;
+        }, { passive: true });
+
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeModal(); closeCountdown(); closeCelebrate(); }
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function showToast(message) {
+
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
     position: fixed;
     bottom: 30px;
     left: 50%;
@@ -2099,12 +2101,12 @@ function showToast(message) {
     border: 1px solid rgba(255,255,255,0.2);
     animation: toastSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   `;
-  
-  // Add animation keyframes if not already added
-  if (!document.querySelector('#toastStyles')) {
-    const style = document.createElement('style');
-    style.id = 'toastStyles';
-    style.textContent = `
+
+
+            if (!document.querySelector('#toastStyles')) {
+                const style = document.createElement('style');
+                style.id = 'toastStyles';
+                style.textContent = `
       @keyframes toastSlideUp {
         from {
           opacity: 0;
@@ -2116,27 +2118,27 @@ function showToast(message) {
         }
       }
     `;
-    document.head.appendChild(style);
-  }
-  
-  document.body.appendChild(toast);
-  
-  // Remove toast after 2.5 seconds
-  setTimeout(() => {
-    toast.style.animation = 'toastSlideUp 0.25s ease reverse forwards';
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
-}
+                document.head.appendChild(style);
+            }
 
-// Add click handler to Watch Trailer button
-document.querySelector('.btn-trailer').addEventListener('click', function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-showToast('🎬 Redirecting!');
-window.open('https://www.instagram.com/reel/DW21OWDksDL/?igsh=a2M0ZmJyY2h6NWc5', '_blank');
-  
-});
-  </script>
+            document.body.appendChild(toast);
+
+
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideUp 0.25s ease reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+
+        document.querySelector('.btn-trailer').addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('🎬 Redirecting!');
+            window.open('https://www.instagram.com/reel/DW21OWDksDL/?igsh=a2M0ZmJyY2h6NWc5', '_blank');
+
+        });
+    </script>
 </body>
 
 </html>
